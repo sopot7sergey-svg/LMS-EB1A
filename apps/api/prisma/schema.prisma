@@ -1,0 +1,315 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  student
+  admin
+}
+
+enum CaseStatus {
+  draft
+  in_progress
+  submitted
+  completed
+}
+
+enum LetterStatus {
+  draft
+  requested
+  signed
+}
+
+enum LetterType {
+  manager
+  expert
+  partner
+  client
+}
+
+enum EvidencePackStatus {
+  draft
+  uploaded
+  packaged
+  reviewed
+}
+
+enum PetitionStatus {
+  draft
+  assembled
+  reviewed
+  final
+}
+
+enum ChatStatus {
+  open
+  closed
+}
+
+enum DocumentCategory {
+  letter
+  pay
+  media
+  publication
+  award
+  judging
+  membership
+  role
+  contribution
+  misc
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(student)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cases            Case[]
+  moduleProgress   ModuleProgress[]
+  lessonProgress   LessonProgress[]
+  documents        Document[]
+  chatThreadsAsStudent ChatThread[] @relation("StudentThreads")
+  chatThreadsAsAdmin   ChatThread[] @relation("AdminThreads")
+  chatMessages     ChatMessage[]
+}
+
+model Case {
+  id                 String     @id @default(uuid())
+  userId             String
+  caseAxisStatement  String?    @db.Text
+  proposedEndeavor   String?    @db.Text
+  keywords           String[]
+  criteriaSelected   String[]
+  status             CaseStatus @default(draft)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace          CaseWorkspace?
+  criteriaMatrix     CriteriaMatrix[]
+  evidencePacks      EvidencePack[]
+  letters            RecommendationLetter[]
+  petitionPackages   PetitionPackage[]
+  eers               EER[]
+  documents          Document[]
+}
+
+model CaseWorkspace {
+  id              String   @id @default(uuid())
+  caseId          String   @unique
+  folderStructure Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  case            Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
+
+model Module {
+  id          String   @id @default(uuid())
+  title       String
+  description String?  @db.Text
+  order       Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lessons     Lesson[]
+  progress    ModuleProgress[]
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  moduleId    String
+  title       String
+  description String?  @db.Text
+  videoUrl    String?
+  videoEmbed  String?  @db.Text
+  order       Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress    LessonProgress[]
+}
+
+model ModuleProgress {
+  id                String    @id @default(uuid())
+  userId            String
+  moduleId          String
+  lessonsCompleted  String[]
+  artifactGenerated Boolean   @default(false)
+  completedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module            Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, moduleId])
+}
+
+model LessonProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  lessonId    String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model CriteriaMatrix {
+  id        String   @id @default(uuid())
+  caseId    String
+  version   Int      @default(1)
+  criteria  Json     @default("{}")
+  notes     Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  case      Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
+
+model EvidencePack {
+  id          String             @id @default(uuid())
+  caseId      String
+  criterionId String
+  documents   String[]
+  narrative   String?            @db.Text
+  status      EvidencePackStatus @default(draft)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  case        Case               @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
+
+model RecommendationLetter {
+  id                 String       @id @default(uuid())
+  caseId             String
+  signerName         String
+  signerTitle        String
+  signerOrganization String
+  signerEmail        String?
+  letterType         LetterType
+  criteriaAddressed  String[]
+  draftContent       String?      @db.Text
+  finalContent       String?      @db.Text
+  status             LetterStatus @default(draft)
+  attachments        String[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  case               Case         @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
+
+model PetitionPackage {
+  id           String         @id @default(uuid())
+  caseId       String
+  version      Int            @default(1)
+  briefContent String?        @db.Text
+  exhibitList  Json           @default("[]")
+  tocGenerated Boolean        @default(false)
+  status       PetitionStatus @default(draft)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  case         Case           @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
+
+model EER {
+  id                     String   @id @default(uuid())
+  caseId                 String
+  version                Int      @default(1)
+  executiveSummary       String?  @db.Text
+  items                  Json     @default("[]")
+  criterionItems         Json     @default("[]")
+  finalMeritsItems       Json     @default("[]")
+  optionalPackagingItems Json     @default("[]")
+  resolutionNotes        String?  @db.Text
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  case                   Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  resolutions            EERResolution[]
+}
+
+model EERResolution {
+  id              String   @id @default(uuid())
+  eerId           String
+  previousVersion Int
+  changes         String[]
+  createdAt       DateTime @default(now())
+
+  eer             EER      @relation(fields: [eerId], references: [id], onDelete: Cascade)
+}
+
+model ChatThread {
+  id        String     @id @default(uuid())
+  studentId String
+  adminId   String?
+  subject   String?
+  status    ChatStatus @default(open)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  student   User       @relation("StudentThreads", fields: [studentId], references: [id], onDelete: Cascade)
+  admin     User?      @relation("AdminThreads", fields: [adminId], references: [id])
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id         String   @id @default(uuid())
+  threadId   String
+  senderId   String
+  senderRole UserRole
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+
+  thread     ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender     User       @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id           String           @id @default(uuid())
+  caseId       String
+  userId       String
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  category     DocumentCategory @default(misc)
+  metadata     Json?
+  s3Key        String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  case         Case             @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RAGChunk {
+  id            String   @id @default(uuid())
+  source        String
+  section       String?
+  content       String   @db.Text
+  embedding     Float[]
+  effectiveDate DateTime?
+  jurisdiction  String?
+  topicTags     String[]
+  createdAt     DateTime @default(now())
+}

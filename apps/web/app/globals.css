@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 99 91 255;
+    --background: 10 10 15;
+    --background-secondary: 17 17 24;
+    --background-tertiary: 26 26 36;
+    --background-card: 22 22 31;
+    --foreground: 255 255 255;
+    --foreground-secondary: 161 161 170;
+    --foreground-muted: 113 113 122;
+    --border: 39 39 42;
+    --border-hover: 63 63 70;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-white hover:bg-primary/90;
+  }
+
+  .btn-secondary {
+    @apply btn bg-background-tertiary text-foreground hover:bg-border;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-foreground-secondary hover:bg-background-tertiary hover:text-foreground;
+  }
+
+  .card {
+    @apply rounded-xl bg-background-card border border-border p-6 shadow-card;
+  }
+
+  .card-hover {
+    @apply card transition-all hover:border-border-hover hover:shadow-card-hover;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-border bg-background-secondary px-4 py-2.5 text-foreground placeholder:text-foreground-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary;
+  }
+
+  .label {
+    @apply text-sm font-medium text-foreground-secondary;
+  }
+
+  .progress-bar {
+    @apply h-2 rounded-full bg-background-tertiary overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply h-full rounded-full bg-primary transition-all duration-300;
+  }
+}
