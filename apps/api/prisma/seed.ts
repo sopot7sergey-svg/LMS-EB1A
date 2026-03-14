@@ -476,6 +476,36 @@ async function main() {
 
   await grantStartAfterCoursePurchase(testUser.id);
 
+  const test2Password = await bcrypt.hash('Test1234', 12);
+  const test2User = await prisma.user.upsert({
+    where: { email: 'test2@example.com' },
+    update: { password: test2Password },
+    create: {
+      email: 'test2@example.com',
+      password: test2Password,
+      name: 'Test Student 2',
+      role: 'student',
+    },
+  });
+  console.log('Created test user:', test2User.email);
+
+  await grantStartAfterCoursePurchase(test2User.id);
+
+  const test3Password = await bcrypt.hash('Test1234', 12);
+  const test3User = await prisma.user.upsert({
+    where: { email: 'test3@example.com' },
+    update: { password: test3Password },
+    create: {
+      email: 'test3@example.com',
+      password: test3Password,
+      name: 'Test Student 3',
+      role: 'student',
+    },
+  });
+  console.log('Created test user:', test3User.email);
+
+  await grantStartAfterCoursePurchase(test3User.id);
+
   const existingStudents = await prisma.user.findMany({
     where: { role: 'student' },
     include: { courseEntitlement: true, appAccess: true },

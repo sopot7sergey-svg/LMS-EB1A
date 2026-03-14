@@ -436,7 +436,7 @@ export const api = {
           token,
         }),
       get: (id: string, token: string) =>
-        fetchAPI<any>(`/api/admin/users/${id}`, { token }),
+        fetchAPI<any>(`/api/admin/users/${id}`, { token, cache: 'no-store' }),
       suspend: (id: string, suspended: boolean, token: string) =>
         fetchAPI<any>(`/api/admin/users/${id}/suspend`, {
           method: 'PATCH',
@@ -446,11 +446,13 @@ export const api = {
       resetDevices: (id: string, token: string) =>
         fetchAPI<{ message: string }>(`/api/admin/users/${id}/reset-devices`, {
           method: 'POST',
+          body: JSON.stringify({}),
           token,
         }),
       grantCourse: (id: string, token: string) =>
         fetchAPI<{ message: string }>(`/api/admin/users/${id}/grant-course`, {
           method: 'POST',
+          body: JSON.stringify({}),
           token,
         }),
       setUltra: (id: string, billingCycle?: 'monthly' | 'annual', token?: string) =>
@@ -458,6 +460,30 @@ export const api = {
           method: 'POST',
           body: JSON.stringify({ billingCycle: billingCycle ?? 'monthly' }),
           token: token!,
+        }),
+      setStart: (id: string, token: string) =>
+        fetchAPI<{ message: string; plan: string }>(`/api/admin/users/${id}/set-start`, {
+          method: 'POST',
+          body: JSON.stringify({}),
+          token,
+        }),
+      setPro: (id: string, billingCycle?: 'monthly' | 'annual', token?: string) =>
+        fetchAPI<{ message: string; plan: string }>(`/api/admin/users/${id}/set-pro`, {
+          method: 'POST',
+          body: JSON.stringify({ billingCycle: billingCycle ?? 'monthly' }),
+          token: token!,
+        }),
+      lockAccess: (id: string, token: string) =>
+        fetchAPI<{ message: string; appAccessActive: boolean }>(`/api/admin/users/${id}/lock-access`, {
+          method: 'POST',
+          body: JSON.stringify({}),
+          token,
+        }),
+      unlockAccess: (id: string, token: string) =>
+        fetchAPI<{ message: string; appAccessActive: boolean }>(`/api/admin/users/${id}/unlock-access`, {
+          method: 'POST',
+          body: JSON.stringify({}),
+          token,
         }),
     },
     ultraRequests: {

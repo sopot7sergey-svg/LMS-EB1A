@@ -1,7 +1,16 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
-import { getAccess, grantStartAfterCoursePurchase, resetDevices, setUltraPlan } from '../services/access';
+import {
+  getAccess,
+  grantStartAfterCoursePurchase,
+  lockAppAccess,
+  resetDevices,
+  setProPlan,
+  setStartPlan,
+  setUltraPlan,
+  unlockAppAccess,
+} from '../services/access';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -269,6 +278,7 @@ router.get('/users/:id', authenticate, requireAdmin, async (req: AuthRequest, re
       appAccessActive: access.appAccessActive,
       plan: access.plan,
       planStatus: access.planStatus,
+      expiresAt: access.expiresAt,
       maxCases: access.maxCases,
       uploadEnabled: user.uploadEnabled,
     });
@@ -373,6 +383,55 @@ router.post('/users/:id/set-ultra', authenticate, requireAdmin, async (req: Auth
   } catch (error) {
     console.error('Set Ultra error:', error);
     res.status(500).json({ error: 'Failed to set Ultra plan' });
+  }
+});
+
+router.post('/users/:id/set-start', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    await setStartPlan(id);
+    const access = await getAccess(id);
+    res.json({ message: 'User set to Start plan', plan: access.plan });
+  } catch (error) {
+    console.error('Set Start error:', error);
+    res.status(500).json({ error: 'Failed to set Start plan' });
+  }
+});
+
+router.post('/users/:id/set-pro', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { billingCycle } = req.body;
+    await setProPlan(id, billingCycle === 'annual' ? 'annual' : 'monthly');
+    const access = await getAccess(id);
+    res.json({ message: 'User set to Pro plan', plan: access.plan });
+  } catch (error) {
+    console.error('Set Pro error:', error);
+    res.status(500).json({ error: 'Failed to set Pro plan' });
+  }
+});
+
+router.post('/users/:id/lock-access', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    await lockAppAccess(id);
+    const access = await getAccess(id);
+    res.json({ message: 'App access locked', appAccessActive: access.appAccessActive });
+  } catch (error) {
+    console.error('Lock access error:', error);
+    res.status(500).json({ error: 'Failed to lock app access' });
+  }
+});
+
+router.post('/users/:id/unlock-access', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    await unlockAppAccess(id);
+    const access = await getAccess(id);
+    res.json({ message: 'App access unlocked', appAccessActive: access.appAccessActive });
+  } catch (error) {
+    console.error('Unlock access error:', error);
+    res.status(500).json({ error: 'Failed to unlock app access' });
   }
 });
 

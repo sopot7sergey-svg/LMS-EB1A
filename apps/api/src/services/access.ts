@@ -135,7 +135,7 @@ export async function grantStartAfterCoursePurchase(userId: string): Promise<voi
   });
 }
 
-/** Set user to Pro plan (monthly). */
+/** Set user to Pro plan (monthly). Upload off by default. */
 export async function setProPlan(userId: string, billingCycle: 'monthly' | 'annual' = 'monthly'): Promise<void> {
   const now = new Date();
   const expiresAt = new Date();
@@ -145,30 +145,36 @@ export async function setProPlan(userId: string, billingCycle: 'monthly' | 'annu
     expiresAt.setMonth(expiresAt.getMonth() + 1);
   }
 
-  await prisma.appAccess.upsert({
-    where: { userId },
-    create: {
-      userId,
-      plan: 'pro',
-      status: 'active',
-      startedAt: now,
-      expiresAt,
-      billingCycle: billingCycle as any,
-      autoRenew: true,
-      maxCases: 3,
-      uploadEnabled: false,
-    },
-    update: {
-      plan: 'pro',
-      status: 'active',
-      startedAt: now,
-      expiresAt,
-      billingCycle: billingCycle as any,
-      autoRenew: true,
-      maxCases: 3,
-      uploadEnabled: false,
-    },
-  });
+  await prisma.$transaction([
+    prisma.appAccess.upsert({
+      where: { userId },
+      create: {
+        userId,
+        plan: 'pro',
+        status: 'active',
+        startedAt: now,
+        expiresAt,
+        billingCycle: billingCycle as any,
+        autoRenew: true,
+        maxCases: 3,
+        uploadEnabled: false,
+      },
+      update: {
+        plan: 'pro',
+        status: 'active',
+        startedAt: now,
+        expiresAt,
+        billingCycle: billingCycle as any,
+        autoRenew: true,
+        maxCases: 3,
+        uploadEnabled: false,
+      },
+    }),
+    prisma.user.update({
+      where: { id: userId },
+      data: { uploadEnabled: false },
+    }),
+  ]);
 }
 
 /** Set user to Ultra plan (admin approval). */
@@ -429,4 +435,93 @@ export async function resetDevices(userId: string): Promise<void> {
     where: { userId },
     data: { active: false },
   });
+}
+
+/** Set user to Start plan (30 days, no upload). Admin manual control. */
+export async function setStartPlan(userId: string): Promise<void> {
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 30);
+
+  await prisma.appAccess.upsert({
+    where: { userId },
+    create: {
+      userId,
+      plan: 'start',
+      status: 'active',
+      startedAt: new Date(),
+      expiresAt,
+      maxCases: 3,
+      uploadEnabled: false,
+    },
+    update: {
+      plan: 'start',
+      status: 'active',
+      startedAt: new Date(),
+      expiresAt,
+      maxCases: 3,
+      uploadEnabled: false,
+    },
+  });
+  await prisma.user.update({
+    where: { id: userId },
+    data: { uploadEnabled: false },
+  });
+}
+
+/** Lock app access: set status to expired. User cannot access My Case. */
+export async function lockAppAccess(userId: string): Promise<void> {
+  await prisma.$transaction([
+    prisma.appAccess.upsert({
+      where: { userId },
+      create: {
+        userId,
+        plan: 'none',
+        status: 'expired',
+        maxCases: 0,
+        uploadEnabled: false,
+      },
+      update: {
+        status: 'expired',
+      },
+    }),
+    prisma.user.update({
+      where: { id: userId },
+      data: { uploadEnabled: false },
+    }),
+  ]);
+}
+
+/** Unlock app access: set status to active. Extends expiresAt if in the past. Creates Start plan if none exists. */
+export async function unlockAppAccess(userId: string): Promise<void> {
+  const app = await prisma.appAccess.findUnique({
+    where: { userId },
+  });
+  const now = new Date();
+  let expiresAt: Date;
+
+  if (app) {
+    expiresAt = app.expiresAt ?? new Date();
+    if (expiresAt <= now) {
+      expiresAt = new Date();
+      expiresAt.setMonth(expiresAt.getMonth() + 1);
+    }
+    await prisma.appAccess.update({
+      where: { userId },
+      data: { status: 'active', expiresAt },
+    });
+  } else {
+    expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+    await prisma.appAccess.create({
+      data: {
+        userId,
+        plan: 'start',
+        status: 'active',
+        startedAt: now,
+        expiresAt,
+        maxCases: 3,
+        uploadEnabled: false,
+      },
+    });
+  }
 }
