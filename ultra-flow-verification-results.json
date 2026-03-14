@@ -1,0 +1,75 @@
+{
+  "steps": [
+    {
+      "step": "student_login",
+      "ok": true
+    },
+    {
+      "step": "request_ultra",
+      "ok": true
+    },
+    {
+      "step": "admin_sees_requests",
+      "ok": true
+    },
+    {
+      "step": "admin_approve",
+      "ok": true
+    },
+    {
+      "step": "student_has_ultra",
+      "ok": true
+    }
+  ],
+  "screenshots": [
+    "01-plans-before-request.png",
+    "03-admin-ultra-requests.png",
+    "04-after-approve.png",
+    "05-student-after-approval.png"
+  ],
+  "errors": [],
+  "plansAfterApproval": {
+    "plans": [
+      {
+        "id": "start",
+        "name": "Start",
+        "description": "Free 30-day app access after course purchase",
+        "price": null,
+        "priceAnnual": null,
+        "maxCases": 3,
+        "uploadEnabled": false,
+        "selfService": false,
+        "note": "Granted automatically after course purchase"
+      },
+      {
+        "id": "pro",
+        "name": "Pro",
+        "description": "Full app access for case building",
+        "price": 50,
+        "priceAnnual": 300,
+        "maxCases": 3,
+        "uploadEnabled": false,
+        "selfService": true,
+        "note": null
+      },
+      {
+        "id": "ultra",
+        "name": "Ultra",
+        "description": "Extended access with document upload",
+        "price": 100,
+        "priceAnnual": 900,
+        "maxCases": 5,
+        "uploadEnabled": true,
+        "selfService": false,
+        "note": "By admin approval only. Contact support to request."
+      }
+    ],
+    "currentPlan": "ultra",
+    "planStatus": "active",
+    "proActive": false,
+    "ultraEligibilityRequest": {
+      "status": "approved",
+      "requestedAt": "2026-03-14T17:45:45.828Z"
+    }
+  }
+}

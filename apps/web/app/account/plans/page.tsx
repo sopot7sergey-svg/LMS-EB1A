@@ -68,9 +68,14 @@ export default function PlansPage() {
     setLoadingAction('ultra-request');
     try {
       await api.account.requestUltra(token);
-      refresh();
+      await refresh();
     } catch (err: any) {
-      alert(err?.message ?? 'Request failed');
+      const msg = err?.message ?? 'Request failed';
+      if (msg.includes('already have a pending')) {
+        await refresh();
+        return;
+      }
+      alert(msg);
     } finally {
       setLoadingAction(null);
     }
