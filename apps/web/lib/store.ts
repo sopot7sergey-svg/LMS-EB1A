@@ -7,6 +7,12 @@ interface User {
   name: string;
   role: 'student' | 'admin';
   uploadEnabled?: boolean;
+  appAccessActive?: boolean;
+  plan?: string;
+  planStatus?: string;
+  expiresAt?: string | null;
+  maxCases?: number;
+  caseCount?: number;
 }
 
 interface AuthState {

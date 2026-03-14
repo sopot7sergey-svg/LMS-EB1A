@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { useAuthStore, useCaseStore } from '@/lib/store';
 import { api } from '@/lib/api';
-import { Plus, FileText, ArrowRight, Trash2 } from 'lucide-react';
+import { Plus, FileText, ArrowRight, Trash2, Lock } from 'lucide-react';
 
 interface Case {
   id: string;
@@ -21,7 +22,8 @@ interface Case {
 
 export default function CasesPage() {
   const router = useRouter();
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
+  const appAccessActive = user?.appAccessActive !== false;
   const { currentCaseId, setCurrentCase } = useCaseStore();
   const [cases, setCases] = useState<Case[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +33,10 @@ export default function CasesPage() {
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchCases = async () => {
       try {
@@ -113,11 +118,28 @@ export default function CasesPage() {
             Manage your EB-1A petition cases.
           </p>
         </div>
-        <Button onClick={handleCreateCase} isLoading={isCreating}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Case
-        </Button>
+        {appAccessActive && (
+          <Button onClick={handleCreateCase} isLoading={isCreating}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Case
+          </Button>
+        )}
       </div>
+
+      {!appAccessActive && (
+        <div className="mb-6 flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-warning">
+          <Lock className="h-5 w-5 shrink-0" />
+          <div>
+            <p className="font-medium">App access expired</p>
+            <p className="text-sm">
+              Your app plan has expired. Renew your plan to access and edit your cases. Your case data is preserved.
+            </p>
+            <Link href="/account/plans" className="mt-2 inline-block">
+              <Button variant="secondary" size="sm">View Plans</Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {feedback ? (
         <div
@@ -137,11 +159,15 @@ export default function CasesPage() {
             <FileText className="mx-auto mb-4 h-12 w-12 text-foreground-muted" />
             <h3 className="text-lg font-semibold">No cases yet</h3>
             <p className="mt-2 text-foreground-secondary">
-              Create your first case to start building your EB-1A petition.
+              {appAccessActive
+                ? 'Create your first case to start building your EB-1A petition.'
+                : 'Renew your plan to create new cases.'}
             </p>
-            <Button className="mt-4" onClick={handleCreateCase} isLoading={isCreating}>
-              Create Case
-            </Button>
+            {appAccessActive && (
+              <Button className="mt-4" onClick={handleCreateCase} isLoading={isCreating}>
+                Create Case
+              </Button>
+            )}
           </CardContent>
         </Card>
       ) : (
@@ -173,11 +199,11 @@ export default function CasesPage() {
                   </CardTitle>
                   <button
                     type="button"
-                    onClick={() => setCaseToDelete(caseItem)}
-                    className="shrink-0 rounded-md p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors"
+                    onClick={() => appAccessActive && setCaseToDelete(caseItem)}
+                    className="shrink-0 rounded-md p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Delete case"
                     aria-label={`Delete ${caseItem.caseAxisStatement || 'Untitled Case'}`}
-                    disabled={deletingCaseId === caseItem.id}
+                    disabled={deletingCaseId === caseItem.id || !appAccessActive}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -198,11 +224,20 @@ export default function CasesPage() {
                 <Button
                   variant="secondary"
                   className="w-full"
-                  onClick={() => handleSelectCase(caseItem.id)}
-                  disabled={deletingCaseId === caseItem.id}
+                  onClick={() => appAccessActive && handleSelectCase(caseItem.id)}
+                  disabled={deletingCaseId === caseItem.id || !appAccessActive}
                 >
-                  View Case
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  {appAccessActive ? (
+                    <>
+                      View Case
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="mr-2 h-4 w-4" />
+                      Locked
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>

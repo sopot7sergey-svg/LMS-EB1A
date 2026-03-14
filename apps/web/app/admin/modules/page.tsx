@@ -28,7 +28,10 @@ export default function AdminModulesPage() {
   const [newModule, setNewModule] = useState({ title: '', description: '', order: 0 });
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchModules = async () => {
       try {

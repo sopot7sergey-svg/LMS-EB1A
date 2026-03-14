@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { getAccess, registerDevice } from '../services/access';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -79,14 +80,41 @@ router.post(
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
+      if (user.suspended) {
+        return res.status(403).json({ error: 'Account suspended. Contact admin.' });
+      }
+
+      const deviceId = req.body.deviceId as string | undefined;
+      if (deviceId) {
+        const deviceResult = await registerDevice(user.id, deviceId);
+        if (!deviceResult.allowed) {
+          return res.status(403).json({ error: deviceResult.message ?? 'Device limit reached' });
+        }
+      }
+
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },
         process.env.JWT_SECRET || 'secret',
         { expiresIn: '7d' }
       );
 
+      const access = user.role === 'admin' ? null : await getAccess(user.id);
       res.json({
-        user: { id: user.id, email: user.email, name: user.name, role: user.role, uploadEnabled: user.uploadEnabled },
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          uploadEnabled: user.uploadEnabled,
+          ...(access && {
+            appAccessActive: access.appAccessActive,
+            plan: access.plan,
+            planStatus: access.planStatus,
+            expiresAt: access.expiresAt,
+            maxCases: access.maxCases,
+            caseCount: access.caseCount,
+          }),
+        },
         token,
       });
     } catch (error) {
@@ -100,14 +128,35 @@ router.get('/me', authenticate, async (req: AuthRequest, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user!.id },
-      select: { id: true, email: true, name: true, role: true, uploadEnabled: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        uploadEnabled: true,
+        suspended: true,
+        createdAt: true,
+        courseEntitlement: true,
+        appAccess: true,
+      },
     });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json(user);
+    const access = await getAccess(req.user!.id);
+    res.json({
+      ...user,
+      appAccessActive: access.appAccessActive,
+      plan: access.plan,
+      planStatus: access.planStatus,
+      expiresAt: access.expiresAt,
+      maxCases: access.maxCases,
+      caseCount: access.caseCount,
+      deviceCount: access.deviceCount,
+      deviceLimit: access.deviceLimit,
+    });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ error: 'Failed to get user' });

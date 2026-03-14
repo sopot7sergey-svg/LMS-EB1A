@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,11 @@ interface UserData {
   email: string;
   name: string;
   role: 'student' | 'admin';
+  suspended?: boolean;
+  plan?: string;
+  planStatus?: string;
+  appAccessActive?: boolean;
+  deviceCount?: number;
   createdAt: string;
   _count: {
     cases: number;
@@ -26,7 +32,10 @@ export default function AdminUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchUsers = async () => {
       try {
@@ -123,6 +132,9 @@ export default function AdminUsersPage() {
                     Role
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-foreground-secondary">
+                    Plan
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-foreground-secondary">
                     Cases
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-foreground-secondary">
@@ -140,7 +152,10 @@ export default function AdminUsersPage() {
                 {users.map((user) => (
                   <tr key={user.id} className="border-b border-border">
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
+                      <Link
+                        href={`/admin/users/${user.id}`}
+                        className="flex items-center gap-3 hover:opacity-80"
+                      >
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
@@ -148,7 +163,7 @@ export default function AdminUsersPage() {
                           <p className="font-medium">{user.name}</p>
                           <p className="text-sm text-foreground-muted">{user.email}</p>
                         </div>
-                      </div>
+                      </Link>
                     </td>
                     <td className="px-4 py-3">
                       <span
@@ -160,6 +175,12 @@ export default function AdminUsersPage() {
                       >
                         {user.role}
                       </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="capitalize">{user.plan ?? '—'}</span>
+                      {user.appAccessActive === false && user.role === 'student' && (
+                        <span className="ml-1 text-xs text-warning">(locked)</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">{user._count.cases}</td>
                     <td className="px-4 py-3">{user._count.lessonProgress}</td>

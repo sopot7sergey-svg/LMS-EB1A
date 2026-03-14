@@ -27,7 +27,10 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchData = async () => {
       try {
@@ -73,8 +76,12 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="flex h-64 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <div className="flex h-64 items-center justify-center" style={{ color: '#a1a1aa' }}>
+          <div
+            className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+            style={{ borderColor: '#635BFF', borderTopColor: 'transparent' }}
+          />
+          <span className="ml-3">Loading...</span>
         </div>
       </DashboardLayout>
     );

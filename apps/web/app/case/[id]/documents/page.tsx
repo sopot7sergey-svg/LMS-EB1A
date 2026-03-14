@@ -40,7 +40,10 @@ export default function DocumentsPage() {
   const caseId = params.id as string;
 
   useEffect(() => {
-    if (!token || !caseId) return;
+    if (!token || !caseId) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchDocuments = async () => {
       try {

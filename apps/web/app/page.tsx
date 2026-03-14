@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/lib/store';
 
 interface Lesson {
   id: string;
@@ -374,10 +376,28 @@ function ModuleAccordion({ module }: { module: Module }) {
 }
 
 export default function Home() {
+  const router = useRouter();
+  const { isAuthenticated, isAdmin } = useAuthStore();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      router.replace(isAdmin() ? '/admin/dashboard' : '/dashboard');
+    }
+  }, [router, isAuthenticated, isAdmin]);
+
   const totalLessons = MODULES.reduce((sum, m) => {
     if (m.blocks) return sum + m.blocks.reduce((s, b) => s + b.lessons.length, 0);
     return sum + (m.lessons?.length ?? 0);
   }, 0);
+
+  // Always render landing; redirect happens in useEffect (avoids stuck Loading)
+  if (isAuthenticated()) {
+    return (
+      <main className="min-h-screen bg-background flex items-center justify-center" style={{ backgroundColor: '#0a0a0f', color: '#a1a1aa' }}>
+        <div>Redirecting...</div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -385,10 +405,10 @@ export default function Home() {
       <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-primary" />
               <span className="text-xl font-semibold">Aipas</span>
-            </div>
+            </Link>
             <div className="flex items-center gap-4">
               <Link href="/login" className="btn-ghost">Sign In</Link>
               <Link href="/register" className="btn-primary">Get Started</Link>
@@ -435,7 +455,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
               <span className="text-2xl font-bold text-foreground">1</span>
-              <span className="mt-1 text-sm text-foreground-muted">EER Engine</span>
+              <span className="mt-1 text-sm text-foreground-muted">IEER Engine</span>
             </div>
           </div>
         </div>

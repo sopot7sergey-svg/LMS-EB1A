@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { grantStartAfterCoursePurchase } from '../src/services/access';
 
 const prisma = new PrismaClient();
 
@@ -472,6 +473,19 @@ async function main() {
     },
   });
   console.log('Created test user:', testUser.email);
+
+  await grantStartAfterCoursePurchase(testUser.id);
+
+  const existingStudents = await prisma.user.findMany({
+    where: { role: 'student' },
+    include: { courseEntitlement: true, appAccess: true },
+  });
+  for (const u of existingStudents) {
+    if (!u.courseEntitlement || !u.appAccess) {
+      await grantStartAfterCoursePurchase(u.id);
+      console.log('Backfilled access for:', u.email);
+    }
+  }
 
   for (const moduleData of modules) {
     const { lessons, ...moduleInfo } = moduleData;

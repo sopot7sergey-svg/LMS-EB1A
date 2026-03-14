@@ -50,7 +50,10 @@ export default function ReviewPage() {
   const caseId = params.id as string;
 
   useEffect(() => {
-    if (!token || !caseId) return;
+    if (!token || !caseId) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchData = async () => {
       try {

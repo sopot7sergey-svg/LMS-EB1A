@@ -1,12 +1,20 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { canAccessCourse, getAccess } from '../services/access';
 
 const router = Router();
 const prisma = new PrismaClient();
 
 router.get('/overall', authenticate, async (req: AuthRequest, res) => {
   try {
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessCourse(access)) {
+        return res.status(403).json({ error: 'Course access required.' });
+      }
+    }
+
     const totalLessons = await prisma.lesson.count({
       where: { isActive: true },
     });
@@ -40,6 +48,13 @@ router.get('/overall', authenticate, async (req: AuthRequest, res) => {
 
 router.get('/modules', authenticate, async (req: AuthRequest, res) => {
   try {
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessCourse(access)) {
+        return res.status(403).json({ error: 'Course access required.' });
+      }
+    }
+
     const modules = await prisma.module.findMany({
       where: { isActive: true },
       include: {
@@ -80,6 +95,13 @@ router.get('/modules', authenticate, async (req: AuthRequest, res) => {
 
 router.get('/lessons', authenticate, async (req: AuthRequest, res) => {
   try {
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessCourse(access)) {
+        return res.status(403).json({ error: 'Course access required.' });
+      }
+    }
+
     const { moduleId } = req.query;
 
     const lessonProgress = await prisma.lessonProgress.findMany({

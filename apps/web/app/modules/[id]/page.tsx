@@ -82,7 +82,10 @@ export default function ModuleDetailPage() {
   );
 
   useEffect(() => {
-    if (!token || !moduleId) return;
+    if (!token || !moduleId) {
+      setIsLoading(false);
+      return;
+    }
 
     let cancelled = false;
 

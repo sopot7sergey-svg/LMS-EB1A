@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { PrismaClient } from '@prisma/client';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { canAccessApp, getAccess } from '../services/access';
 import { runCompile } from '../services/compile/compiler';
 
 const router = Router({ mergeParams: true });
@@ -19,6 +20,12 @@ router.post('/', authenticate, async (req: AuthRequest, res) => {
     }
     if (req.user!.role !== 'admin' && caseRecord.userId !== req.user!.id) {
       return res.status(403).json({ error: 'Access denied' });
+    }
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessApp(access)) {
+        return res.status(403).json({ error: 'App access expired. Renew your plan.' });
+      }
     }
 
     const job = await prisma.compileJob.create({
@@ -62,6 +69,12 @@ router.get('/:jobId/status', authenticate, async (req: AuthRequest, res) => {
     if (req.user!.role !== 'admin' && caseRecord.userId !== req.user!.id) {
       return res.status(403).json({ error: 'Access denied' });
     }
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessApp(access)) {
+        return res.status(403).json({ error: 'App access expired. Renew your plan.' });
+      }
+    }
 
     res.json({
       jobId: job.id,
@@ -92,6 +105,12 @@ router.get('/:jobId/download', authenticate, async (req: AuthRequest, res) => {
     if (!caseRecord) return res.status(404).json({ error: 'Case not found' });
     if (req.user!.role !== 'admin' && caseRecord.userId !== req.user!.id) {
       return res.status(403).json({ error: 'Access denied' });
+    }
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessApp(access)) {
+        return res.status(403).json({ error: 'App access expired. Renew your plan.' });
+      }
     }
 
     const filePath = job.artifact.filePath;

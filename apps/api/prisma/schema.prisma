@@ -51,12 +51,32 @@ enum ChatStatus {
   closed
 }
 
+enum AppPlan {
+  none
+  start
+  pro
+  ultra
+}
+
+enum AppPlanStatus {
+  active
+  expired
+  canceled
+  grace
+}
+
+enum BillingCycle {
+  monthly
+  annual
+}
+
 model User {
   id             String   @id @default(uuid())
   email          String   @unique
   password       String
   name           String
   role           UserRole @default(student)
+  suspended      Boolean  @default(false)
   uploadEnabled  Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -69,6 +89,92 @@ model User {
   chatThreadsAsStudent ChatThread[] @relation("StudentThreads")
   chatThreadsAsAdmin   ChatThread[] @relation("AdminThreads")
   chatMessages     ChatMessage[]
+  courseEntitlement CourseEntitlement?
+  appAccess        AppAccess?
+  subscriptionRecords SubscriptionRecord[]
+  deviceAccesses   DeviceAccess[]
+  ultraEligibilityRequests UltraEligibilityRequest[]
+}
+
+model CourseEntitlement {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  purchasedAt DateTime @default(now())
+  activatedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AppAccess {
+  id                     String         @id @default(uuid())
+  userId                 String         @unique
+  plan                   AppPlan        @default(none)
+  status                 AppPlanStatus  @default(expired)
+  startedAt              DateTime?
+  expiresAt              DateTime?
+  billingCycle           BillingCycle?
+  autoRenew              Boolean        @default(false)
+  cancelAtPeriodEnd      Boolean        @default(false)
+  providerSubscriptionId String?
+  maxCases               Int            @default(3)
+  uploadEnabled          Boolean        @default(false)
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UltraEligibilityRequest {
+  id          String   @id @default(uuid())
+  userId      String
+  status      String   @default("pending") // pending | approved | rejected
+  requestedAt DateTime @default(now())
+  approvedAt  DateTime?
+  approvedById String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model SubscriptionRecord {
+  id                   String   @id @default(uuid())
+  userId               String
+  providerName         String?
+  externalCustomerId   String?
+  externalSubscriptionId String?
+  productType          String?
+  planType             String?
+  status               String?
+  nextBillingDate      DateTime?
+  canceledAt           DateTime?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model DeviceAccess {
+  id         String   @id @default(uuid())
+  userId     String
+  deviceId   String
+  label      String?
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+  active     Boolean  @default(true)
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId])
+  @@index([userId])
 }
 
 model Case {

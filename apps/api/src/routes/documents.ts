@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { canUpload, getAccess } from '../services/access';
 import { getDocumentBuilderConfig, normalizeCategory, type DocumentMetadataSource } from '@aipas/shared';
 import {
   deleteStoredDocumentFile,
@@ -110,6 +111,15 @@ router.post('/', authenticate, (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canUpload(access)) {
+        return res.status(403).json({
+          error: 'Document upload is not enabled for your account. Upgrade to Ultra or contact admin.',
+        });
+      }
     }
 
     const { caseId, category, builderStateId, source } = req.body;

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
+import { getAccess, grantStartAfterCoursePurchase, resetDevices, setUltraPlan } from '../services/access';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -203,13 +204,9 @@ router.patch('/lessons/:id/video', authenticate, requireAdmin, async (req: AuthR
 router.get('/users', authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        uploadEnabled: true,
-        createdAt: true,
+      include: {
+        courseEntitlement: true,
+        appAccess: true,
         _count: {
           select: {
             cases: true,
@@ -220,10 +217,64 @@ router.get('/users', authenticate, requireAdmin, async (req: AuthRequest, res) =
       orderBy: { createdAt: 'desc' },
     });
 
-    res.json(users);
+    const withAccess = await Promise.all(
+      users.map(async (u) => {
+        const access = await getAccess(u.id);
+        return {
+          id: u.id,
+          email: u.email,
+          name: u.name,
+          role: u.role,
+          suspended: u.suspended,
+          uploadEnabled: u.uploadEnabled,
+          createdAt: u.createdAt,
+          courseEntitlement: u.courseEntitlement,
+          appAccess: u.appAccess,
+          appAccessActive: access.appAccessActive,
+          plan: access.plan,
+          planStatus: access.planStatus,
+          expiresAt: access.expiresAt,
+          maxCases: access.maxCases,
+          caseCount: access.caseCount,
+          deviceCount: access.deviceCount,
+          deviceLimit: access.deviceLimit,
+          _count: u._count,
+        };
+      })
+    );
+
+    res.json(withAccess);
   } catch (error) {
     console.error('Get admin users error:', error);
     res.status(500).json({ error: 'Failed to get users' });
+  }
+});
+
+router.get('/users/:id', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        courseEntitlement: true,
+        appAccess: true,
+        deviceAccesses: { where: { active: true } },
+        _count: { select: { cases: true } },
+      },
+    });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const access = await getAccess(user.id);
+    res.json({
+      ...user,
+      appAccessActive: access.appAccessActive,
+      plan: access.plan,
+      planStatus: access.planStatus,
+      maxCases: access.maxCases,
+      uploadEnabled: user.uploadEnabled,
+    });
+  } catch (error) {
+    console.error('Get admin user error:', error);
+    res.status(500).json({ error: 'Failed to get user' });
   }
 });
 
@@ -268,6 +319,119 @@ router.patch('/users/:id/role', authenticate, requireAdmin, async (req: AuthRequ
   } catch (error) {
     console.error('Update user role error:', error);
     res.status(500).json({ error: 'Failed to update user role' });
+  }
+});
+
+router.patch('/users/:id/suspend', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { suspended } = req.body;
+    if (typeof suspended !== 'boolean') {
+      return res.status(400).json({ error: 'suspended must be a boolean' });
+    }
+    const user = await prisma.user.update({
+      where: { id },
+      data: { suspended },
+      select: { id: true, email: true, suspended: true },
+    });
+    res.json(user);
+  } catch (error) {
+    console.error('Suspend user error:', error);
+    res.status(500).json({ error: 'Failed to update suspend status' });
+  }
+});
+
+router.post('/users/:id/reset-devices', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    await resetDevices(id);
+    res.json({ message: 'Devices reset. User can log in from new devices.' });
+  } catch (error) {
+    console.error('Reset devices error:', error);
+    res.status(500).json({ error: 'Failed to reset devices' });
+  }
+});
+
+router.post('/users/:id/grant-course', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    await grantStartAfterCoursePurchase(id);
+    res.json({ message: 'Course + Start plan granted' });
+  } catch (error) {
+    console.error('Grant course error:', error);
+    res.status(500).json({ error: 'Failed to grant course' });
+  }
+});
+
+router.post('/users/:id/set-ultra', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { billingCycle } = req.body;
+    await setUltraPlan(id, billingCycle === 'annual' ? 'annual' : 'monthly');
+    const access = await getAccess(id);
+    res.json({ message: 'User upgraded to Ultra', plan: access.plan });
+  } catch (error) {
+    console.error('Set Ultra error:', error);
+    res.status(500).json({ error: 'Failed to set Ultra plan' });
+  }
+});
+
+/** GET /ultra-requests - list Ultra eligibility requests */
+router.get('/ultra-requests', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const requests = await prisma.ultraEligibilityRequest.findMany({
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+      },
+      orderBy: { requestedAt: 'desc' },
+    });
+    res.json(requests);
+  } catch (error) {
+    console.error('Get ultra requests error:', error);
+    res.status(500).json({ error: 'Failed to get Ultra requests' });
+  }
+});
+
+/** PATCH /ultra-requests/:id/approve - approve Ultra request */
+router.patch('/ultra-requests/:id/approve', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const request = await prisma.ultraEligibilityRequest.findUnique({ where: { id } });
+    if (!request) return res.status(404).json({ error: 'Request not found' });
+    if (request.status !== 'pending') {
+      return res.status(400).json({ error: `Request already ${request.status}` });
+    }
+    const adminId = req.user!.id;
+    await prisma.ultraEligibilityRequest.update({
+      where: { id },
+      data: { status: 'approved', approvedAt: new Date(), approvedById: adminId },
+    });
+    await setUltraPlan(request.userId, 'monthly');
+    res.json({ message: 'Ultra request approved', userId: request.userId });
+  } catch (error) {
+    console.error('Approve Ultra request error:', error);
+    res.status(500).json({ error: 'Failed to approve Ultra request' });
+  }
+});
+
+/** PATCH /ultra-requests/:id/reject - reject Ultra request */
+router.patch('/ultra-requests/:id/reject', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const request = await prisma.ultraEligibilityRequest.findUnique({ where: { id } });
+    if (!request) return res.status(404).json({ error: 'Request not found' });
+    if (request.status !== 'pending') {
+      return res.status(400).json({ error: `Request already ${request.status}` });
+    }
+    const adminId = req.user!.id;
+    await prisma.ultraEligibilityRequest.update({
+      where: { id },
+      data: { status: 'rejected', approvedAt: new Date(), approvedById: adminId },
+    });
+    res.json({ message: 'Ultra request rejected' });
+  } catch (error) {
+    console.error('Reject Ultra request error:', error);
+    res.status(500).json({ error: 'Failed to reject Ultra request' });
   }
 });
 

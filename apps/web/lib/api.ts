@@ -1,6 +1,8 @@
 // Use empty string for same-origin (proxied via Next.js rewrites) when no explicit API URL
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 
+const API_TIMEOUT_MS = 12_000;
+
 interface FetchOptions extends RequestInit {
   token?: string;
 }
@@ -17,23 +19,44 @@ async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promis
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
   let response: Response;
   try {
     response = await fetch(`${API_URL}${endpoint}`, {
       ...fetchOptions,
       headers,
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
   } catch (err) {
+    clearTimeout(timeoutId);
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error(
+        'Request timed out. API may be unavailable. Run: npm run dev:all'
+      );
+    }
     const msg = err instanceof Error ? err.message : 'Network error';
     if (msg.includes('fetch') || msg.includes('Failed') || msg.includes('NetworkError')) {
-      throw new Error('Cannot reach server. Run "npm run dev:all" to start both API and web app.');
+      throw new Error(
+        'Cannot reach server. From project root run: npm run dev:all (or npm run start:all). ' +
+          'Ensure PostgreSQL is running: docker-compose up -d postgres'
+      );
     }
     throw err;
   }
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Request failed' }));
-    throw new Error(error.error || `Request failed (${response.status})`);
+    const error = await response.json().catch(() => ({ error: `Request failed (${response.status})` }));
+    const msg = error.error || `Request failed (${response.status})`;
+    if (response.status === 502 || response.status === 503) {
+      throw new Error(
+        `API server not reachable (${response.status}). From project root run: npm run dev:all. ` +
+          'Ensure PostgreSQL is running: docker-compose up -d postgres'
+      );
+    }
+    throw new Error(msg);
   }
 
   return response.json();
@@ -41,10 +64,10 @@ async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promis
 
 export const api = {
   auth: {
-    login: (email: string, password: string) =>
+    login: (email: string, password: string, deviceId?: string) =>
       fetchAPI<{ user: any; token: string }>('/api/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, deviceId }),
       }),
     register: (email: string, password: string, name: string) =>
       fetchAPI<{ user: any; token: string }>('/api/auth/register', {
@@ -53,6 +76,55 @@ export const api = {
       }),
     me: (token: string) =>
       fetchAPI<any>('/api/auth/me', { token }),
+  },
+
+  account: {
+    access: (token: string) =>
+      fetchAPI<any>('/api/account/access', { token }),
+    changePassword: (currentPassword: string, newPassword: string, token: string) =>
+      fetchAPI<{ message: string }>('/api/account/password', {
+        method: 'PATCH',
+        body: JSON.stringify({ currentPassword, newPassword }),
+        token,
+      }),
+    registerDevice: (deviceId: string, label?: string, token?: string) =>
+      fetchAPI<{ message: string }>('/api/account/device', {
+        method: 'POST',
+        body: JSON.stringify({ deviceId, label }),
+        token: token!,
+      }),
+    requestUltra: (token: string) =>
+      fetchAPI<{ id: string; status: string }>('/api/account/request-ultra', {
+        method: 'POST',
+        token,
+      }),
+  },
+
+  billing: {
+    status: (token: string) =>
+      fetchAPI<any>('/api/billing/status', { token }),
+    checkout: (plan: 'pro' | 'ultra', billingCycle: 'monthly' | 'annual', token: string) =>
+      fetchAPI<{ url: string }>('/api/billing/checkout', {
+        method: 'POST',
+        body: JSON.stringify({ plan, billingCycle }),
+        token,
+      }),
+    portal: (token: string) =>
+      fetchAPI<{ url: string }>('/api/billing/portal', {
+        method: 'POST',
+        token,
+      }),
+    cancel: (options?: { reason?: string; atPeriodEnd?: boolean }, token?: string) =>
+      fetchAPI<{ message: string }>('/api/billing/cancel', {
+        method: 'POST',
+        body: JSON.stringify(options ?? {}),
+        token: token!,
+      }),
+  },
+
+  plans: {
+    list: (token: string) =>
+      fetchAPI<{ plans: any[] }>('/api/plans', { token }),
   },
 
   cases: {
@@ -361,6 +433,44 @@ export const api = {
         fetchAPI<any>(`/api/admin/users/${id}/upload-access`, {
           method: 'PATCH',
           body: JSON.stringify({ uploadEnabled }),
+          token,
+        }),
+      get: (id: string, token: string) =>
+        fetchAPI<any>(`/api/admin/users/${id}`, { token }),
+      suspend: (id: string, suspended: boolean, token: string) =>
+        fetchAPI<any>(`/api/admin/users/${id}/suspend`, {
+          method: 'PATCH',
+          body: JSON.stringify({ suspended }),
+          token,
+        }),
+      resetDevices: (id: string, token: string) =>
+        fetchAPI<{ message: string }>(`/api/admin/users/${id}/reset-devices`, {
+          method: 'POST',
+          token,
+        }),
+      grantCourse: (id: string, token: string) =>
+        fetchAPI<{ message: string }>(`/api/admin/users/${id}/grant-course`, {
+          method: 'POST',
+          token,
+        }),
+      setUltra: (id: string, billingCycle?: 'monthly' | 'annual', token?: string) =>
+        fetchAPI<{ message: string; plan: string }>(`/api/admin/users/${id}/set-ultra`, {
+          method: 'POST',
+          body: JSON.stringify({ billingCycle: billingCycle ?? 'monthly' }),
+          token: token!,
+        }),
+    },
+    ultraRequests: {
+      list: (token: string) =>
+        fetchAPI<any[]>('/api/admin/ultra-requests', { token }),
+      approve: (id: string, token: string) =>
+        fetchAPI<{ message: string; userId: string }>(`/api/admin/ultra-requests/${id}/approve`, {
+          method: 'PATCH',
+          token,
+        }),
+      reject: (id: string, token: string) =>
+        fetchAPI<{ message: string }>(`/api/admin/ultra-requests/${id}/reject`, {
+          method: 'PATCH',
           token,
         }),
     },

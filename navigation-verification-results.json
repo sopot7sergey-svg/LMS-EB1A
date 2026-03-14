@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-03-14T16:47:59.263Z",
+  "routes": {
+    "home": {
+      "ok": true,
+      "blank": false,
+      "hasContent": true,
+      "bodyLen": 1685,
+      "title": "Aipas - Build Your Extraordinary Ability Petition"
+    },
+    "login": {
+      "ok": true,
+      "blank": false,
+      "hasContent": true,
+      "bodyLen": 134,
+      "title": "Aipas - Build Your Extraordinary Ability Petition"
+    },
+    "register": {
+      "ok": true,
+      "blank": false,
+      "hasContent": true,
+      "bodyLen": 303,
+      "title": "Aipas - Build Your Extraordinary Ability Petition"
+    }
+  },
+  "transitions": [
+    {
+      "from": "/dashboard",
+      "to": "/case",
+      "name": "dashboard→case",
+      "ok": true
+    },
+    {
+      "from": "/case",
+      "to": "/account",
+      "name": "case→account",
+      "ok": true
+    },
+    {
+      "from": "/account",
+      "to": "/account/billing",
+      "name": "account→billing",
+      "ok": true
+    },
+    {
+      "from": "/account/billing",
+      "to": "/account/plans",
+      "name": "billing→plans",
+      "ok": true
+    },
+    {
+      "from": "/account/plans",
+      "to": "/dashboard",
+      "name": "plans→dashboard",
+      "ok": true
+    }
+  ],
+  "failures": [],
+  "screenshots": [
+    "home.png",
+    "login.png",
+    "register.png"
+  ],
+  "loginSuccess": false,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "failedUrls": []
+}

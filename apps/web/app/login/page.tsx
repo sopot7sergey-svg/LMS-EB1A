@@ -1,20 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
+import { getOrCreateDeviceId } from '@/lib/device-id';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const { setAuth, isAuthenticated } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
+  // Fallback: never stay on "Loading..." forever (e.g. if useEffect is delayed)
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 3000);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    if (isAuthenticated()) {
+      router.replace('/dashboard');
+    }
+  }, [ready, isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +41,8 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const { user, token } = await api.auth.login(email, password);
+      const deviceId = getOrCreateDeviceId();
+      const { user, token } = await api.auth.login(email, password, deviceId);
       setAuth(user, token);
       router.push(user.role === 'admin' ? '/admin/dashboard' : '/dashboard');
     } catch (err: any) {
@@ -32,8 +52,39 @@ export default function LoginPage() {
     }
   };
 
+  if (!ready) {
+    return (
+      <div
+        className="flex min-h-screen items-center justify-center"
+        style={{ backgroundColor: '#0a0a0f', color: '#a1a1aa' }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"
+            style={{ borderColor: '#635BFF', borderTopColor: 'transparent' }}
+          />
+          <span>Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated()) {
+    return (
+      <div
+        className="flex min-h-screen items-center justify-center"
+        style={{ backgroundColor: '#0a0a0f', color: '#a1a1aa' }}
+      >
+        Redirecting...
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div
+      className="flex min-h-screen items-center justify-center bg-background px-4"
+      style={{ backgroundColor: '#0a0a0f', color: '#ffffff' }}
+    >
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">

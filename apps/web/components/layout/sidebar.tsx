@@ -13,6 +13,7 @@ import {
   Settings,
   Users,
   Video,
+  Shield,
   LogOut,
   ChevronRight,
 } from 'lucide-react';
@@ -30,11 +31,13 @@ export function Sidebar({ progress }: SidebarProps) {
     { href: '/case', label: 'My Case', icon: FileText },
     { href: '/modules', label: 'Course', icon: BookOpen },
     { href: '/chat', label: 'Chat with Admin', icon: MessageSquare },
+    { href: '/account', label: 'Account', icon: Settings },
   ];
 
   const adminLinks = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: Home },
     { href: '/admin/users', label: 'Users', icon: Users },
+    { href: '/admin/ultra-requests', label: 'Ultra Requests', icon: Shield },
     { href: '/admin/modules', label: 'Modules', icon: BookOpen },
     { href: '/admin/lessons', label: 'Lessons', icon: Video },
     { href: '/admin/chat', label: 'Student Chat', icon: MessageSquare },
@@ -91,7 +94,10 @@ export function Sidebar({ progress }: SidebarProps) {
         </nav>
 
         <div className="border-t border-border p-4">
-          <div className="mb-4 flex items-center gap-3">
+          <Link
+            href={isAdmin() ? '/admin/dashboard' : '/account'}
+            className="mb-4 flex items-center gap-3 rounded-lg px-2 py-1 -mx-2 transition-colors hover:bg-background-tertiary"
+          >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
@@ -99,7 +105,7 @@ export function Sidebar({ progress }: SidebarProps) {
               <p className="truncate text-sm font-medium">{user?.name}</p>
               <p className="truncate text-xs text-foreground-muted">{user?.email}</p>
             </div>
-          </div>
+          </Link>
           <button
             onClick={() => {
               clearAuth();

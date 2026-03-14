@@ -50,7 +50,10 @@ export default function AdminLessonsPage() {
   const [filterModuleId, setFilterModuleId] = useState('');
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchData = async () => {
       try {

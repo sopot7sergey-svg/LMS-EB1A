@@ -56,7 +56,10 @@ export default function LessonPage() {
   const lessonId = params.lessonId as string;
 
   useEffect(() => {
-    if (!token || !lessonId) return;
+    if (!token || !lessonId) {
+      setIsLoading(false);
+      return;
+    }
 
     const fetchLesson = async () => {
       try {

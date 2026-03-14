@@ -30,7 +30,7 @@ import {
   type EERReportItem,
 } from '@aipas/shared';
 import { CHECKLIST_SLOT_CONFIGS, getChecklistBuilderConfig } from '@/components/case-workspace/checklist-slots';
-import { Pencil, Check, FileStack } from 'lucide-react';
+import { Pencil, Check, FileStack, Lock } from 'lucide-react';
 
 const LIFECYCLE_STATUSES: CaseLifecycleStatus[] = [
   'draft',
@@ -103,11 +103,16 @@ export default function CaseDetailPage() {
   const [latestCompileJobId, setLatestCompileJobId] = useState<string | null>(null);
   const [auditPacketVersion, setAuditPacketVersion] = useState<number | undefined>(undefined);
   const [savedReportJobId, setSavedReportJobId] = useState<string | null>(null);
+  const [accessError, setAccessError] = useState<string | null>(null);
 
   const caseId = params.id as string;
 
   const fetchCase = useCallback(async () => {
-    if (!token || !caseId) return;
+    if (!token || !caseId) {
+      setIsLoading(false);
+      return;
+    }
+    setAccessError(null);
     try {
       const data = await api.cases.get(caseId, token);
       setCaseData(data);
@@ -163,12 +168,18 @@ export default function CaseDetailPage() {
       }
     } catch (error) {
       console.error('Failed to fetch case:', error);
-      if (error instanceof Error && error.message.includes('Case not found')) {
-        if (currentCaseId === caseId) {
-          setCurrentCase(null);
+      if (error instanceof Error) {
+        if (error.message.includes('App access expired') || error.message.includes('Renew your plan')) {
+          setAccessError(error.message);
+          return;
         }
-        router.replace('/case');
-        return;
+        if (error.message.includes('Case not found')) {
+          if (currentCaseId === caseId) {
+            setCurrentCase(null);
+          }
+          router.replace('/case');
+          return;
+        }
       }
     } finally {
       setIsLoading(false);
@@ -390,6 +401,31 @@ export default function CaseDetailPage() {
       <DashboardLayout>
         <div className="flex h-64 items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (accessError) {
+    return (
+      <DashboardLayout>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-warning/10">
+            <Lock className="h-8 w-8 text-warning" />
+          </div>
+          <h2 className="text-xl font-semibold">App access expired</h2>
+          <p className="mt-2 max-w-md text-foreground-secondary">
+            {accessError}
+          </p>
+          <p className="mt-2 text-sm text-foreground-muted">
+            Your case data is preserved. Renew your plan to continue.
+          </p>
+          <Link href="/account/plans" className="mt-6">
+            <Button variant="secondary">View Plans</Button>
+          </Link>
+          <Link href="/case" className="mt-4 inline-block text-sm text-primary hover:underline">
+            Back to My Case
+          </Link>
         </div>
       </DashboardLayout>
     );

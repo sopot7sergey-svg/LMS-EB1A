@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { ProtectedPageShell } from '@/components/layout/protected-page-shell';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
@@ -25,37 +25,40 @@ export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchData = () => {
     if (!token) return;
-
-    const fetchData = async () => {
-      try {
-        const data = await api.admin.dashboard(token);
+    setFetchError(null);
+    setIsLoading(true);
+    api.admin.dashboard(token)
+      .then((data) => {
         setStats(data.stats);
         setRecentActivity(data.recentActivity);
-      } catch (error) {
-        console.error('Failed to fetch dashboard:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      })
+      .catch((err) => {
+        setFetchError(err instanceof Error ? err.message : 'Failed to load');
+        console.error('Failed to fetch dashboard:', err);
+      })
+      .finally(() => setIsLoading(false));
+  };
 
+  useEffect(() => {
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
     fetchData();
   }, [token]);
 
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="flex h-64 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      </DashboardLayout>
-    );
-  }
-
   return (
-    <DashboardLayout>
+    <ProtectedPageShell
+      isLoading={isLoading && !fetchError}
+      error={fetchError}
+      onRetry={fetchData}
+      loadingMessage="Loading dashboard..."
+      errorTitle="Failed to load dashboard"
+    >
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         <p className="mt-2 text-foreground-secondary">
@@ -144,6 +147,6 @@ export default function AdminDashboardPage() {
           )}
         </CardContent>
       </Card>
-    </DashboardLayout>
+    </ProtectedPageShell>
   );
 }

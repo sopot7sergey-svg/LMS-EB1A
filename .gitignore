@@ -36,5 +36,8 @@ Thumbs.db
 # Uploads and compile output
 uploads/
 
+# Dev coordination (API port for web proxy)
+.dev-api-port
+
 # Misc
 *.tsbuildinfo

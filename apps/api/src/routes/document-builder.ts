@@ -14,6 +14,7 @@ import {
   type DocumentDraftPayload,
 } from '@aipas/shared';
 import { authenticate, type AuthRequest } from '../middleware/auth';
+import { canAccessApp, getAccess } from '../services/access';
 import { generateDocumentDraft, renderDraftText } from '../services/documents/builder-generator';
 import { suggestIntakePrefill } from '../services/documents/intake-prefill';
 import { ensureCaseDocumentDir, getCanonicalDocumentPath } from '../services/documents/storage';
@@ -232,6 +233,13 @@ async function getAuthorizedCase(caseId: string, req: AuthRequest) {
 
   if (req.user!.role !== 'admin' && caseRecord.userId !== req.user!.id) {
     return { error: { status: 403, body: { error: 'Access denied' } } };
+  }
+
+  if (req.user!.role !== 'admin') {
+    const access = await getAccess(req.user!.id);
+    if (!canAccessApp(access)) {
+      return { error: { status: 403, body: { error: 'App access expired. Renew your plan.' } } };
+    }
   }
 
   return { caseRecord };

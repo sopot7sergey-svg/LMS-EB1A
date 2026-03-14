@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { getAccess, canCreateCase, canAccessApp } from '../services/access';
 import compileRoutes from './compile';
 import documentBuilderRoutes from './document-builder';
 
@@ -62,6 +63,16 @@ router.get('/', authenticate, async (req: AuthRequest, res) => {
 
 router.post('/', authenticate, async (req: AuthRequest, res) => {
   try {
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canCreateCase(access)) {
+        const msg = !canAccessApp(access)
+          ? 'App access expired. Renew your plan to create cases.'
+          : `Case limit reached (${access.maxCases}). Upgrade to Ultra for more cases.`;
+        return res.status(403).json({ error: msg });
+      }
+    }
+
     const caseRecord = await prisma.case.create({
       data: {
         userId: req.user!.id,
@@ -98,6 +109,13 @@ router.post('/', authenticate, async (req: AuthRequest, res) => {
 router.get('/:id', authenticate, async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
+
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessApp(access)) {
+        return res.status(403).json({ error: 'App access expired. Renew your plan to view cases.' });
+      }
+    }
 
     const caseRecord = await prisma.case.findUnique({
       where: { id },
@@ -143,6 +161,13 @@ router.patch('/:id', authenticate, async (req: AuthRequest, res) => {
     const { id } = req.params;
     const { caseAxisStatement, proposedEndeavor, keywords, criteriaSelected, status } = req.body;
 
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessApp(access)) {
+        return res.status(403).json({ error: 'App access expired. Renew your plan.' });
+      }
+    }
+
     const existingCase = await prisma.case.findUnique({ where: { id } });
     if (!existingCase) {
       return res.status(404).json({ error: 'Case not found' });
@@ -174,6 +199,13 @@ router.patch('/:id', authenticate, async (req: AuthRequest, res) => {
 router.delete('/:id', authenticate, async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
+
+    if (req.user!.role !== 'admin') {
+      const access = await getAccess(req.user!.id);
+      if (!canAccessApp(access)) {
+        return res.status(403).json({ error: 'App access expired. Renew your plan.' });
+      }
+    }
 
     const existingCase = await prisma.case.findUnique({
       where: { id },
