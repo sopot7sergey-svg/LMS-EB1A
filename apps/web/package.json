@@ -1,5 +1,5 @@
 {
-  "name": "@lms-eb1a/web",
+  "name": "@aipas/web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@lms-eb1a/shared": "*",
+    "@aipas/shared": "*",
     "@tanstack/react-query": "^5.20.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

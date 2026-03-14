@@ -1,9 +1,37 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import compileRoutes from './compile';
+import documentBuilderRoutes from './document-builder';
 
 const router = Router();
 const prisma = new PrismaClient();
+const DOCUMENT_UPLOADS_DIR = path.join(process.cwd(), 'uploads', 'documents');
+
+function safeDeleteFile(filePath: string) {
+  try {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  } catch (error) {
+    console.warn('Failed to delete file during case cleanup:', filePath, error);
+  }
+}
+
+function safeDeleteDirectory(dirPath: string) {
+  try {
+    if (fs.existsSync(dirPath)) {
+      fs.rmSync(dirPath, { recursive: true, force: true });
+    }
+  } catch (error) {
+    console.warn('Failed to delete directory during case cleanup:', dirPath, error);
+  }
+}
+
+router.use('/:caseId/compile', compileRoutes);
+router.use('/:caseId/document-builders', documentBuilderRoutes);
 
 router.get('/', authenticate, async (req: AuthRequest, res) => {
   try {
@@ -82,6 +110,16 @@ router.get('/:id', authenticate, async (req: AuthRequest, res) => {
         petitionPackages: { orderBy: { version: 'desc' }, take: 1 },
         eers: { orderBy: { version: 'desc' } },
         documents: true,
+        documentBuilders: true,
+        compileJobs: {
+          where: { status: 'completed' },
+          orderBy: { createdAt: 'desc' },
+          include: {
+            artifact: {
+              select: { id: true, version: true, filePath: true, optionsHash: true, createdAt: true },
+            },
+          },
+        },
       },
     });
 
@@ -137,7 +175,21 @@ router.delete('/:id', authenticate, async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
 
-    const existingCase = await prisma.case.findUnique({ where: { id } });
+    const existingCase = await prisma.case.findUnique({
+      where: { id },
+      include: {
+        documents: {
+          select: { filename: true, caseId: true },
+        },
+        compileJobs: {
+          include: {
+            artifact: {
+              select: { filePath: true },
+            },
+          },
+        },
+      },
+    });
     if (!existingCase) {
       return res.status(404).json({ error: 'Case not found' });
     }
@@ -146,7 +198,18 @@ router.delete('/:id', authenticate, async (req: AuthRequest, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
+    for (const doc of existingCase.documents) {
+      safeDeleteFile(path.join(DOCUMENT_UPLOADS_DIR, doc.caseId, doc.filename));
+    }
+
+    for (const job of existingCase.compileJobs) {
+      if (job.artifact?.filePath) {
+        safeDeleteFile(path.resolve(job.artifact.filePath));
+      }
+    }
+
     await prisma.case.delete({ where: { id } });
+    safeDeleteDirectory(path.join(DOCUMENT_UPLOADS_DIR, id));
 
     res.json({ message: 'Case deleted successfully' });
   } catch (error) {

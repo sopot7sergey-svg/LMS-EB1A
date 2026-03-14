@@ -1,0 +1,76 @@
+{
+  "steps": [
+    "Logged in successfully",
+    "Navigated to case page",
+    "Section 3: Identity & Status - Has builders (INCORRECT)",
+    "Section 4: Cover Letter - 5 builder slots found",
+    "Section 5: Evidence - 2 builder slots found",
+    "Section 7: Expert Letters - 5 builder slots found",
+    "Section 9: Responses - Has builders (INCORRECT)",
+    "Section 10: Filing - Has builders (INCORRECT)"
+  ],
+  "screenshots": [
+    "ux-01-checklist-overview.png",
+    "ux-02-section3-identity.png",
+    "ux-03-section4-cover-letter.png",
+    "ux-04-section5-evidence.png",
+    "ux-05-section7-expert-letters.png",
+    "ux-06-section9-responses.png",
+    "ux-07-section10-filing.png"
+  ],
+  "findings": {},
+  "sections": {
+    "section3": {
+      "name": "Identity & Status",
+      "hasBuilders": true,
+      "addDisabled": true,
+      "message": {
+        "found": false
+      }
+    },
+    "section4": {
+      "name": "Cover Letter",
+      "hasBuilders": true,
+      "builderSlots": [
+        "Cover Letter / Legal Brief (Draft)",
+        "Positioning Summary",
+        "Claim Memo",
+        "Evidence Mapping Sheet",
+        "Contribution Summary"
+      ],
+      "addDisabled": true,
+      "createEnabled": true
+    },
+    "section5": {
+      "name": "Evidence",
+      "hasBuilders": true,
+      "builderSlots": [
+        "Cover Letter / Legal Brief (Draft)",
+        "Positioning Summary"
+      ],
+      "addDisabled": null
+    },
+    "section7": {
+      "name": "Expert Letters",
+      "hasBuilders": true,
+      "builderSlots": [
+        "Cover Letter / Legal Brief (Draft)",
+        "Positioning Summary",
+        "Expert Letter Draft",
+        "Expert Request Draft",
+        "Expert Summary Sheet"
+      ],
+      "addDisabled": null
+    },
+    "section9": {
+      "name": "Responses to USCIS",
+      "hasBuilders": true,
+      "addDisabled": true
+    },
+    "section10": {
+      "name": "Filing & Tracking",
+      "hasBuilders": true,
+      "addDisabled": true
+    }
+  }
+}

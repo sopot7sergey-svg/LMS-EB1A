@@ -1,0 +1,30 @@
+{
+  "steps": [
+    "Authenticated successfully",
+    "Navigated to case page",
+    "Located section 11 in checklist",
+    "Section 11 expanded showing TWO collapsible internal rows",
+    "Compiled Packets: UNKNOWN STATE",
+    "Reviewed Packets: UNKNOWN STATE",
+    "Captured section 1 for visual comparison",
+    "Final view of section 11 captured"
+  ],
+  "screenshots": [
+    "collapsible-01-case-page.png",
+    "collapsible-02-section11-collapsed.png",
+    "collapsible-03-section11-expanded-rows-collapsed.png",
+    "collapsible-04-compiled-expanded-reviewed-collapsed.png",
+    "collapsible-05-section1-comparison.png",
+    "collapsible-06-final-section11.png"
+  ],
+  "consoleErrors": [],
+  "findings": {
+    "section11Found": true,
+    "section11Expanded": true,
+    "hasCompiledPacketsRow": true,
+    "hasReviewedPacketsRow": true,
+    "bothRowsCollapsed": false,
+    "compiledPacketsExpanded": false,
+    "arrowIconsMatch": true
+  }
+}

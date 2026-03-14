@@ -1,25 +1,36 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ui/progress-bar';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore, useCaseStore } from '@/lib/store';
 import { api } from '@/lib/api';
 import {
   ToolCards,
   ChecklistAccordion,
   EERModal,
-  RightPanel,
-  CreatorModal,
-  FormsFillerModal,
+  CompileModal,
+  DocumentViewerModal,
+  DocumentBuilderModal,
+  DocumentTemplateViewer,
+  DocumentAssistantModal,
   AdvisorChatModal,
+  PacketReviewModal,
 } from '@/components/case-workspace';
 import type { ToolId } from '@/components/case-workspace';
-import type { CaseLifecycleStatus, CriterionEvidenceStatus, EERReportItem } from '@lms-eb1a/shared';
-import { ClipboardCheck, Pencil, Check } from 'lucide-react';
+import {
+  DOCUMENT_ASSISTANT_BUILDER_MAP,
+  type DocumentReviewResult,
+  getDocumentBuilderSummary,
+  type CaseLifecycleStatus,
+  type CriterionEvidenceStatus,
+  type EERReportItem,
+} from '@aipas/shared';
+import { CHECKLIST_SLOT_CONFIGS, getChecklistBuilderConfig } from '@/components/case-workspace/checklist-slots';
+import { Pencil, Check, FileStack } from 'lucide-react';
 
 const LIFECYCLE_STATUSES: CaseLifecycleStatus[] = [
   'draft',
@@ -31,6 +42,18 @@ const LIFECYCLE_STATUSES: CaseLifecycleStatus[] = [
   'filed',
 ];
 
+interface CompileJobSummary {
+  id: string;
+  status: string;
+  createdAt: string;
+  artifact?: {
+    id: string;
+    version: number;
+    optionsHash?: string | null;
+    createdAt: string;
+  } | null;
+}
+
 interface CaseData {
   id: string;
   status: string;
@@ -40,25 +63,46 @@ interface CaseData {
   criteriaSelected: string[];
   workspace: any;
   documents: any[];
+  documentBuilders: any[];
   letters: any[];
   evidencePacks: any[];
   eers: any[];
+  compileJobs?: CompileJobSummary[];
 }
 
 export default function CaseDetailPage() {
   const params = useParams();
-  const { token } = useAuthStore();
+  const router = useRouter();
+  const { token, user } = useAuthStore();
+  const { currentCaseId, setCurrentCase } = useCaseStore();
   const [caseData, setCaseData] = useState<CaseData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [caseName, setCaseName] = useState('');
   const [isEditingName, setIsEditingName] = useState(false);
   const [lifecycleStatus, setLifecycleStatus] = useState<CaseLifecycleStatus>('draft');
-  const [stage, setStage] = useState('M0');
   const [criteriaStatuses, setCriteriaStatuses] = useState<Record<string, CriterionEvidenceStatus>>({});
   const [eerModalOpen, setEERModalOpen] = useState(false);
+  const [compileModalOpen, setCompileModalOpen] = useState(false);
   const [activeTool, setActiveTool] = useState<ToolId | null>(null);
   const [eerItems, setEerItems] = useState<EERReportItem[]>([]);
+  const [documentReviews, setDocumentReviews] = useState<Array<{
+    documentId: string;
+    originalName: string;
+    category?: string | null;
+    review: DocumentReviewResult;
+    reviewDocumentId?: string | null;
+    reviewDocumentName?: string | null;
+  }>>([]);
   const [isGeneratingEER, setIsGeneratingEER] = useState(false);
+  const [viewerDoc, setViewerDoc] = useState<{ id: string; name: string } | null>(null);
+  const [activeBuilderSlot, setActiveBuilderSlot] = useState<string | null>(null);
+  const [templateSlot, setTemplateSlot] = useState<string | null>(null);
+  const [focusedSlotType, setFocusedSlotType] = useState<string | null>(null);
+  const [slotFocusMode, setSlotFocusMode] = useState<'open' | 'upload'>('open');
+  const [packetReviewOpen, setPacketReviewOpen] = useState(false);
+  const [latestCompileJobId, setLatestCompileJobId] = useState<string | null>(null);
+  const [auditPacketVersion, setAuditPacketVersion] = useState<number | undefined>(undefined);
+  const [savedReportJobId, setSavedReportJobId] = useState<string | null>(null);
 
   const caseId = params.id as string;
 
@@ -67,6 +111,9 @@ export default function CaseDetailPage() {
     try {
       const data = await api.cases.get(caseId, token);
       setCaseData(data);
+      if (currentCaseId !== caseId) {
+        setCurrentCase(caseId);
+      }
       setCaseName(data.caseAxisStatement || 'Untitled Case');
       setLifecycleStatus(mapApiStatusToLifecycle(data.status));
       if (data.eers?.length > 0) {
@@ -116,10 +163,17 @@ export default function CaseDetailPage() {
       }
     } catch (error) {
       console.error('Failed to fetch case:', error);
+      if (error instanceof Error && error.message.includes('Case not found')) {
+        if (currentCaseId === caseId) {
+          setCurrentCase(null);
+        }
+        router.replace('/case');
+        return;
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [token, caseId]);
+  }, [token, caseId, currentCaseId, setCurrentCase, router]);
 
   useEffect(() => {
     fetchCase();
@@ -146,25 +200,13 @@ export default function CaseDetailPage() {
     }
   };
 
-  const checklistCompletionPercent = (() => {
-    const totalSlots = 50;
-    const filled = (caseData?.documents?.length || 0) + (caseData?.letters?.length || 0) * 2;
-    return Math.min(100, Math.round((filled / totalSlots) * 100));
-  })();
-
   const evidenceCoverageCount = Object.values(criteriaStatuses).filter(
     (s) => s === 'supported' || s === 'strongly_supported'
   ).length;
 
-  const nextActions = [
-    'Complete Case Profile Data (Section 0)',
-    'Add Case Axis Statement',
-    'Upload evidence for at least 3 criteria',
-  ];
-
   const openTasks = eerItems.filter((i) => i.status === 'open').map((i) => i.issue);
 
-  const handleToolClick = (toolId: ToolId) => {
+  const handleToolClick = async (toolId: ToolId) => {
     if (toolId === 'officer-review') {
       setEERModalOpen(true);
     } else {
@@ -172,67 +214,175 @@ export default function CaseDetailPage() {
     }
   };
 
+  const handleOpenFormTemplate = (slotType: string) => {
+    const config = getChecklistBuilderConfig(slotType);
+    if (!config?.templateUrl) return;
+    window.open(config.templateUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const focusChecklistSlot = useCallback((slotType: string, mode: 'open' | 'upload' = 'open') => {
+    setFocusedSlotType(slotType);
+    setSlotFocusMode(mode);
+  }, []);
+
+  const openDraftForSlot = useCallback((slotType: string) => {
+    if (getChecklistBuilderConfig(slotType)) {
+      setActiveBuilderSlot(slotType);
+      return;
+    }
+    focusChecklistSlot(slotType, 'upload');
+  }, [focusChecklistSlot]);
+
+  const checklistSlots = useMemo(
+    () =>
+      Object.entries(CHECKLIST_SLOT_CONFIGS).flatMap(([sectionId, slots]) =>
+        slots.map((slot) => ({ ...slot, sectionId }))
+      ),
+    []
+  );
+
+  const slotSummaries = useMemo(
+    () =>
+      checklistSlots.map((slot) => ({
+        ...slot,
+        ...getDocumentBuilderSummary(
+          slot.slotType,
+          (caseData?.documents || []) as Array<{ metadata?: { slotType?: string; source?: 'upload' | 'generated' | 'source_upload' } | null }>,
+          (caseData?.documentBuilders || []) as Array<{ slotType: string; status: 'not_started' | 'in_progress' | 'added' | 'created' | 'completed'; progress?: number | null }>
+        ),
+      })),
+    [caseData?.documentBuilders, caseData?.documents, checklistSlots]
+  );
+
+  const checklistCompletionPercent = useMemo(() => {
+    if (!slotSummaries.length) return 0;
+    const totalProgress = slotSummaries.reduce((sum, slot) => sum + slot.progress, 0);
+    return Math.round(totalProgress / slotSummaries.length);
+  }, [slotSummaries]);
+
+  const compiledPackets = useMemo(() => {
+    const jobs = (caseData?.compileJobs ?? []) as CompileJobSummary[];
+    return jobs
+      .filter((j) => j.status === 'completed' && j.artifact)
+      .map((j, idx, arr) => {
+        const meta = j.artifact?.optionsHash ? (() => { try { return JSON.parse(j.artifact!.optionsHash!); } catch { return {}; } })() : {};
+        return {
+          jobId: j.id,
+          artifactId: j.artifact!.id,
+          version: arr.length - idx,
+          createdAt: j.artifact!.createdAt || j.createdAt,
+          reviewedAt: meta.reviewedAt as string | null ?? null,
+          riskLevel: meta.lastAuditRiskLevel as string | null ?? null,
+        };
+      });
+  }, [caseData?.compileJobs]);
+
   const handleGenerateEER = async (scope: {
     whole: boolean;
-    criteria?: string[];
-    documentTypes?: string[];
+    documentIds?: string[];
   }) => {
     if (!token || !caseData) return;
+
     setIsGeneratingEER(true);
     try {
-      const newEer = await api.eer.generate(
-        caseId,
-        scope.whole ? (caseData.criteriaSelected || []) : (scope.criteria || []),
-        token
-      );
-      const items = [
-        ...(newEer.criterionItems || []).map((i: any) => ({
-          id: i.id,
-          severity: i.priority || i.severity || 'recommended',
-          criterionId: i.criterionId,
-          issue: i.ask || i.issue,
-          whyItMatters: i.whyItMatters || '',
-          requestedFix: i.requestedFix || i.ask || '',
-          suggestedTemplate: i.suggestedTemplate,
-          status: (i.status || 'open') as 'open' | 'resolved',
-          resolutionNote: i.resolutionNote,
-          linkedEvidenceIds: i.linkedEvidenceIds,
-          deepLink: i.deepLink,
-        })),
-        ...(newEer.finalMeritsItems || []).map((i: any) => ({
-          id: i.id,
-          severity: i.priority || i.severity || 'recommended',
-          criterionId: undefined,
-          issue: i.ask || i.issue,
-          whyItMatters: '',
-          requestedFix: i.ask || '',
-          suggestedTemplate: undefined,
-          status: 'open' as const,
-          resolutionNote: undefined,
-          linkedEvidenceIds: undefined,
-          deepLink: undefined,
-        })),
-        ...(newEer.optionalPackagingItems || []).map((i: any) => ({
-          id: i.id,
-          severity: 'optional' as const,
-          criterionId: undefined,
-          issue: i.ask || i.issue,
-          whyItMatters: '',
-          requestedFix: i.ask || '',
-          suggestedTemplate: undefined,
-          status: 'open' as const,
-          resolutionNote: undefined,
-          linkedEvidenceIds: undefined,
-          deepLink: undefined,
-        })),
-      ];
-      setEerItems(items);
+      if (scope.documentIds?.length) {
+        const reviewResponse = await api.eer.reviewDocuments(caseId, scope.documentIds, token);
+        setDocumentReviews(reviewResponse.reviews as Array<{
+          documentId: string;
+          originalName: string;
+          category?: string | null;
+          review: DocumentReviewResult;
+          reviewDocumentId?: string | null;
+          reviewDocumentName?: string | null;
+        }>);
+        setEerItems([]);
+        await fetchCase();
+      } else {
+        const newEer = await api.eer.generate(
+          caseId,
+          caseData.criteriaSelected || [],
+          token
+        );
+        const items = [
+          ...(newEer.criterionItems || []).map((i: any) => ({
+            id: i.id,
+            severity: i.priority || i.severity || 'recommended',
+            criterionId: i.criterionId,
+            issue: i.ask || i.issue,
+            whyItMatters: i.whyItMatters || '',
+            requestedFix: i.requestedFix || i.ask || '',
+            suggestedTemplate: i.suggestedTemplate,
+            status: (i.status || 'open') as 'open' | 'resolved',
+            resolutionNote: i.resolutionNote,
+            linkedEvidenceIds: i.linkedEvidenceIds,
+            deepLink: i.deepLink,
+          })),
+          ...(newEer.finalMeritsItems || []).map((i: any) => ({
+            id: i.id,
+            severity: i.priority || i.severity || 'recommended',
+            criterionId: undefined,
+            issue: i.ask || i.issue,
+            whyItMatters: '',
+            requestedFix: i.ask || '',
+            suggestedTemplate: undefined,
+            status: 'open' as const,
+            resolutionNote: undefined,
+            linkedEvidenceIds: undefined,
+            deepLink: undefined,
+          })),
+          ...(newEer.optionalPackagingItems || []).map((i: any) => ({
+            id: i.id,
+            severity: 'optional' as const,
+            criterionId: undefined,
+            issue: i.ask || i.issue,
+            whyItMatters: '',
+            requestedFix: i.ask || '',
+            suggestedTemplate: undefined,
+            status: 'open' as const,
+            resolutionNote: undefined,
+            linkedEvidenceIds: undefined,
+            deepLink: undefined,
+          })),
+        ];
+        setDocumentReviews([]);
+        setEerItems(items);
+      }
       fetchCase();
     } catch (error) {
       console.error('Failed to generate EER:', error);
     } finally {
       setIsGeneratingEER(false);
     }
+  };
+
+  const handleRunPacketAudit = (jobId: string) => {
+    const packet = compiledPackets.find((p) => p.jobId === jobId);
+    setLatestCompileJobId(jobId);
+    setAuditPacketVersion(packet?.version);
+    setSavedReportJobId(null);
+    setEERModalOpen(false);
+    setPacketReviewOpen(true);
+  };
+
+  const handleDownloadPacket = async (jobId: string, version: number) => {
+    if (!token) return;
+    try {
+      const blob = await api.cases.compile.download(caseId, jobId, token);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `EB1A-Packet-v${version}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch { /* ignore */ }
+  };
+
+  const handleViewAuditReport = (jobId: string, version?: number) => {
+    const packet = compiledPackets.find((p) => p.jobId === jobId);
+    setLatestCompileJobId(jobId);
+    setAuditPacketVersion(version ?? packet?.version);
+    setSavedReportJobId(jobId);
+    setPacketReviewOpen(true);
   };
 
   if (isLoading) {
@@ -328,15 +478,11 @@ export default function CaseDetailPage() {
                 {evidenceCoverageCount}/10
               </p>
             </div>
-            <div className="w-24">
-              <p className="text-xs text-foreground-muted mb-1">Package Readability</p>
-              <p className="text-sm text-foreground-muted">—</p>
-            </div>
           </div>
 
-          <Button onClick={() => setEERModalOpen(true)}>
-            <ClipboardCheck className="mr-2 h-4 w-4" />
-            Submit for Review
+          <Button variant="secondary" onClick={() => setCompileModalOpen(true)}>
+            <FileStack className="mr-2 h-4 w-4" />
+            Compile Officer Packet
           </Button>
         </div>
 
@@ -345,34 +491,39 @@ export default function CaseDetailPage() {
           <ToolCards onToolClick={handleToolClick} />
         </div>
 
-        {/* Main content grid */}
-        <div className="mt-8 grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <h2 className="text-lg font-semibold mb-4">Submission Checklist</h2>
-            <ChecklistAccordion
-              caseId={caseId}
-              criteriaStatuses={criteriaStatuses}
-              onCriteriaStatusChange={(criterionId, status) =>
-                setCriteriaStatuses((prev) => ({ ...prev, [criterionId]: status }))
+        {/* Full-width Submission Checklist */}
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold mb-4">Submission Checklist</h2>
+          <ChecklistAccordion
+            caseId={caseId}
+            documents={caseData?.documents || []}
+            documentBuilders={caseData?.documentBuilders || []}
+            criteriaStatuses={criteriaStatuses}
+            onCriteriaStatusChange={(criterionId, status) =>
+              setCriteriaStatuses((prev) => ({ ...prev, [criterionId]: status }))
+            }
+            onAddEvidence={(_, __, slotType) => focusChecklistSlot(slotType, 'upload')}
+            onCreateWithAI={(_, __, slotType) => openDraftForSlot(slotType)}
+            onOpenTemplate={(_, slotType) => {
+              const config = getChecklistBuilderConfig(slotType);
+              if (config?.templateUrl) {
+                handleOpenFormTemplate(slotType);
+                return;
               }
-              onAddEvidence={(sectionId, criterionId, slotType) => {
-                setActiveTool('creator');
-              }}
-              onGenerateNarrative={() => setActiveTool('creator')}
-            />
-          </div>
-
-          <div>
-            <RightPanel
-              stage={stage}
-              onStageChange={setStage}
-              nextActions={nextActions}
-              openTasks={openTasks}
-              onGenerateNarrative={() => setActiveTool('creator')}
-              onAskAdvisor={() => setActiveTool('advisor-chat')}
-              onSubmitForReview={() => setEERModalOpen(true)}
-            />
-          </div>
+              setTemplateSlot(slotType);
+            }}
+            onGenerateNarrative={() => setActiveTool('document-assistant')}
+            onUploadSuccess={fetchCase}
+            onOpenDocument={(docId, docName) => setViewerDoc({ id: docId, name: docName || '' })}
+            focusedSlotType={focusedSlotType}
+            focusMode={slotFocusMode}
+            onFocusHandled={() => setFocusedSlotType(null)}
+            compiledPackets={compiledPackets}
+            onRunAudit={handleRunPacketAudit}
+            onDownloadPacket={handleDownloadPacket}
+            onViewAuditReport={handleViewAuditReport}
+            uploadEnabled={user?.uploadEnabled === true}
+          />
         </div>
       </div>
 
@@ -388,25 +539,91 @@ export default function CaseDetailPage() {
             prev.map((i) => (i.id === itemId ? { ...i, status: 'resolved' as const } : i))
           );
         }}
-        onCreateDraft={() => setActiveTool('creator')}
-        onDeepLink={() => {}}
+        onCreateDraft={(item) => {
+          const slotType = item.deepLink?.slotType || item.suggestedTemplate;
+          if (slotType) {
+            openDraftForSlot(slotType);
+            return;
+          }
+          setActiveTool('document-assistant');
+        }}
+        onDeepLink={(item) => {
+          if (item.deepLink?.slotType) {
+            focusChecklistSlot(item.deepLink.slotType, 'open');
+          }
+        }}
         isGenerating={isGeneratingEER}
+        caseDocuments={(caseData?.documents || []).map((d: any) => ({
+          id: d.id,
+          originalName: d.originalName,
+          mimeType: d.mimeType,
+          category: d.category,
+          metadata: d.metadata,
+        }))}
+        onDocumentsRefresh={fetchCase}
+        documentReviews={documentReviews}
+        compiledPackets={compiledPackets}
+        onRunPacketAudit={handleRunPacketAudit}
       />
 
-      <CreatorModal
+      <DocumentAssistantModal
         toolId={activeTool}
         onClose={() => setActiveTool(null)}
         caseId={caseId}
-      />
-      <FormsFillerModal
-        toolId={activeTool}
-        onClose={() => setActiveTool(null)}
-        caseId={caseId}
+        onOpenSlot={openDraftForSlot}
       />
       <AdvisorChatModal
         toolId={activeTool}
         onClose={() => setActiveTool(null)}
         caseId={caseId}
+        caseDocuments={(caseData?.documents || []).map((d: any) => ({
+          id: d.id,
+          originalName: d.originalName,
+          mimeType: d.mimeType,
+          category: d.category,
+        }))}
+        onDocumentsRefresh={fetchCase}
+      />
+
+      <CompileModal
+        open={compileModalOpen}
+        onClose={() => setCompileModalOpen(false)}
+        caseId={caseId}
+        criteriaSelected={caseData?.criteriaSelected || []}
+        onComplete={fetchCase}
+      />
+
+      <DocumentViewerModal
+        open={!!viewerDoc}
+        onClose={() => setViewerDoc(null)}
+        docId={viewerDoc?.id ?? null}
+        docName={viewerDoc?.name}
+      />
+
+      <DocumentTemplateViewer
+        open={!!templateSlot}
+        onClose={() => setTemplateSlot(null)}
+        config={templateSlot ? DOCUMENT_ASSISTANT_BUILDER_MAP[templateSlot] ?? null : null}
+      />
+
+      <DocumentBuilderModal
+        key={activeBuilderSlot ?? 'builder-closed'}
+        open={!!activeBuilderSlot}
+        onClose={() => setActiveBuilderSlot(null)}
+        caseId={caseId}
+        config={activeBuilderSlot ? DOCUMENT_ASSISTANT_BUILDER_MAP[activeBuilderSlot] ?? null : null}
+        documents={caseData?.documents || []}
+        onSaved={fetchCase}
+      />
+
+      <PacketReviewModal
+        caseId={caseId}
+        latestCompileJobId={latestCompileJobId}
+        open={packetReviewOpen}
+        onClose={() => { setPacketReviewOpen(false); setSavedReportJobId(null); }}
+        onReviewComplete={fetchCase}
+        packetVersion={auditPacketVersion}
+        savedReportJobId={savedReportJobId}
       />
     </DashboardLayout>
   );

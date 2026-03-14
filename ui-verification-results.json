@@ -1,0 +1,33 @@
+{
+  "loginSuccess": false,
+  "caseWorkspaceAccess": false,
+  "caseIntakeSection": {
+    "visible": false,
+    "hasActionBar": false,
+    "hasAddButton": false,
+    "hasCreateButton": false,
+    "hasTemplateButton": false,
+    "hasStatusBadge": false
+  },
+  "templateModal": {
+    "opened": false,
+    "hasWhatItIs": false,
+    "hasWhyItMatters": false,
+    "hasRequiredSections": false,
+    "hasStrongExample": false
+  },
+  "builderModal": {
+    "opened": false,
+    "hasStepper": false,
+    "stepCount": 0,
+    "steps": []
+  },
+  "consoleErrors": [
+    {
+      "type": "script-error",
+      "text": "Failed to launch the browser process:  Code: null\n\nstderr:\n\n\nTROUBLESHOOTING: https://pptr.dev/troubleshooting\n",
+      "stack": "Error: Failed to launch the browser process:  Code: null\n\nstderr:\n\n\nTROUBLESHOOTING: https://pptr.dev/troubleshooting\n\n    at ChildProcess.onClose (file:///Users/sergeysopot/LMS-EB1A/node_modules/@puppeteer/browsers/lib/esm/launch.js:339:24)\n    at ChildProcess.emit (node:events:520:35)\n    at ChildProcess._handle.onexit (node:internal/child_process:294:12)"
+    }
+  ],
+  "screenshots": []
+}

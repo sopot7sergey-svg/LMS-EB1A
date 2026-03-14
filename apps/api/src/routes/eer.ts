@@ -1,11 +1,41 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import { randomUUID } from 'crypto';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { authenticate, AuthRequest } from '../middleware/auth';
 import { EEROrchestrator } from '../services/ai/eer-orchestrator';
+import {
+  makeReviewDocumentName,
+  renderDocumentReviewReport,
+  reviewDocuments,
+} from '../services/documents/document-review';
+import { extractDocumentTextDetailed } from '../services/documents/text-extraction';
+import {
+  ensureCaseDocumentDir,
+  getCanonicalDocumentPath,
+} from '../services/documents/storage';
+import type { DocumentMetadata } from '@aipas/shared';
 
 const router = Router();
 const prisma = new PrismaClient();
 const eerOrchestrator = new EEROrchestrator();
+
+function resolveReviewArtifactSlotType(
+  existingMetadata: DocumentMetadata,
+  review: { relatedSection?: string | null }
+): string | undefined {
+  const rawSlotType = existingMetadata.slotType?.trim();
+  if (rawSlotType && rawSlotType.includes('_')) {
+    return rawSlotType;
+  }
+
+  const relatedSection = review.relatedSection?.trim();
+  if (relatedSection && relatedSection.includes('_')) {
+    return relatedSection;
+  }
+
+  return rawSlotType || relatedSection || undefined;
+}
 
 router.get('/', authenticate, async (req: AuthRequest, res) => {
   try {
@@ -63,6 +93,172 @@ router.get('/:id', authenticate, async (req: AuthRequest, res) => {
   } catch (error) {
     console.error('Get EER error:', error);
     res.status(500).json({ error: 'Failed to get EER' });
+  }
+});
+
+router.post('/review-documents', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const { caseId, documentIds } = req.body;
+    if (!caseId || !documentIds || !Array.isArray(documentIds) || documentIds.length === 0) {
+      return res.status(400).json({ error: 'caseId and documentIds (non-empty array) are required' });
+    }
+
+    const caseRecord = await prisma.case.findUnique({ where: { id: caseId } });
+    if (!caseRecord) return res.status(404).json({ error: 'Case not found' });
+    if (req.user!.role !== 'admin' && caseRecord.userId !== req.user!.id) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const documents = await prisma.document.findMany({
+      where: { id: { in: documentIds }, caseId },
+    });
+    if (documents.length === 0) return res.status(404).json({ error: 'No matching documents found' });
+
+    const extractions = await Promise.all(
+      documents.map((document) =>
+        extractDocumentTextDetailed({
+          id: document.id,
+          originalName: document.originalName,
+          filename: document.filename,
+          mimeType: document.mimeType,
+          caseId: document.caseId,
+        })
+      )
+    );
+
+    const reviews = await reviewDocuments({
+      documents: documents.map((document) => ({
+        id: document.id,
+        originalName: document.originalName,
+        mimeType: document.mimeType,
+        category: document.category,
+        metadata: (document.metadata as DocumentMetadata | null) ?? null,
+      })),
+      extractions,
+    });
+
+    const persistedReviews = await Promise.all(
+      reviews.map(async ({ documentId, review }) => {
+        const document = documents.find((item) => item.id === documentId);
+        if (!document) {
+          return {
+            documentId,
+            originalName: documentId,
+            category: null,
+            review,
+            reviewDocumentId: null,
+            reviewDocumentName: null,
+          };
+        }
+
+        const existingMetadata = ((document.metadata as DocumentMetadata | null) ?? {}) as DocumentMetadata;
+        const isReviewArtifact = existingMetadata.reviewKind === 'document_review' || Boolean(existingMetadata.reviewForDocumentId);
+
+        if (isReviewArtifact) {
+          return {
+            documentId,
+            originalName: document.originalName,
+            category: document.category,
+            review,
+            reviewDocumentId: null,
+            reviewDocumentName: null,
+          };
+        }
+
+        const reportText = renderDocumentReviewReport(document.originalName, review);
+        const reviewOriginalName = makeReviewDocumentName(document.originalName);
+        const reviewStoredFilename = `${randomUUID()}-${reviewOriginalName}`;
+        const reviewSlotType = resolveReviewArtifactSlotType(existingMetadata, review);
+
+        ensureCaseDocumentDir(caseId);
+        fs.writeFileSync(getCanonicalDocumentPath(caseId, reviewStoredFilename), reportText, 'utf8');
+        const siblingDocuments = await prisma.document.findMany({
+          where: { caseId },
+          orderBy: { createdAt: 'desc' },
+        });
+        const priorReviewArtifact = siblingDocuments.find((candidate) => {
+          const metadata = (candidate.metadata as DocumentMetadata | null) ?? null;
+          return metadata?.reviewKind === 'document_review' && metadata.reviewForDocumentId === document.id;
+        });
+
+        let createdReviewDocument;
+        if (priorReviewArtifact) {
+          try {
+            fs.unlinkSync(getCanonicalDocumentPath(caseId, priorReviewArtifact.filename));
+          } catch {
+            // Best effort only; replacement file is written below.
+          }
+
+          createdReviewDocument = await prisma.document.update({
+            where: { id: priorReviewArtifact.id },
+            data: {
+              filename: reviewStoredFilename,
+              originalName: reviewOriginalName,
+              mimeType: 'text/plain',
+              size: Buffer.byteLength(reportText, 'utf8'),
+              category: document.category,
+              metadata: ({
+                slotType: reviewSlotType,
+                source: 'generated',
+                builderStateId: existingMetadata.builderStateId,
+                reviewKind: 'document_review',
+                reviewForDocumentId: document.id,
+              } as unknown) as Prisma.InputJsonValue,
+              s3Key: `documents/${caseId}/${reviewStoredFilename}`,
+            },
+          });
+        } else {
+          createdReviewDocument = await prisma.document.create({
+            data: {
+              caseId,
+              userId: caseRecord.userId,
+              filename: reviewStoredFilename,
+              originalName: reviewOriginalName,
+              mimeType: 'text/plain',
+              size: Buffer.byteLength(reportText, 'utf8'),
+              category: document.category,
+              metadata: ({
+                slotType: reviewSlotType,
+                source: 'generated',
+                builderStateId: existingMetadata.builderStateId,
+                reviewKind: 'document_review',
+                reviewForDocumentId: document.id,
+              } as unknown) as Prisma.InputJsonValue,
+              s3Key: `documents/${caseId}/${reviewStoredFilename}`,
+            },
+          });
+        }
+
+        const persistedReview = {
+          ...review,
+          reviewDocumentId: createdReviewDocument.id,
+        };
+
+        await prisma.document.update({
+          where: { id: documentId },
+          data: {
+            metadata: ({
+              ...existingMetadata,
+              documentReview: persistedReview,
+            } as unknown) as Prisma.InputJsonValue,
+          },
+        });
+
+        return {
+          documentId,
+          originalName: document.originalName,
+          category: document.category,
+          review: persistedReview,
+          reviewDocumentId: createdReviewDocument.id,
+          reviewDocumentName: createdReviewDocument.originalName,
+        };
+      })
+    );
+
+    res.status(201).json({ reviews: persistedReviews });
+  } catch (error) {
+    console.error('Review documents error:', error);
+    res.status(500).json({ error: 'Failed to review documents' });
   }
 });
 

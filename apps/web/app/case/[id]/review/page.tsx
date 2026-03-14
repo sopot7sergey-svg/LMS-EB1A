@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
-import { CRITERIA } from '@lms-eb1a/shared';
+import { CRITERIA } from '@aipas/shared';
 import {
   ArrowLeft,
   AlertCircle,

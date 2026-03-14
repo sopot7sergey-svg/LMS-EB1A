@@ -1,0 +1,34 @@
+{
+  "login": {
+    "success": true,
+    "url": "http://localhost:3000/dashboard"
+  },
+  "caseWorkspace": {
+    "url": "http://localhost:3000/case/dc75d30d-3a2e-4865-a65c-241b8175e526",
+    "opened": true
+  },
+  "documentAssistantCard": {
+    "hasDocumentAssistant": true,
+    "hasFormsFiller": false,
+    "hasCreator": false,
+    "topSectionText": "(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])self.__next_f.push([1,\"1:HL[\\\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\\\",\\\"font\\\",{\\\"crossOrigin\\\":\\\"\\\",\\\"type\\\":\\\"font/woff2\\\"}]\\n2:HL[\\\"/_next/static/css/app/layout.css?v=1773264811577\\\",\\\"style\\\"]\\n0:D{\\\"name\\\":\\\"r5\\\",\\\"env\\\":\\\"Server\\\"}\\n\"])self.__next_f.push([1,\"3:I[\\\"(app-pages-browser)/../../node_modules/next/dist/client/components/app-router.js\\\",[\\\"app-pages-internals\\\",\\\"static/chunks/app-pages-internals.js\\\""
+  },
+  "documentAssistantModal": {
+    "opened": false
+  },
+  "formI140Fill": {
+    "opened": false
+  },
+  "helpButton": null,
+  "voiceInput": null,
+  "additionalForm": {
+    "form": "G-1145",
+    "opened": false
+  },
+  "errors": [
+    {
+      "type": "console",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

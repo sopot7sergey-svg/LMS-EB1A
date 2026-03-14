@@ -1,0 +1,26 @@
+{
+  "loginSuccess": true,
+  "pageReached": "http://localhost:3000/case/dc75d30d-3a2e-4865-a65c-241b8175e526",
+  "formsFeesFound": true,
+  "fillButtonBehavior": {
+    "error": "No row with all three buttons found"
+  },
+  "templateButtonBehavior": {
+    "error": "No row with all three buttons found"
+  },
+  "addButtonBehavior": {
+    "error": "No row with all three buttons found"
+  },
+  "consoleErrors": [
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "screenshots": [
+    "01-login-page.png",
+    "03-case-workspace.png",
+    "04-forms-fees-expanded.png",
+    "08-final.png"
+  ]
+}

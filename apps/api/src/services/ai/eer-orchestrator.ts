@@ -1,6 +1,6 @@
 import { AIGateway } from './gateway';
 import { RAGService } from '../rag/retrieve';
-import { CRITERIA } from '@lms-eb1a/shared';
+import { CRITERIA } from '@aipas/shared';
 
 interface EERInput {
   caseData: any;
@@ -139,8 +139,8 @@ export class EEROrchestrator {
     for (const criterionId of input.claimedCriteria) {
       const criterionName = CRITERIA[criterionId as keyof typeof CRITERIA] || criterionId;
 
-      const relevantDocs = input.documents.filter(
-        (doc) => doc.category === this.getCategoryForCriterion(criterionId)
+      const relevantDocs = input.documents.filter((doc) =>
+        this.isDocumentRelevantToCriterion(doc, criterionId)
       );
       const relevantPacks = input.evidencePacks.filter(
         (pack) => pack.criterionId === criterionId
@@ -178,20 +178,25 @@ Evaluate whether the evidence meets the criterion requirements. Return JSON with
     return evaluations;
   }
 
-  private getCategoryForCriterion(criterionId: string): string {
-    const mapping: Record<string, string> = {
-      C1: 'award',
-      C2: 'membership',
-      C3: 'media',
-      C4: 'judging',
-      C5: 'contribution',
-      C6: 'publication',
-      C7: 'exhibition',
-      C8: 'role',
-      C9: 'pay',
-      C10: 'commercial',
+  /** Check if document is relevant to criterion based on metadata.slotType */
+  private isDocumentRelevantToCriterion(doc: { metadata?: any; category?: string }, criterionId: string): boolean {
+    const slotType = ((doc.metadata as any)?.slotType || '').toLowerCase();
+    const slotPrefixes: Record<string, string> = {
+      C1: 'evidence_awards_',
+      C2: 'evidence_memberships_',
+      C3: 'evidence_published_',
+      C4: 'evidence_judging_',
+      C5: 'evidence_contributions_',
+      C6: 'evidence_scholarly_',
+      C7: 'evidence_', // exhibition - use generic evidence
+      C8: 'evidence_leading_',
+      C9: 'evidence_salary_',
+      C10: 'evidence_commercial_',
     };
-    return mapping[criterionId] || 'misc';
+    const prefix = slotPrefixes[criterionId];
+    if (prefix && slotType.startsWith(prefix)) return true;
+    if (criterionId === 'C7' && slotType.startsWith('evidence_')) return true;
+    return false;
   }
 
   private async evaluateFinalMerits(

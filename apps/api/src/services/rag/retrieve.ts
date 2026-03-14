@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { RAG_SOURCES } from '@lms-eb1a/shared';
+import { RAG_SOURCES } from '@aipas/shared';
 
 const prisma = new PrismaClient();
 

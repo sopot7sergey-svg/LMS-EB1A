@@ -9,12 +9,12 @@ export const MODULE_IDS = {
 } as const;
 
 export const MODULE_TITLES = {
-  [MODULE_IDS.M0]: 'Case Axis and Strategy',
-  [MODULE_IDS.M1]: 'Diagnostic Across the 10 Criteria',
-  [MODULE_IDS.M2]: 'Building Evidence for 3-6 Criteria',
+  [MODULE_IDS.M0]: '"Case Axis" and Strategy',
+  [MODULE_IDS.M1]: 'Diagnosis Across the 10 Criteria',
+  [MODULE_IDS.M2]: 'Building Evidence for the 10 Criteria',
   [MODULE_IDS.M3]: 'Recommendation Letters',
   [MODULE_IDS.M4]: 'Petition Packaging and Final Assembly',
-  [MODULE_IDS.M5]: 'Filing I-140 and Post-Filing Process',
+  [MODULE_IDS.M5]: 'Filing the I-140 and What Comes After',
   [MODULE_IDS.M6]: 'Officer-Style Review',
 } as const;
 
@@ -49,19 +49,6 @@ export const EER_PRIORITIES = {
   RECOMMENDED: 'recommended',
   OPTIONAL: 'optional',
 } as const;
-
-export const DOCUMENT_CATEGORIES = [
-  'letter',
-  'pay',
-  'media',
-  'publication',
-  'award',
-  'judging',
-  'membership',
-  'role',
-  'contribution',
-  'misc',
-] as const;
 
 export const API_ROUTES = {
   AUTH: {

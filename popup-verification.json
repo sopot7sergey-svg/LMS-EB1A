@@ -1,0 +1,35 @@
+{
+  "section3": {
+    "onlyAddLinks": false,
+    "popupAppeared": false,
+    "screenshot": "popup-02-section3-with-popup.png"
+  },
+  "section4": {
+    "hasThreeButtons": true,
+    "addButtonDimmed": true,
+    "createActive": true,
+    "templateActive": true,
+    "popupAppeared": false,
+    "screenshot": "popup-04-section4-with-popup.png"
+  },
+  "screenshots": [
+    "popup-01-section3-expanded.png",
+    "popup-02-section3-with-popup.png",
+    "popup-03-section4-builder-slot.png",
+    "popup-04-section4-with-popup.png"
+  ],
+  "stepLog": [
+    "Logged in and navigated to case",
+    "Closed all open sections",
+    "Section 3 expanded - Only + Add links: NO ✗",
+    "  + Add: 62, Create: 18, Template: 18",
+    "Section 3 popup NOT found ✗",
+    "Section 4 builder slot analysis:",
+    "  Has all 3 buttons: YES ✓",
+    "  Add dimmed: YES ✓ (opacity: 0.5)",
+    "  Create active: YES ✓ (opacity: 1)",
+    "  Template active: YES ✓ (opacity: 1)",
+    "Section 4 popup NOT found ✗",
+    "Final verification complete"
+  ]
+}

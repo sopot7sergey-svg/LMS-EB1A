@@ -3,16 +3,16 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: lms_eb1a_postgres
+    container_name: aipas_postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: lms_eb1a
+      POSTGRES_DB: aipas
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - aipas_pg_data:/var/lib/postgresql/data
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  aipas_pg_data:

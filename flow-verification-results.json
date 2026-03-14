@@ -1,0 +1,101 @@
+{
+  "flows": [
+    {
+      "name": "Flow 1: Case workspace loads",
+      "status": "PASS",
+      "url": "http://localhost:3000/case/7493cacf-2d05-4848-b9c2-b70e18fe3e0b",
+      "details": {
+        "hasContent": true,
+        "hasSidebar": false,
+        "hasMainContent": true,
+        "contentLength": 10770
+      }
+    },
+    {
+      "name": "Flow 2: Document Assistant modal opens",
+      "status": "PASS",
+      "details": {
+        "opened": true,
+        "hasCreateMode": true,
+        "hasFillMode": true,
+        "buttonCount": 6,
+        "buttonTexts": [
+          "1. Case Intake & Profile",
+          "Intake Questionnaire (completed PDF/Doc)Strategic 21-section intake for case axis, criteria recommendation, and downstream prefill.",
+          "Start Intake Questionnaire (completed PDF/Doc)",
+          "Intake QuestionnaireCreateStrategic 21-section intake for case axis, criteria recommendation, and downstream prefill.",
+          "Form I-140 (Final Signed)FillGuided answers for the final signed I-140 before someone completes the official USCIS PDF.",
+          "Form I-140 (Draft / Working Copy)FillInternal draft answers for the working-copy I-140 before final review and signature."
+        ]
+      }
+    },
+    {
+      "name": "Flow 3a: Create-mode flow",
+      "status": "PASS",
+      "details": {
+        "opened": true,
+        "hasBuilder": true,
+        "hasStepper": false,
+        "hasQuestions": true,
+        "snippet": "(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])self.__next_f.push([1,\"1:HL[\\\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\\\",\\\"font\\\",{\\\"crossOrigin\\\":\\\"\\\",\\\"type\\\":\\\"font/woff2\\\"}]\\n2:HL[\\\"/_next/static/css/app/layout.css?v=1773293618595\\\",\\\"style\\\"]\\n0:D{\\\"name\\\":\\\"r5\\\",\\"
+      }
+    },
+    {
+      "name": "Flow 3b: Fill-mode flow",
+      "status": "PASS",
+      "details": {
+        "opened": true,
+        "hasBuilder": true,
+        "hasStepper": false,
+        "hasForm": true,
+        "snippet": "(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])self.__next_f.push([1,\"1:HL[\\\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\\\",\\\"font\\\",{\\\"crossOrigin\\\":\\\"\\\",\\\"type\\\":\\\"font/woff2\\\"}]\\n2:HL[\\\"/_next/static/css/app/layout.css?v=1773293618595\\\",\\\"style\\\"]\\n0:D{\\\"name\\\":\\\"r5\\\",\\"
+      }
+    },
+    {
+      "name": "Flow 4: Template/viewer behavior",
+      "status": "PASS",
+      "details": {
+        "new404Count": 0,
+        "new404s": []
+      }
+    },
+    {
+      "name": "Flow 5: Compile modal opens",
+      "status": "PASS",
+      "details": {
+        "opened": true,
+        "hasCompile": true,
+        "hasDownload": false,
+        "hasJobStatus": true,
+        "snippet": "(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])self.__next_f.push([1,\"1:HL[\\\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\\\",\\\"font\\\",{\\\"crossOrigin\\\":\\\"\\\",\\\"type\\\":\\\"font/woff2\\\"}]\\n2:HL[\\\"/_next/static/css/app/layout.css?v=1773293618595\\\",\\\"style\\\"]\\n0:D{\\\"name\\\":\\\"r5\\\",\\"
+      }
+    }
+  ],
+  "consoleErrors": [
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "location": {
+        "url": "http://localhost:3000/favicon.ico"
+      }
+    }
+  ],
+  "networkErrors": [
+    {
+      "status": 404,
+      "statusText": "Not Found",
+      "url": "http://localhost:3000/favicon.ico"
+    }
+  ],
+  "screenshots": [
+    "flow-01-login.png",
+    "flow-02-after-login.png",
+    "flow-03-case-workspace.png",
+    "flow-04-da-modal.png",
+    "flow-05-create-mode.png",
+    "flow-06-fill-mode.png",
+    "flow-07-template-check.png",
+    "flow-08-compile-modal.png",
+    "flow-10-final.png"
+  ]
+}

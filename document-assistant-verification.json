@@ -1,0 +1,80 @@
+{
+  "loginSuccess": true,
+  "pageReached": "http://localhost:3000/case/dc75d30d-3a2e-4865-a65c-241b8175e526",
+  "toolCardRename": {
+    "hasDocumentAssistant": true,
+    "hasCreator": false,
+    "hasFormsFiller": false,
+    "toolCardNames": [
+      "Document Assistant",
+      "Officer Review",
+      "Advisor Chat",
+      "Submission Checklist",
+      "AI Insights4",
+      "Uploaded Documents5",
+      "Guided Next Steps"
+    ]
+  },
+  "documentAssistantModal": {
+    "opened": false
+  },
+  "formsAndFeesCheck": {
+    "found": true,
+    "formI140HasButtons": true,
+    "fillButtonExists": true,
+    "templateButtonExists": true,
+    "addButtonExists": true,
+    "fillCount": 4
+  },
+  "fillFlowCheck": {
+    "modalType": "none"
+  },
+  "helpIconCheck": {
+    "found": false
+  },
+  "voiceInputCheck": {
+    "foundInFillFlow": false
+  },
+  "additionalFormCheck": {
+    "tested": "Form G-1145",
+    "usesBuilderFlow": false
+  },
+  "consoleErrors": [
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load document builder state: Error: Unsupported document builder slot"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load document builder state: Error: Unsupported document builder slot"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load document builder state: Error: Unsupported document builder slot"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load document builder state: Error: Unsupported document builder slot"
+    }
+  ]
+}

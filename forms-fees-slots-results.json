@@ -1,0 +1,61 @@
+{
+  "supportedSlots": [
+    {
+      "name": "Form I-140",
+      "status": "PASS",
+      "buttons": [
+        "Form I-140 (final signed PDF)Guided answers for the final signed I-140 before someone completes the official USCIS PDF.",
+        "Add",
+        "Fill",
+        "Template"
+      ],
+      "hasFill": true,
+      "hasTemplate": true,
+      "hasAdd": true,
+      "hasCreate": false
+    },
+    {
+      "name": "Form G-1145",
+      "status": "PASS",
+      "buttons": [
+        "Form G-1145 (optional, signed)Guided answers for the USCIS e-notification cover sheet.",
+        "Add",
+        "Fill",
+        "Template"
+      ],
+      "hasFill": true,
+      "hasTemplate": true,
+      "hasAdd": true,
+      "hasCreate": false
+    }
+  ],
+  "unsupportedSlots": [
+    {
+      "name": "Filing Fee Worksheet",
+      "status": "PASS",
+      "buttons": [
+        "Filing Fee Worksheet / Fee Calculation Sheet (internal)",
+        "+ Add"
+      ],
+      "hasFill": false,
+      "hasTemplate": false,
+      "hasAdd": true,
+      "hasCreate": false,
+      "isUploadOnly": true
+    },
+    {
+      "name": "Payment Method Proof",
+      "status": "PASS",
+      "buttons": [
+        "Payment Method Proof — Check copy (front/back) OR Money order copy/receipt OR Form G-1450 (if used)",
+        "+ Add"
+      ],
+      "hasFill": false,
+      "hasTemplate": false,
+      "hasAdd": true,
+      "hasCreate": false,
+      "isUploadOnly": true
+    }
+  ],
+  "regressions": []
+}

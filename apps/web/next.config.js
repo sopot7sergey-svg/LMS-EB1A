@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@lms-eb1a/shared'],
+  transpilePackages: ['@aipas/shared', '@tanstack/react-query'],
   async rewrites() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     return [

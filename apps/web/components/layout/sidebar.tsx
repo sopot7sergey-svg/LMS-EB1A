@@ -47,7 +47,7 @@ export function Sidebar({ progress }: SidebarProps) {
       <div className="flex h-full flex-col">
         <div className="flex h-16 items-center gap-2 border-b border-border px-4">
           <div className="h-8 w-8 rounded-lg bg-primary" />
-          <span className="text-lg font-semibold">LMS EB1A</span>
+          <span className="text-lg font-semibold">Aipas</span>
         </div>
 
         {!isAdmin() && progress && (

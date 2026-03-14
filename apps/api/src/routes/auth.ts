@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
@@ -15,7 +15,7 @@ router.post(
     body('password').isLength({ min: 8 }),
     body('name').trim().notEmpty(),
   ],
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -37,7 +37,7 @@ router.post(
           name,
           role: 'student',
         },
-        select: { id: true, email: true, name: true, role: true },
+        select: { id: true, email: true, name: true, role: true, uploadEnabled: true },
       });
 
       const token = jwt.sign(
@@ -60,7 +60,7 @@ router.post(
     body('email').isEmail().normalizeEmail(),
     body('password').notEmpty(),
   ],
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -86,7 +86,7 @@ router.post(
       );
 
       res.json({
-        user: { id: user.id, email: user.email, name: user.name, role: user.role },
+        user: { id: user.id, email: user.email, name: user.name, role: user.role, uploadEnabled: user.uploadEnabled },
         token,
       });
     } catch (error) {
@@ -100,7 +100,7 @@ router.get('/me', authenticate, async (req: AuthRequest, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user!.id },
-      select: { id: true, email: true, name: true, role: true, createdAt: true },
+      select: { id: true, email: true, name: true, role: true, uploadEnabled: true, createdAt: true },
     });
 
     if (!user) {

@@ -14,6 +14,8 @@ import chatRoutes from './routes/chat';
 import adminRoutes from './routes/admin';
 import aiRoutes from './routes/ai';
 import eerRoutes from './routes/eer';
+import advisorChatRoutes from './routes/advisor-chat';
+import packetReviewRoutes from './routes/packet-review';
 
 dotenv.config();
 
@@ -56,6 +58,8 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/eer', eerRoutes);
+app.use('/api/advisor-chat', advisorChatRoutes);
+app.use('/api', packetReviewRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -70,7 +74,10 @@ async function main() {
   try {
     await prisma.$connect();
     console.log('Connected to database');
-    
+
+    const { AIGateway } = await import('./services/ai/gateway');
+    AIGateway.logStartupDiagnostics();
+
     app.listen(PORT, () => {
       console.log(`API server running on port ${PORT}`);
     });

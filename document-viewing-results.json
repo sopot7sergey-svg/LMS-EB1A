@@ -1,0 +1,20 @@
+{
+  "uploadedDocument": {
+    "opened": true,
+    "documentName": "Intake Questionnaire (Sample).pdf",
+    "viewerInfo": {
+      "hasViewer": true,
+      "hasIframe": true,
+      "bodyLength": 11328
+    },
+    "errors": [],
+    "status": "PASS"
+  },
+  "generatedDocument": {
+    "opened": false,
+    "status": "NOT_FOUND",
+    "note": "No generated/draft documents found in workspace"
+  },
+  "networkErrors": [],
+  "regressions": []
+}

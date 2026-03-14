@@ -35,6 +35,24 @@ interface Module {
   lessons: { id: string; title: string; description: string | null; order: number; videoUrl: string | null }[];
 }
 
+function getLessonDisplayLabel(moduleOrder: number, lessonOrder: number): string {
+  if (moduleOrder !== 2) {
+    return `${moduleOrder}.${lessonOrder}`;
+  }
+
+  if (lessonOrder <= 4) {
+    return `2.0.${lessonOrder}`;
+  }
+
+  if (lessonOrder <= 34) {
+    const criterionIndex = Math.floor((lessonOrder - 5) / 3) + 1;
+    const criterionLessonIndex = ((lessonOrder - 5) % 3) + 1;
+    return `2.${criterionIndex}.${criterionLessonIndex}`;
+  }
+
+  return `2.C.${lessonOrder - 34}`;
+}
+
 export default function ModuleDetailPage() {
   const params = useParams();
   const { token } = useAuthStore();
@@ -218,7 +236,7 @@ export default function ModuleDetailPage() {
       <div className="space-y-3">
         {lessons.map((lesson, index) => {
           const isCompleting = completingId === lesson.id;
-          const lessonLabel = `${module.order}.${lesson.order}`;
+          const lessonLabel = getLessonDisplayLabel(module.order, lesson.order);
 
           return (
             <div

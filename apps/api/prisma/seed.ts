@@ -5,270 +5,370 @@ const prisma = new PrismaClient();
 
 const modules = [
   {
-    title: 'Case Axis and Strategy',
-    description: 'Choose your field, narrative, and proposed endeavor for a cohesive package.',
+    title: '"Case Axis" and Strategy',
+    description: 'How USCIS reads the case, choosing your field, proposed endeavor, and case positioning.',
     order: 0,
     lessons: [
       {
-        title: 'How USCIS reads an EB-1A case',
-        description: 'One story, one logic, one trajectory',
+        title: 'How USCIS reads an EB-1A case.',
+        description: null,
         order: 1,
       },
       {
-        title: 'Choosing your Field',
-        description: 'How not to spread yourself too thin (AI/automation/security/platforms/entrepreneurship)',
+        title: 'Choosing your field.',
+        description: null,
         order: 2,
       },
       {
-        title: 'Proposed Endeavor',
-        description: 'How to frame your future work in the U.S. convincingly without "NIW logic"',
+        title: 'Proposed endeavor.',
+        description: null,
         order: 3,
       },
       {
-        title: 'Case positioning',
-        description: 'Which criteria make the most sense for your axis',
+        title: 'Case positioning.',
+        description: null,
         order: 4,
       },
     ],
   },
   {
-    title: 'Diagnostic Across the 10 Criteria',
-    description: 'Build a Criteria Matrix and choose 3-6 criteria aligned with your axis and evidence.',
+    title: 'Diagnosis Across the 10 Criteria',
+    description: 'Diagnosis, evidence reading, criteria selection, evidence mapping, and overall merits.',
     order: 1,
     lessons: [
       {
-        title: 'The 10 criteria',
-        description: 'What actually "works" in practice (no promises)',
+        title: 'The 10 criteria: what actually "works" in practice',
+        description: null,
         order: 1,
       },
       {
         title: 'How evidence is "read"',
-        description: 'Quality, independence, scale, verifiability',
+        description: null,
         order: 2,
       },
       {
         title: 'Choosing 5-6 criteria instead of 3',
-        description: 'The "thick case" strategy',
+        description: null,
         order: 3,
       },
       {
-        title: 'Evidence map',
-        description: 'Which document types support which criteria',
+        title: 'Evidence map: which types of documents satisfy which criteria',
+        description: null,
         order: 4,
       },
       {
-        title: 'Overall merits',
-        description: 'How to prepare "total persuasiveness" in advance',
+        title: 'Overall merits: how to prepare "cumulative persuasiveness" in advance',
+        description: null,
         order: 5,
       },
     ],
   },
   {
-    title: 'Building Evidence for 3-6 Criteria',
-    description: 'Build Exhibits that truly "carry" the criteria.',
+    title: 'Building Evidence for the 10 Criteria',
+    description: 'Introductory block, criteria-by-criteria evidence building, and comparable evidence.',
     order: 2,
     lessons: [
       {
-        title: 'What "critical role" means in evidence',
-        description: 'Not the title, but the impact',
+        title: 'What "initial evidence" is and why context matters',
+        description: '2.0 Introductory Block',
         order: 1,
       },
       {
-        title: 'How to present projects',
-        description: 'Scope → ownership → impact → metrics',
+        title: 'Principles: independence, verifiability, scale, cause-and-effect relationship',
+        description: '2.0 Introductory Block',
         order: 2,
       },
       {
-        title: 'Role confirmation letters',
-        description: 'Which wording and which attachments',
+        title: 'How to formulate the Proposed Endeavor persuasively',
+        description: '2.0 Introductory Block',
         order: 3,
       },
       {
-        title: 'How to present compensation correctly',
-        description: 'Pay stubs, offer letters, W-2, equity docs',
+        title: 'How to build "Exhibit logic"',
+        description: '2.0 Introductory Block',
         order: 4,
       },
       {
-        title: 'Market benchmarks',
-        description: 'What to use if perfect benchmarks are not available',
+        title: 'What counts as an "award" and what does not',
+        description: '2.1 Criterion 1 · Lesser nationally or internationally recognized prizes or awards',
         order: 5,
       },
       {
-        title: '"Major significance" = impact beyond your own team',
-        description: 'Original Contributions criterion',
+        title: 'How to prove "recognition": contest rules, judges, reach, competitiveness',
+        description: '2.1 Criterion 1 · Lesser nationally or internationally recognized prizes or awards',
         order: 6,
       },
       {
-        title: 'Patents are not required',
-        description: 'Alternatives: architectures, implementations, savings, scale',
+        title: 'How to package it: certificate + award description + supporting sources',
+        description: '2.1 Criterion 1 · Lesser nationally or internationally recognized prizes or awards',
         order: 7,
       },
       {
-        title: 'How to write a "Contribution Narrative"',
-        description: 'Support it with independent sources',
+        title: 'How USCIS looks at selectivity',
+        description: '2.2 Criterion 2 · Membership in associations that require outstanding achievements',
         order: 8,
       },
       {
-        title: 'What counts as judging',
-        description: 'And what does not',
+        title: 'What evidence to use',
+        description: '2.2 Criterion 2 · Membership in associations that require outstanding achievements',
         order: 9,
       },
       {
-        title: 'How to quickly and legally build up judging',
-        description: 'Hackathons, grants, peer review',
+        title: 'Plan B: what to use instead of membership if there is no selectivity',
+        description: '2.2 Criterion 2 · Membership in associations that require outstanding achievements',
         order: 10,
       },
       {
-        title: 'How to document judging',
-        description: 'Invitations, criteria, confirmations, logs',
+        title: 'The difference between a profile / interview / mention vs. your own authored article',
+        description: '2.3 Criterion 3 · Published material about you in professional or major media',
         order: 11,
       },
       {
-        title: '"About you" vs "by you"',
-        description: 'Published Material criterion',
+        title: 'How to prove "major / professional": media profile, audience, editorial policy',
+        description: '2.3 Criterion 3 · Published material about you in professional or major media',
         order: 12,
       },
       {
-        title: 'Interviews/profiles/mentions',
-        description: 'Structure and requirements',
+        title: 'How to present it',
+        description: '2.3 Criterion 3 · Published material about you in professional or major media',
         order: 13,
       },
       {
-        title: 'How to package publications as exhibits',
-        description: 'Formatting and presentation',
+        title: 'What qualifies as judging',
+        description: '2.4 Criterion 4 · Judging: Evaluation of the work of others',
         order: 14,
       },
       {
-        title: 'Why "paid and joined" does not work',
-        description: 'Membership criterion',
+        title: 'How to document it',
+        description: '2.4 Criterion 4 · Judging: Evaluation of the work of others',
         order: 15,
       },
       {
-        title: 'How to prove selectivity',
-        description: 'Selection criteria, acceptance rate, requirements',
+        title: 'How to build up judging quickly in a lawful and provable way',
+        description: '2.4 Criterion 4 · Judging: Evaluation of the work of others',
         order: 16,
       },
       {
-        title: 'What to use instead if membership is not selective',
-        description: 'Alternative evidence strategies',
+        title: '"Major significance" = impact beyond your own team',
+        description: '2.5 Criterion 5 · Original contributions of major significance',
         order: 17,
+      },
+      {
+        title: 'How to present a claim-based approach',
+        description: '2.5 Criterion 5 · Original contributions of major significance',
+        order: 18,
+      },
+      {
+        title: 'What evidence to use',
+        description: '2.5 Criterion 5 · Original contributions of major significance',
+        order: 19,
+      },
+      {
+        title: 'Scholarly vs. professional',
+        description: '2.6 Criterion 6 · Authorship of scholarly articles in professional publications or major media',
+        order: 20,
+      },
+      {
+        title: 'How to prove the impact of articles outside the academic environment',
+        description: '2.6 Criterion 6 · Authorship of scholarly articles in professional publications or major media',
+        order: 21,
+      },
+      {
+        title: 'Packaging: PDF, links, indexing, metrics (where applicable)',
+        description: '2.6 Criterion 6 · Authorship of scholarly articles in professional publications or major media',
+        order: 22,
+      },
+      {
+        title: 'What counts as an exhibition/showcase',
+        description: '2.7 Criterion 7 · Display of work at artistic exhibitions and showcases',
+        order: 23,
+      },
+      {
+        title: 'How to prove selection and the status of the venue',
+        description: '2.7 Criterion 7 · Display of work at artistic exhibitions and showcases',
+        order: 24,
+      },
+      {
+        title: 'Packaging: catalogs, event pages, curator letters',
+        description: '2.7 Criterion 7 · Display of work at artistic exhibitions and showcases',
+        order: 25,
+      },
+      {
+        title: '"Distinguished" organization: how to prove it',
+        description: '2.8 Criterion 8 · Leading or critical role for distinguished organizations',
+        order: 26,
+      },
+      {
+        title: 'How to prove the impact of articles outside the academic environment',
+        description: '2.8 Criterion 8 · Leading or critical role for distinguished organizations',
+        order: 27,
+      },
+      {
+        title: '"Critical" = indispensable function + impact on the result',
+        description: '2.8 Criterion 8 · Leading or critical role for distinguished organizations',
+        order: 28,
+      },
+      {
+        title: 'Which documents qualify',
+        description: '2.9 Criterion 9 · High salary or other significantly high remuneration',
+        order: 29,
+      },
+      {
+        title: 'Market comparison: how to do it correctly and what sources to use',
+        description: '2.9 Criterion 9 · High salary or other significantly high remuneration',
+        order: 30,
+      },
+      {
+        title: 'How not to overload the case with too many numbers',
+        description: '2.9 Criterion 9 · High salary or other significantly high remuneration',
+        order: 31,
+      },
+      {
+        title: 'Who it applies to and which metrics are accepted',
+        description: '2.10 Criterion 10 · Commercial success in the performing arts',
+        order: 32,
+      },
+      {
+        title: 'How to prove it',
+        description: '2.10 Criterion 10 · Commercial success in the performing arts',
+        order: 33,
+      },
+      {
+        title: 'How to package the evidence',
+        description: '2.10 Criterion 10 · Commercial success in the performing arts',
+        order: 34,
+      },
+      {
+        title: 'When comparable evidence is allowed',
+        description: '2.C Comparable Evidence · Comparable Evidence (if the criteria do not fit)',
+        order: 35,
+      },
+      {
+        title: 'How to build comparability',
+        description: '2.C Comparable Evidence · Comparable Evidence (if the criteria do not fit)',
+        order: 36,
+      },
+      {
+        title: 'Risks: why you must explain "why the 10 criteria do not fit"',
+        description: '2.C Comparable Evidence · Comparable Evidence (if the criteria do not fit)',
+        order: 37,
       },
     ],
   },
   {
     title: 'Recommendation Letters',
-    description: '6-10 strong letters, distributed by author type.',
+    description: 'Letter architecture, independent letters, substance, differentiation, and attachments.',
     order: 3,
     lessons: [
       {
         title: 'Letter architecture',
-        description: 'Who confirms which facts',
+        description: null,
         order: 1,
       },
       {
         title: '"Independent" letters',
-        description: 'How to find authors and how to ask',
+        description: null,
         order: 2,
       },
       {
-        title: 'A letter must not be "he is a good person"',
-        description: 'Structure: claim → evidence → impact',
+        title: 'A letter should not be reduced to a general positive evaluation',
+        description: null,
         order: 3,
       },
       {
-        title: 'How to avoid templating and "too-similar" letters',
-        description: 'Differentiation strategies',
+        title: 'How to avoid template language and letters that are "too similar"',
+        description: null,
         order: 4,
       },
       {
-        title: 'Letter attachments',
-        description: 'Author CV, bio, proof of authority',
+        title: 'Attachments to recommendation letters',
+        description: null,
         order: 5,
       },
     ],
   },
   {
     title: 'Petition Packaging and Final Assembly',
-    description: 'Assemble a complete submission-grade package.',
+    description: 'Package structure, legal brief logic, exhibit readability, translations, and final QA.',
     order: 4,
     lessons: [
       {
         title: 'Petition package structure',
-        description: 'Table of contents, tabs, exhibit numbering',
+        description: null,
         order: 1,
       },
       {
-        title: 'Cover letter / legal brief',
-        description: 'Criteria logic + overall merits',
+        title: 'Cover letter / legal brief: logic by criteria + overall merits',
+        description: null,
         order: 2,
       },
       {
-        title: 'Exhibit labeling',
-        description: 'Making it "officer-readable"',
+        title: 'Exhibit labeling: how to make it "readable for the officer"',
+        description: null,
         order: 3,
       },
       {
-        title: 'Translations',
-        description: 'Formatting requirements and certification',
+        title: 'Translations: formatting requirements and certification',
+        description: null,
         order: 4,
       },
       {
-        title: 'Final QA check',
-        description: 'How an officer thinks during the first pass',
+        title: 'Final QA review: "how the officer thinks during the first pass-through"',
+        description: null,
         order: 5,
       },
     ],
   },
   {
-    title: 'Filing I-140 and Post-Filing Process',
-    description: 'Understand filing scenarios and what to do after filing.',
+    title: 'Filing the I-140 and What Comes After',
+    description: '(premium / AOS / consular)',
     order: 5,
     lessons: [
       {
-        title: 'What gets filed',
-        description: 'The I-140 package + dependencies based on U.S. status',
+        title: 'What gets filed: the I-140 package + dependencies based on U.S. status',
+        description: null,
         order: 1,
       },
       {
-        title: 'Premium processing',
-        description: 'When it makes sense (no promises)',
+        title: 'Premium processing: when it makes sense',
+        description: null,
         order: 2,
       },
       {
-        title: 'AOS vs Consular processing',
-        description: 'Decision logic',
+        title: 'AOS vs. consular processing: decision logic',
+        description: null,
         order: 3,
       },
       {
         title: 'What happens after filing',
-        description: 'Receipt, requests, timelines, actions',
+        description: null,
         order: 4,
       },
       {
-        title: 'How to respond to real USCIS letters',
-        description: 'Process-focused guidance',
+        title: 'How to respond to real USCIS notices',
+        description: null,
         order: 5,
       },
     ],
   },
   {
     title: 'Officer-Style Review',
-    description: 'Get Evidence Enhancement Requests (EER) with citations to authoritative sources.',
+    description: 'Read the EER/SER, prioritize flagged points, and iterate toward minimum risk.',
     order: 6,
     lessons: [
       {
-        title: 'How to read the EER/SER report and close items',
-        description: 'Understanding the feedback',
+        title: 'How to read the EER/SER report and how to close the flagged points',
+        description: null,
         order: 1,
       },
       {
-        title: 'Prioritization',
-        description: 'What is critical, recommended, optional',
+        title: 'Prioritization: what is critical, what is desirable, and what is optional',
+        description: null,
         order: 2,
       },
       {
-        title: 'Iteration',
-        description: 'How to reach "minimal risk" in structure and clarity',
+        title: 'Iteration: how to get to "minimum risk" in structure and clarity',
+        description: null,
         order: 3,
       },
     ],
@@ -326,15 +426,33 @@ const ragChunks = [
   },
 ];
 
+function isProductionSeedAllowed(): boolean {
+  const env = process.env.NODE_ENV;
+  const explicit = process.env.ALLOW_SEED_IN_PRODUCTION;
+  if (env === 'production' && explicit !== '1') {
+    console.error(
+      '[SEED] BLOCKED: NODE_ENV=production and ALLOW_SEED_IN_PRODUCTION is not set. ' +
+        'Seed must not run in production by default to avoid overwriting user data. ' +
+        'If you intentionally need to seed production (e.g. first deploy), set ALLOW_SEED_IN_PRODUCTION=1.'
+    );
+    return false;
+  }
+  return true;
+}
+
 async function main() {
   console.log('Starting seed...');
 
+  if (!isProductionSeedAllowed()) {
+    process.exit(1);
+  }
+
   const adminPassword = await bcrypt.hash('admin123', 12);
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@lms-eb1a.com' },
+    where: { email: 'admin@aipas.com' },
     update: {},
     create: {
-      email: 'admin@lms-eb1a.com',
+      email: 'admin@aipas.com',
       password: adminPassword,
       name: 'Admin User',
       role: 'admin',
@@ -342,10 +460,10 @@ async function main() {
   });
   console.log('Created admin user:', admin.email);
 
-  const testPassword = await bcrypt.hash('test1234', 12);
+  const testPassword = await bcrypt.hash('Test1234', 12);
   const testUser = await prisma.user.upsert({
     where: { email: 'test@example.com' },
-    update: {},
+    update: { password: testPassword },
     create: {
       email: 'test@example.com',
       password: testPassword,
@@ -366,11 +484,17 @@ async function main() {
     if (existingModule) {
       module = await prisma.module.update({
         where: { id: existingModule.id },
-        data: moduleInfo,
+        data: {
+          ...moduleInfo,
+          isActive: true,
+        },
       });
     } else {
       module = await prisma.module.create({
-        data: moduleInfo,
+        data: {
+          ...moduleInfo,
+          isActive: true,
+        },
       });
     }
 
@@ -387,20 +511,43 @@ async function main() {
       if (existingLesson) {
         await prisma.lesson.update({
           where: { id: existingLesson.id },
-          data: lessonData,
+          data: {
+            ...lessonData,
+            isActive: true,
+          },
         });
       } else {
         await prisma.lesson.create({
           data: {
             ...lessonData,
             moduleId: module.id,
+            isActive: true,
           },
         });
       }
     }
 
+    await prisma.lesson.updateMany({
+      where: {
+        moduleId: module.id,
+        order: { notIn: lessons.map((lesson) => lesson.order) },
+      },
+      data: {
+        isActive: false,
+      },
+    });
+
     console.log(`  Created/updated ${lessons.length} lessons`);
   }
+
+  await prisma.module.updateMany({
+    where: {
+      order: { notIn: modules.map((module) => module.order) },
+    },
+    data: {
+      isActive: false,
+    },
+  });
 
   for (const chunk of ragChunks) {
     const existing = await prisma.rAGChunk.findFirst({

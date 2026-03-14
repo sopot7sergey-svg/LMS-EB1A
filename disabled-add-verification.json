@@ -1,0 +1,40 @@
+{
+  "test1": {
+    "section3AddMessage": {
+      "appeared": false,
+      "screenshot": "disabled-01-section3-add-message.png"
+    },
+    "section4AddMessage": {
+      "appeared": false,
+      "screenshot": "disabled-02-section4-add-message.png"
+    },
+    "section4CreateClickable": {
+      "clickable": true,
+      "screenshot": "disabled-03-section4-create-button.png"
+    }
+  },
+  "test2": {
+    "section3OnlyAddLinks": {
+      "verified": true,
+      "hasCreateTemplate": true,
+      "screenshot": "disabled-04-section3-only-add.png"
+    },
+    "section9OnlyAddLinks": {
+      "verified": true,
+      "hasCreateTemplate": false,
+      "screenshot": "disabled-05-section9-only-add.png"
+    },
+    "section4HasCreateTemplate": {
+      "verified": true,
+      "screenshot": "disabled-06-section4-create-template.png"
+    }
+  },
+  "screenshots": [
+    "disabled-01-section3-add-message.png",
+    "disabled-02-section4-add-message.png",
+    "disabled-03-section4-create-button.png",
+    "disabled-04-section3-only-add.png",
+    "disabled-05-section9-only-add.png",
+    "disabled-06-section4-create-template.png"
+  ]
+}

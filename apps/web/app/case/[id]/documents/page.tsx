@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
-import { DOCUMENT_CATEGORIES } from '@lms-eb1a/shared';
+import { DOCUMENT_CATEGORIES } from '@aipas/shared';
 import {
   Upload,
   FileText,
@@ -35,7 +35,7 @@ export default function DocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('misc');
+  const [selectedCategory, setSelectedCategory] = useState<string>(DOCUMENT_CATEGORIES[0]);
 
   const caseId = params.id as string;
 
@@ -152,7 +152,7 @@ export default function DocumentsPage() {
                 >
                   {DOCUMENT_CATEGORIES.map((cat) => (
                     <option key={cat} value={cat}>
-                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      {cat}
                     </option>
                   ))}
                 </select>
@@ -255,7 +255,7 @@ export default function DocumentsPage() {
                       key={cat}
                       className="flex items-center justify-between rounded-lg bg-background-secondary p-3"
                     >
-                      <span className="capitalize">{cat}</span>
+                      <span>{cat}</span>
                       <span className="font-medium">{count}</span>
                     </div>
                   );

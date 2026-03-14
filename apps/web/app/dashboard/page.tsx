@@ -42,6 +42,11 @@ export default function DashboardPage() {
           const latestCase = casesData[0];
           setCaseData(latestCase);
           setCurrentCase(latestCase.id);
+        } else {
+          setCaseData(null);
+          if (currentCaseId) {
+            setCurrentCase(null);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
@@ -51,7 +56,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, [token, setCurrentCase]);
+  }, [token, currentCaseId, setCurrentCase]);
 
   const handleCreateCase = async () => {
     if (!token) return;

@@ -1,0 +1,11 @@
+{
+  "step9": {
+    "popupAppeared": false,
+    "screenshot": "final-popup-section3.png"
+  },
+  "step16": {
+    "popupAppeared": false,
+    "screenshot": "final-popup-section4.png"
+  },
+  "section3OnlyAddLinks": false
+}

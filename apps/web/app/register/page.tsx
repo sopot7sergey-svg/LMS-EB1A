@@ -52,7 +52,7 @@ export default function RegisterPage() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
             <div className="h-10 w-10 rounded-lg bg-primary" />
-            <span className="text-2xl font-bold">LMS EB1A</span>
+            <span className="text-2xl font-bold">Aipas</span>
           </Link>
         </div>
 

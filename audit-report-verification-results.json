@@ -1,0 +1,33 @@
+{
+  "loginSuccess": false,
+  "dashboardAccess": false,
+  "caseAccess": true,
+  "section11Found": false,
+  "section11Details": {
+    "found": false
+  },
+  "compiledPacketsFound": false,
+  "auditButtonClicked": false,
+  "reportModalOpened": false,
+  "reportDetails": null,
+  "consoleErrors": [
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "screenshots": [
+    "audit-03-case-page.png",
+    "audit-08-final.png"
+  ],
+  "steps": [
+    "Skipped login - navigating directly to case",
+    "Navigated directly to test case",
+    "On case page: /case/361f562c-7c36-40e2-854f-d08e19c1a76b",
+    "Section 11 not found on the page"
+  ]
+}

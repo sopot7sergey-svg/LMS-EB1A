@@ -51,32 +51,21 @@ enum ChatStatus {
   closed
 }
 
-enum DocumentCategory {
-  letter
-  pay
-  media
-  publication
-  award
-  judging
-  membership
-  role
-  contribution
-  misc
-}
-
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      UserRole @default(student)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  name           String
+  role           UserRole @default(student)
+  uploadEnabled  Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   cases            Case[]
   moduleProgress   ModuleProgress[]
   lessonProgress   LessonProgress[]
   documents        Document[]
+  documentBuilders DocumentBuilderState[]
   chatThreadsAsStudent ChatThread[] @relation("StudentThreads")
   chatThreadsAsAdmin   ChatThread[] @relation("AdminThreads")
   chatMessages     ChatMessage[]
@@ -101,6 +90,34 @@ model Case {
   petitionPackages   PetitionPackage[]
   eers               EER[]
   documents          Document[]
+  documentBuilders   DocumentBuilderState[]
+  compileJobs        CompileJob[]
+}
+
+model CompileJob {
+  id          String   @id @default(uuid())
+  caseId      String
+  status      String   @default("pending") // pending, collecting, normalizing, merging, bookmarking, finalizing, completed, failed
+  progress    Int      @default(0) // 0-100
+  options     Json     @default("{}")
+  error       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  case        Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  artifact    CompileArtifact?
+}
+
+model CompileArtifact {
+  id          String   @id @default(uuid())
+  caseId      String
+  jobId       String   @unique
+  version     Int      @default(1)
+  filePath    String
+  optionsHash String?
+  createdAt   DateTime @default(now())
+
+  job         CompileJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
 }
 
 model CaseWorkspace {
@@ -292,7 +309,7 @@ model Document {
   originalName String
   mimeType     String
   size         Int
-  category     DocumentCategory @default(misc)
+  category     String          @default("Case Intake & Profile")
   metadata     Json?
   s3Key        String
   createdAt    DateTime         @default(now())
@@ -300,6 +317,32 @@ model Document {
 
   case         Case             @relation(fields: [caseId], references: [id], onDelete: Cascade)
   user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DocumentBuilderState {
+  id                String   @id @default(uuid())
+  caseId            String
+  userId            String
+  sectionId         String   @default("s1")
+  slotType          String
+  status            String   @default("not_started")
+  inputModes        String[]
+  answers           Json     @default("{}")
+  sourceDocumentIds String[]
+  draftJson         Json?
+  draftText         String?  @db.Text
+  progress          Int      @default(0)
+  lastGeneratedAt   DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  case              Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([caseId, slotType])
+  @@index([caseId])
+  @@index([userId])
 }
 
 model RAGChunk {

@@ -1,0 +1,9 @@
+{
+  "supportedSlots": [],
+  "unsupportedSlots": [],
+  "regressions": [],
+  "error": {
+    "message": "Could not find first case to open",
+    "stack": "Error: Could not find first case to open\n    at verifyFormsFees (file:///Users/sergeysopot/LMS-EB1A/verify-forms-fees-actions.mjs:50:13)\n    at async file:///Users/sergeysopot/LMS-EB1A/verify-forms-fees-actions.mjs:261:17"
+  }
+}

@@ -10,6 +10,7 @@ interface Lesson {
 
 interface Block {
   label: string;
+  subtitle?: string;
   lessons: Lesson[];
   tool: string;
 }
@@ -30,95 +31,161 @@ const MODULES: Module[] = [
   {
     id: 'M0',
     index: 0,
-    title: 'Case Axis and Strategy',
+    title: '"Case Axis" and Strategy',
     duration: '1–2 days',
     goal: 'Choose your field, narrative, and proposed endeavor so the entire package is cohesive.',
     artifact: 'Case Axis Pack (PDF + checklist)',
     lessons: [
-      { id: '0.1', title: 'How USCIS reads an EB-1A case: "one story, one logic, one trajectory"' },
-      { id: '0.2', title: 'Choosing your Field: how not to spread yourself too thin' },
-      { id: '0.3', title: 'Proposed Endeavor: how to frame your future work convincingly' },
-      { id: '0.4', title: 'Case positioning: which criteria make sense for your axis' },
+      { id: '0.1', title: 'How USCIS reads an EB-1A case.' },
+      { id: '0.2', title: 'Choosing your field.' },
+      { id: '0.3', title: 'Proposed endeavor.' },
+      { id: '0.4', title: 'Case positioning.' },
     ],
     tool: 'AI Intake Interview → Case Axis Statement, Proposed Endeavor, Brand Keywords',
   },
   {
     id: 'M1',
     index: 1,
-    title: 'Diagnostic Across the 10 Criteria',
+    title: 'Diagnosis Across the 10 Criteria',
     duration: '2–5 days',
-    goal: 'Build a Criteria Matrix and choose 3–6 criteria aligned with your axis and evidence.',
+    goal: 'Build a Criteria Matrix, map evidence, and prepare overall merits in advance.',
     artifact: 'EB-1A Criteria Matrix v1 + Evidence Roadmap',
     lessons: [
-      { id: '1.1', title: 'The 10 criteria: what actually "works" in practice (no promises)' },
-      { id: '1.2', title: 'How evidence is "read": quality, independence, scale, verifiability' },
-      { id: '1.3', title: 'Choosing 5–6 criteria instead of 3: the "thick case" strategy' },
-      { id: '1.4', title: 'Evidence map: which document types support which criteria' },
-      { id: '1.5', title: 'Overall merits: how to prepare "total persuasiveness" in advance' },
+      { id: '1.1', title: 'The 10 criteria: what actually "works" in practice' },
+      { id: '1.2', title: 'How evidence is "read"' },
+      { id: '1.3', title: 'Choosing 5–6 criteria instead of 3' },
+      { id: '1.4', title: 'Evidence map: which types of documents satisfy which criteria' },
+      { id: '1.5', title: 'Overall merits: how to prepare "cumulative persuasiveness" in advance' },
     ],
     tool: 'Criteria Mapper + Evidence To-Do Generator',
   },
   {
     id: 'M2',
     index: 2,
-    title: 'Building Evidence for 3–6 Criteria',
+    title: 'Building Evidence for the 10 Criteria',
     duration: '2–6 weeks',
-    goal: 'Build Exhibits that truly "carry" the criteria. Structured by criterion blocks.',
+    goal: 'Build evidence systematically across the criteria, starting with an introductory block and then moving criterion by criterion.',
     artifact: 'Exhibits Folder v1 + Exhibit List draft',
     blocks: [
       {
-        label: '2A · Leading / Critical Role',
+        label: '2.0 Introductory Block',
         lessons: [
-          { id: '2A.1', title: 'What "critical role" means in evidence (not the title, but the impact)' },
-          { id: '2A.2', title: 'How to present projects: scope → ownership → impact → metrics' },
-          { id: '2A.3', title: 'Role confirmation letters: which wording and which attachments' },
+          { id: '2.0.1', title: 'What "initial evidence" is and why context matters' },
+          { id: '2.0.2', title: 'Principles: independence, verifiability, scale, cause-and-effect relationship' },
+          { id: '2.0.3', title: 'How to formulate the Proposed Endeavor persuasively' },
+          { id: '2.0.4', title: 'How to build "Exhibit logic"' },
         ],
-        tool: 'Role & Impact Builder → Project Impact Brief + attachments list',
+        tool: 'Foundational evidence principles and petition framing',
       },
       {
-        label: '2B · High Salary / Remuneration',
+        label: '2.1 Criterion 1',
+        subtitle: 'Lesser nationally or internationally recognized prizes or awards',
         lessons: [
-          { id: '2B.1', title: 'How to present compensation correctly' },
-          { id: '2B.2', title: 'Market benchmarks (and what to use if perfect benchmarks are not available)' },
-          { id: '2B.3', title: 'How not to "break" the case with unnecessary numbers' },
+          { id: '2.1.1', title: 'What counts as an "award" and what does not' },
+          { id: '2.1.2', title: 'How to prove "recognition": contest rules, judges, reach, competitiveness' },
+          { id: '2.1.3', title: 'How to package it: certificate + award description + supporting sources' },
         ],
-        tool: 'Compensation Pack Builder → pay stubs / offer letters / W-2 / equity docs + memo',
+        tool: 'Award analysis and packaging',
       },
       {
-        label: '2C · Original Contributions of Major Significance',
+        label: '2.2 Criterion 2',
+        subtitle: 'Membership in associations that require outstanding achievements',
         lessons: [
-          { id: '2C.1', title: '"Major significance" = impact beyond your own team' },
-          { id: '2C.2', title: 'Patents are not required: alternatives (architectures, implementations, savings, scale)' },
-          { id: '2C.3', title: 'How to write a "Contribution Narrative" and support it with independent sources' },
+          { id: '2.2.1', title: 'How USCIS looks at selectivity' },
+          { id: '2.2.2', title: 'What evidence to use' },
+          { id: '2.2.3', title: 'Plan B: what to use instead of membership if there is no selectivity' },
         ],
-        tool: 'Contribution Narrative Generator → 2–3 claims + evidence / metrics / confirming parties',
+        tool: 'Selectivity analysis and backup evidence strategy',
       },
       {
-        label: '2D · Judging the Work of Others',
+        label: '2.3 Criterion 3',
+        subtitle: 'Published material about you in professional or major media',
         lessons: [
-          { id: '2D.1', title: 'What counts as judging (and what does not)' },
-          { id: '2D.2', title: 'How to quickly and legally build up judging (hackathons, grants, peer review)' },
-          { id: '2D.3', title: 'How to document judging: invitations, criteria, confirmations, logs' },
+          { id: '2.3.1', title: 'The difference between a profile / interview / mention vs. your own authored article' },
+          { id: '2.3.2', title: 'How to prove "major / professional": media profile, audience, editorial policy' },
+          { id: '2.3.3', title: 'How to present it' },
         ],
-        tool: 'Judging Portfolio Builder → request email templates + log table + exhibit pack',
+        tool: 'Media qualification and presentation',
       },
       {
-        label: '2E · Published Material About You',
+        label: '2.4 Criterion 4',
+        subtitle: 'Judging: Evaluation of the work of others',
         lessons: [
-          { id: '2E.1', title: '"About you" vs "by you" — the key distinction' },
-          { id: '2E.2', title: 'Interviews / profiles / mentions: structure and requirements' },
-          { id: '2E.3', title: 'How to package publications as exhibits' },
+          { id: '2.4.1', title: 'What qualifies as judging' },
+          { id: '2.4.2', title: 'How to document it' },
+          { id: '2.4.3', title: 'How to build up judging quickly in a lawful and provable way' },
         ],
-        tool: 'Media Kit Builder → press bio + pitch angles + target list + exhibit formatting',
+        tool: 'Judging qualification and documentation',
       },
       {
-        label: '2F · Membership in Selective Associations',
+        label: '2.5 Criterion 5',
+        subtitle: 'Original contributions of major significance',
         lessons: [
-          { id: '2F.1', title: 'Why "paid and joined" does not work' },
-          { id: '2F.2', title: 'How to prove selectivity: selection criteria, acceptance rate, requirements' },
-          { id: '2F.3', title: 'What to use instead if membership is not selective' },
+          { id: '2.5.1', title: '"Major significance" = impact beyond your own team' },
+          { id: '2.5.2', title: 'How to present a claim-based approach' },
+          { id: '2.5.3', title: 'What evidence to use' },
         ],
-        tool: 'Membership Eligibility Analyzer → checks selectivity; recommends pack or alternative',
+        tool: 'Claim framing and impact evidence',
+      },
+      {
+        label: '2.6 Criterion 6',
+        subtitle: 'Authorship of scholarly articles in professional publications or major media',
+        lessons: [
+          { id: '2.6.1', title: 'Scholarly vs. professional' },
+          { id: '2.6.2', title: 'How to prove the impact of articles outside the academic environment' },
+          { id: '2.6.3', title: 'Packaging: PDF, links, indexing, metrics (where applicable)' },
+        ],
+        tool: 'Article qualification and packaging',
+      },
+      {
+        label: '2.7 Criterion 7',
+        subtitle: 'Display of work at artistic exhibitions and showcases',
+        lessons: [
+          { id: '2.7.1', title: 'What counts as an exhibition/showcase' },
+          { id: '2.7.2', title: 'How to prove selection and the status of the venue' },
+          { id: '2.7.3', title: 'Packaging: catalogs, event pages, curator letters' },
+        ],
+        tool: 'Exhibition/showcase evidence packaging',
+      },
+      {
+        label: '2.8 Criterion 8',
+        subtitle: 'Leading or critical role for distinguished organizations',
+        lessons: [
+          { id: '2.8.1', title: '"Distinguished" organization: how to prove it' },
+          { id: '2.8.2', title: 'How to prove the impact of articles outside the academic environment' },
+          { id: '2.8.3', title: '"Critical" = indispensable function + impact on the result' },
+        ],
+        tool: 'Organization distinction and critical-role proof',
+      },
+      {
+        label: '2.9 Criterion 9',
+        subtitle: 'High salary or other significantly high remuneration',
+        lessons: [
+          { id: '2.9.1', title: 'Which documents qualify' },
+          { id: '2.9.2', title: 'Market comparison: how to do it correctly and what sources to use' },
+          { id: '2.9.3', title: 'How not to overload the case with too many numbers' },
+        ],
+        tool: 'Compensation evidence and benchmarking',
+      },
+      {
+        label: '2.10 Criterion 10',
+        subtitle: 'Commercial success in the performing arts',
+        lessons: [
+          { id: '2.10.1', title: 'Who it applies to and which metrics are accepted' },
+          { id: '2.10.2', title: 'How to prove it' },
+          { id: '2.10.3', title: 'How to package the evidence' },
+        ],
+        tool: 'Commercial success evidence packaging',
+      },
+      {
+        label: '2.C Comparable Evidence',
+        subtitle: 'Comparable Evidence (if the criteria do not fit)',
+        lessons: [
+          { id: '2.C.1', title: 'When comparable evidence is allowed' },
+          { id: '2.C.2', title: 'How to build comparability' },
+          { id: '2.C.3', title: 'Risks: why you must explain "why the 10 criteria do not fit"' },
+        ],
+        tool: 'Comparable evidence analysis',
       },
     ],
   },
@@ -130,11 +197,11 @@ const MODULES: Module[] = [
     goal: '6–10 strong letters, distributed by author type covering all claimed criteria.',
     artifact: 'Letters Pack v1 + Recommender Request Kit',
     lessons: [
-      { id: '3.1', title: 'Letter architecture: who confirms which facts' },
-      { id: '3.2', title: '"Independent" letters: how to find authors and how to ask' },
-      { id: '3.3', title: 'A letter must not be "he is a good person": structure (claim → evidence → impact)' },
-      { id: '3.4', title: 'How to avoid templating and "too-similar" letters' },
-      { id: '3.5', title: 'Letter attachments: author CV, bio, proof of authority' },
+      { id: '3.1', title: 'Letter architecture' },
+      { id: '3.2', title: '"Independent" letters' },
+      { id: '3.3', title: 'A letter should not be reduced to a general positive evaluation' },
+      { id: '3.4', title: 'How to avoid template language and letters that are "too similar"' },
+      { id: '3.5', title: 'Attachments to recommendation letters' },
     ],
     tool: 'Letter Planner + Letter Draft Studio + Repetition & Risk Checker',
   },
@@ -146,41 +213,41 @@ const MODULES: Module[] = [
     goal: 'Assemble a complete submission-grade package.',
     artifact: 'Petition Package v1 (Draft Submission)',
     lessons: [
-      { id: '4.1', title: 'Petition package structure: table of contents, tabs, exhibit numbering' },
-      { id: '4.2', title: 'Cover letter / legal brief: criteria logic + overall merits' },
-      { id: '4.3', title: 'Exhibit labeling: making it "officer-readable"' },
+      { id: '4.1', title: 'Petition package structure' },
+      { id: '4.2', title: 'Cover letter / legal brief: logic by criteria + overall merits' },
+      { id: '4.3', title: 'Exhibit labeling: how to make it "readable for the officer"' },
       { id: '4.4', title: 'Translations: formatting requirements and certification' },
-      { id: '4.5', title: 'Final QA check: "how an officer thinks during the first pass"' },
+      { id: '4.5', title: 'Final QA review: "how the officer thinks during the first pass-through"' },
     ],
     tool: 'Petition Assembler + Consistency Checker + Translation Packet Helper',
   },
   {
     id: 'M5',
     index: 5,
-    title: 'Filing I-140 and Post-Filing Process',
+    title: 'Filing the I-140 and What Comes After',
     duration: '1 week',
-    goal: 'Understand filing scenarios and what to do after filing.',
+    goal: '(premium / AOS / consular)',
     artifact: 'Filing Plan + Final Checklist',
     lessons: [
       { id: '5.1', title: 'What gets filed: the I-140 package + dependencies based on U.S. status' },
-      { id: '5.2', title: 'Premium processing: when it makes sense (no promises)' },
-      { id: '5.3', title: 'AOS vs Consular processing: decision logic' },
-      { id: '5.4', title: 'What happens after filing: receipt, requests, timelines, actions' },
-      { id: '5.5', title: 'How to respond to real USCIS letters (process-focused)' },
+      { id: '5.2', title: 'Premium processing: when it makes sense' },
+      { id: '5.3', title: 'AOS vs. consular processing: decision logic' },
+      { id: '5.4', title: 'What happens after filing' },
+      { id: '5.5', title: 'How to respond to real USCIS notices' },
     ],
     tool: 'Filing Readiness Checklist + Post-Filing Tracker',
   },
   {
     id: 'M6',
     index: 6,
-    title: 'Officer-Style Review (EER)',
+    title: 'Officer-Style Review',
     duration: '2–3 iterations',
     goal: 'Not to "approve," but to always produce a "request to strengthen." Activates after Module 4.',
     artifact: 'EER Report v1 → v2 → v3 + Resolution Notes',
     lessons: [
-      { id: '6.1', title: 'How to read the EER report and close items' },
-      { id: '6.2', title: 'Prioritization: what is critical, recommended, optional' },
-      { id: '6.3', title: 'Iteration: how to reach "minimal risk" in structure and clarity' },
+      { id: '6.1', title: 'How to read the EER/SER report and how to close the flagged points' },
+      { id: '6.2', title: 'Prioritization: what is critical, what is desirable, and what is optional' },
+      { id: '6.3', title: 'Iteration: how to get to "minimum risk" in structure and clarity' },
     ],
     tool: 'Evidence Enhancement Request (EER) Generator — RAG + Officer Decision Tree + cite-or-abstain',
   },
@@ -258,6 +325,9 @@ function ModuleAccordion({ module }: { module: Module }) {
                   <p className={`text-xs font-semibold uppercase tracking-wide mb-3 ${accent}`}>
                     {block.label}
                   </p>
+                  {block.subtitle && (
+                    <p className="mb-3 text-sm text-foreground-secondary">{block.subtitle}</p>
+                  )}
                   <div className="space-y-2 mb-3">
                     {block.lessons.map((lesson) => (
                       <div key={lesson.id} className="flex items-start gap-3">
@@ -317,7 +387,7 @@ export default function Home() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-primary" />
-              <span className="text-xl font-semibold">LMS EB1A</span>
+              <span className="text-xl font-semibold">Aipas</span>
             </div>
             <div className="flex items-center gap-4">
               <Link href="/login" className="btn-ghost">Sign In</Link>
@@ -350,25 +420,22 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="mt-12 flex items-center justify-center gap-10 text-sm">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-foreground">7</p>
-              <p className="text-foreground-muted">Modules</p>
+          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
+              <span className="text-2xl font-bold text-foreground">7</span>
+              <span className="mt-1 text-sm text-foreground-muted">Modules</span>
             </div>
-            <div className="h-8 w-px bg-border" />
-            <div className="text-center">
-              <p className="text-2xl font-bold text-foreground">{totalLessons}</p>
-              <p className="text-foreground-muted">Video Lessons</p>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
+              <span className="text-2xl font-bold text-foreground">{totalLessons}</span>
+              <span className="mt-1 text-sm text-foreground-muted">Video Lessons</span>
             </div>
-            <div className="h-8 w-px bg-border" />
-            <div className="text-center">
-              <p className="text-2xl font-bold text-foreground">12+</p>
-              <p className="text-foreground-muted">AI Tools</p>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
+              <span className="text-2xl font-bold text-foreground">12+</span>
+              <span className="mt-1 text-sm text-foreground-muted">AI Tools</span>
             </div>
-            <div className="h-8 w-px bg-border" />
-            <div className="text-center">
-              <p className="text-2xl font-bold text-foreground">1</p>
-              <p className="text-foreground-muted">EER Engine</p>
+            <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
+              <span className="text-2xl font-bold text-foreground">1</span>
+              <span className="mt-1 text-sm text-foreground-muted">EER Engine</span>
             </div>
           </div>
         </div>
@@ -427,7 +494,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <div className="flex items-center gap-2">
               <div className="h-6 w-6 rounded bg-primary" />
-              <span className="font-semibold">LMS EB1A</span>
+              <span className="font-semibold">Aipas</span>
             </div>
             <p className="text-sm text-foreground-muted text-center">
               This platform does not provide legal advice or predict immigration outcomes.

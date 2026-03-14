@@ -176,15 +176,15 @@ export const CRITERION_SLOTS: Record<string, string[]> = {
 
 /** Checklist section definitions */
 export const CHECKLIST_SECTIONS = [
-  { id: 's0', title: 'Case Profile Data', subtitle: 'Structured fields for Creator + Forms Filler' },
-  { id: 's1', title: 'Core Forms, Fees, and Filing Components', subtitle: 'I-140 Packet' },
-  { id: 's2', title: 'Personal / Identity / Immigration Status Docs', subtitle: '' },
-  { id: 's3', title: 'Case Axis & Proposed Endeavor', subtitle: 'Continuing Work' },
-  { id: 's4', title: 'Petition Writing Pack', subtitle: 'What officer reads first' },
-  { id: 's5', title: 'Evidence Checklist', subtitle: 'All 10 criteria + Comparable Evidence' },
-  { id: 's6', title: 'Comparable Evidence', subtitle: '' },
-  { id: 's7', title: 'Recommendation Letters Pack', subtitle: 'Master folder' },
-  { id: 's8', title: 'Translations & Certifications', subtitle: '+ Filing Hygiene' },
-  { id: 's9', title: 'Officer Review Iterations', subtitle: 'EER Reports' },
-  { id: 's10', title: 'Filing Plan + Post-Filing', subtitle: 'Optional / Later' },
+  { id: 's1', title: '1. Case Intake & Profile', subtitle: '' },
+  { id: 's2', title: '2. Forms & Fees', subtitle: '' },
+  { id: 's3', title: '3. Identity & Status', subtitle: '' },
+  { id: 's4', title: '4. Cover Letter / Legal Brief', subtitle: '' },
+  { id: 's5', title: '5. Evidence (Criteria)', subtitle: '' },
+  { id: 's6', title: '6. Comparable Evidence', subtitle: '' },
+  { id: 's7', title: '7. Expert Letters', subtitle: '' },
+  { id: 's8', title: '8. Translations', subtitle: '' },
+  { id: 's9', title: '9. Responses to USCIS (RFE/NOID)', subtitle: '' },
+  { id: 's10', title: '10. Filing & Tracking', subtitle: '' },
+  { id: 's11', title: '11. Packet Compilation & Audit', subtitle: '' },
 ] as const;

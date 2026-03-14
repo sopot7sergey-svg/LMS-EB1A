@@ -1,4 +1,4 @@
-import { DocumentCategory, DocumentMetadata } from '@lms-eb1a/shared';
+import { DocumentCategory, DocumentMetadata } from '@aipas/shared';
 
 interface NormalizedDocument {
   category: DocumentCategory;
@@ -11,42 +11,42 @@ export class DocumentNormalizer {
     const lowerFilename = filename.toLowerCase();
 
     if (lowerFilename.includes('letter') || lowerFilename.includes('recommendation')) {
-      return 'letter';
+      return 'Expert Letters';
     }
-    if (lowerFilename.includes('pay') || lowerFilename.includes('salary') || 
+    if (lowerFilename.includes('pay') || lowerFilename.includes('salary') ||
         lowerFilename.includes('w2') || lowerFilename.includes('w-2') ||
         lowerFilename.includes('offer')) {
-      return 'pay';
+      return 'Forms & Fees';
     }
     if (lowerFilename.includes('article') || lowerFilename.includes('interview') ||
         lowerFilename.includes('press') || lowerFilename.includes('media')) {
-      return 'media';
+      return 'Evidence (Criteria)';
     }
     if (lowerFilename.includes('publication') || lowerFilename.includes('paper') ||
         lowerFilename.includes('journal')) {
-      return 'publication';
+      return 'Evidence (Criteria)';
     }
     if (lowerFilename.includes('award') || lowerFilename.includes('certificate') ||
         lowerFilename.includes('prize')) {
-      return 'award';
+      return 'Evidence (Criteria)';
     }
     if (lowerFilename.includes('judg') || lowerFilename.includes('review') ||
         lowerFilename.includes('panel')) {
-      return 'judging';
+      return 'Evidence (Criteria)';
     }
     if (lowerFilename.includes('member') || lowerFilename.includes('association')) {
-      return 'membership';
+      return 'Evidence (Criteria)';
     }
     if (lowerFilename.includes('role') || lowerFilename.includes('org') ||
         lowerFilename.includes('chart')) {
-      return 'role';
+      return 'Evidence (Criteria)';
     }
     if (lowerFilename.includes('contribution') || lowerFilename.includes('patent') ||
         lowerFilename.includes('innovation')) {
-      return 'contribution';
+      return 'Evidence (Criteria)';
     }
 
-    return 'misc';
+    return 'Case Intake & Profile';
   }
 
   extractMetadata(content: string): DocumentMetadata {

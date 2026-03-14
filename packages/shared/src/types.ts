@@ -208,6 +208,15 @@ export interface ChatMessage {
   createdAt: Date;
 }
 
+import type { DocumentCategory } from './documentCategories';
+import type {
+  DocumentBuilderAnswers,
+  DocumentBuilderInputMode,
+  DocumentBuilderStatus,
+  DocumentDraftPayload,
+  DocumentMetadataSource,
+} from './documentBuilder';
+
 export interface Document {
   id: string;
   caseId: string;
@@ -223,17 +232,7 @@ export interface Document {
   updatedAt: Date;
 }
 
-export type DocumentCategory = 
-  | 'letter' 
-  | 'pay' 
-  | 'media' 
-  | 'publication' 
-  | 'award' 
-  | 'judging' 
-  | 'membership' 
-  | 'role' 
-  | 'contribution' 
-  | 'misc';
+export type { DocumentCategory };
 
 export interface DocumentMetadata {
   dates?: string[];
@@ -242,6 +241,49 @@ export interface DocumentMetadata {
   titles?: string[];
   links?: string[];
   metrics?: Record<string, string | number>;
+  slotType?: string;
+  source?: DocumentMetadataSource;
+  builderStatus?: DocumentBuilderStatus;
+  builderStateId?: string;
+  isDraft?: boolean;
+  confidenceScore?: number;
+  reviewForDocumentId?: string;
+  reviewKind?: 'document_review';
+  documentReview?: DocumentReviewResult;
+}
+
+export type DocumentReviewFinalStatus = 'usable' | 'weak' | 'irrelevant' | 'needs_context';
+
+export interface DocumentReviewResult {
+  reviewedAt: string;
+  reviewedBy: 'document_review_agent';
+  reviewDocumentId?: string;
+  documentType: string;
+  relatedCriterion?: string | null;
+  relatedSection?: string | null;
+  strengths: string[];
+  weaknesses: string[];
+  missingContext: string[];
+  finalStatus: DocumentReviewFinalStatus;
+}
+
+export interface DocumentBuilderState {
+  id: string;
+  caseId: string;
+  userId: string;
+  sectionId: string;
+  slotType: string;
+  status: DocumentBuilderStatus;
+  inputModes: DocumentBuilderInputMode[];
+  answers?: DocumentBuilderAnswers;
+  sourceDocumentIds: string[];
+  draftJson?: DocumentDraftPayload;
+  draftText?: string;
+  progress: number;
+  lastGeneratedAt?: Date | null;
+  completedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CriterionEvaluation {

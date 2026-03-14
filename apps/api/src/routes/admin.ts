@@ -208,6 +208,7 @@ router.get('/users', authenticate, requireAdmin, async (req: AuthRequest, res) =
         email: true,
         name: true,
         role: true,
+        uploadEnabled: true,
         createdAt: true,
         _count: {
           select: {
@@ -223,6 +224,28 @@ router.get('/users', authenticate, requireAdmin, async (req: AuthRequest, res) =
   } catch (error) {
     console.error('Get admin users error:', error);
     res.status(500).json({ error: 'Failed to get users' });
+  }
+});
+
+router.patch('/users/:id/upload-access', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { uploadEnabled } = req.body;
+
+    if (typeof uploadEnabled !== 'boolean') {
+      return res.status(400).json({ error: 'uploadEnabled must be a boolean' });
+    }
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { uploadEnabled },
+      select: { id: true, email: true, name: true, role: true, uploadEnabled: true },
+    });
+
+    res.json(user);
+  } catch (error) {
+    console.error('Update user upload access error:', error);
+    res.status(500).json({ error: 'Failed to update user upload access' });
   }
 });
 
