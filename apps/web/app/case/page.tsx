@@ -109,6 +109,33 @@ export default function CasesPage() {
     );
   }
 
+  if (!appAccessActive && user?.role === 'student') {
+    return (
+      <DashboardLayout>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">My Cases</h1>
+          <p className="mt-2 text-foreground-secondary">
+            Case access is required to manage your petition.
+          </p>
+        </div>
+        <Card className="max-w-xl">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Lock className="h-12 w-12 text-foreground-muted mb-4" />
+            <p className="text-center text-foreground-secondary mb-6">
+              My Case is locked. Use an access code at sign-up or upgrade your plan to unlock.
+            </p>
+            <Link href="/account/plans">
+              <Button>View Plans</Button>
+            </Link>
+            <Link href="/account" className="mt-4 text-sm text-primary hover:underline">
+              Account & Billing
+            </Link>
+          </CardContent>
+        </Card>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <div className="mb-8 flex items-center justify-between">
@@ -118,28 +145,11 @@ export default function CasesPage() {
             Manage your EB-1A petition cases.
           </p>
         </div>
-        {appAccessActive && (
-          <Button onClick={handleCreateCase} isLoading={isCreating}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Case
-          </Button>
-        )}
+        <Button onClick={handleCreateCase} isLoading={isCreating}>
+          <Plus className="mr-2 h-4 w-4" />
+          New Case
+        </Button>
       </div>
-
-      {!appAccessActive && (
-        <div className="mb-6 flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-warning">
-          <Lock className="h-5 w-5 shrink-0" />
-          <div>
-            <p className="font-medium">App access expired</p>
-            <p className="text-sm">
-              Your app plan has expired. Renew your plan to access and edit your cases. Your case data is preserved.
-            </p>
-            <Link href="/account/plans" className="mt-2 inline-block">
-              <Button variant="secondary" size="sm">View Plans</Button>
-            </Link>
-          </div>
-        </div>
-      )}
 
       {feedback ? (
         <div

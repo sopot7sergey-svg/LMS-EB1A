@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [accessCode, setAccessCode] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +37,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const { user, token } = await api.auth.register(email, password, name);
+      const { user, token } = await api.auth.register(email, password, name, accessCode?.trim() || undefined);
       setAuth(user, token);
       router.push('/dashboard');
     } catch (err: any) {
@@ -105,6 +106,15 @@ export default function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+            />
+
+            <Input
+              id="accessCode"
+              type="text"
+              label="Access Code (optional)"
+              placeholder="Enter code if you have one"
+              value={accessCode}
+              onChange={(e) => setAccessCode(e.target.value)}
             />
 
             <div className="rounded-lg border border-border bg-background-secondary p-4">

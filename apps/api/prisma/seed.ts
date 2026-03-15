@@ -628,6 +628,28 @@ async function main() {
   }
   console.log(`Created ${ragChunks.length} RAG chunks`);
 
+  const testAccessCodes = [
+    'WELCOME2025',
+    'TEST001',
+    'TEST002',
+    'TEST003',
+    'LOCAL01',
+  ];
+  for (const code of testAccessCodes) {
+    await prisma.accessCode.upsert({
+      where: { code },
+      create: {
+        code,
+        status: 'active',
+        grantCourseAccess: true,
+        grantStartAccess: true,
+        startDurationDays: 30,
+      },
+      update: {},
+    });
+  }
+  console.log(`Created ${testAccessCodes.length} test access codes: ${testAccessCodes.join(', ')}`);
+
   console.log('Seed completed!');
 }
 

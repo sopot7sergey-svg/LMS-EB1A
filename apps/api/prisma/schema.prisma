@@ -512,3 +512,20 @@ model AIUsageLog {
   @@index([userId])
   @@index([createdAt])
 }
+
+// One-time access codes for sign-up entitlement
+model AccessCode {
+  id                 String    @id @default(uuid())
+  code               String    @unique
+  status             String    @default("active") // active | used | expired | disabled
+  usedByUserId       String?
+  usedAt             DateTime?
+  grantCourseAccess  Boolean   @default(true)
+  grantStartAccess   Boolean   @default(true)
+  startDurationDays Int       @default(30)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([code])
+  @@index([status])
+}

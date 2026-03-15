@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
-import { CheckCircle, PlayCircle } from 'lucide-react';
+import { CheckCircle, PlayCircle, Lock } from 'lucide-react';
 
 interface Module {
   id: string;
@@ -26,7 +27,7 @@ interface ModuleProgress {
 }
 
 export default function ModulesPage() {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<Record<string, ModuleProgress>>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -74,6 +75,30 @@ export default function ModulesPage() {
         <div className="flex h-64 items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!user?.courseAccess && user?.role === 'student') {
+    return (
+      <DashboardLayout>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Course Modules</h1>
+          <p className="mt-2 text-foreground-secondary">
+            Course access is required to view lessons.
+          </p>
+        </div>
+        <Card className="max-w-xl">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Lock className="h-12 w-12 text-foreground-muted mb-4" />
+            <p className="text-center text-foreground-secondary mb-6">
+              My Courses is locked. Use an access code at sign-up or upgrade your plan to unlock.
+            </p>
+            <Link href="/account/plans">
+              <Button>View Plans</Button>
+            </Link>
+          </CardContent>
+        </Card>
       </DashboardLayout>
     );
   }

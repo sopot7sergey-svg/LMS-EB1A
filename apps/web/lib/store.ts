@@ -8,6 +8,7 @@ interface User {
   role: 'student' | 'admin';
   uploadEnabled?: boolean;
   appAccessActive?: boolean;
+  courseAccess?: boolean;
   plan?: string;
   planStatus?: string;
   expiresAt?: string | null;

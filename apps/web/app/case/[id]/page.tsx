@@ -516,7 +516,7 @@ export default function CaseDetailPage() {
             </div>
           </div>
 
-          <Button variant="secondary" onClick={() => setCompileModalOpen(true)}>
+          <Button variant="primary" onClick={() => setCompileModalOpen(true)}>
             <FileStack className="mr-2 h-4 w-4" />
             Compile Officer Packet
           </Button>

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 import { authenticate, AuthRequest } from '../middleware/auth';
-import { getAccess, registerDevice } from '../services/access';
+import { getAccess, grantAccessFromCode, registerDevice } from '../services/access';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -15,6 +15,7 @@ router.post(
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 8 }),
     body('name').trim().notEmpty(),
+    body('accessCode').optional().trim(),
   ],
   async (req: Request, res: Response) => {
     try {
@@ -23,11 +24,32 @@ router.post(
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { email, password, name } = req.body;
+      const { email, password, name, accessCode } = req.body;
 
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser) {
         return res.status(400).json({ error: 'Email already registered' });
+      }
+
+      let codeRecord: { id: string; grantCourseAccess: boolean; grantStartAccess: boolean; startDurationDays: number } | null = null;
+
+      if (accessCode && typeof accessCode === 'string' && accessCode.trim()) {
+        const trimmed = accessCode.trim();
+        const found = await prisma.accessCode.findUnique({
+          where: { code: trimmed },
+        });
+        if (!found) {
+          return res.status(400).json({ error: 'Invalid access code. Please check the code and try again.' });
+        }
+        if (found.status !== 'active') {
+          return res.status(400).json({ error: `This access code has already been used or is no longer valid (status: ${found.status}).` });
+        }
+        codeRecord = {
+          id: found.id,
+          grantCourseAccess: found.grantCourseAccess,
+          grantStartAccess: found.grantStartAccess,
+          startDurationDays: found.startDurationDays,
+        };
       }
 
       const hashedPassword = await bcrypt.hash(password, 12);
@@ -41,13 +63,38 @@ router.post(
         select: { id: true, email: true, name: true, role: true, uploadEnabled: true },
       });
 
+      if (codeRecord) {
+        await grantAccessFromCode(user.id, {
+          courseAccess: codeRecord.grantCourseAccess,
+          startAccess: codeRecord.grantStartAccess,
+          startDurationDays: codeRecord.startDurationDays,
+        });
+        await prisma.accessCode.update({
+          where: { id: codeRecord.id },
+          data: { status: 'used', usedByUserId: user.id, usedAt: new Date() },
+        });
+      }
+
+      const access = await getAccess(user.id);
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },
         process.env.JWT_SECRET || 'secret',
         { expiresIn: '7d' }
       );
 
-      res.status(201).json({ user, token });
+      res.status(201).json({
+        user: {
+          ...user,
+          appAccessActive: access.appAccessActive,
+          plan: access.plan,
+          planStatus: access.planStatus,
+          expiresAt: access.expiresAt,
+          maxCases: access.maxCases,
+          caseCount: access.caseCount,
+          courseAccess: access.courseAccess,
+        },
+        token,
+      });
     } catch (error) {
       console.error('Registration error:', error);
       res.status(500).json({ error: 'Registration failed' });
@@ -108,6 +155,7 @@ router.post(
           uploadEnabled: user.uploadEnabled,
           ...(access && {
             appAccessActive: access.appAccessActive,
+            courseAccess: access.courseAccess,
             plan: access.plan,
             planStatus: access.planStatus,
             expiresAt: access.expiresAt,
@@ -149,6 +197,7 @@ router.get('/me', authenticate, async (req: AuthRequest, res) => {
     res.json({
       ...user,
       appAccessActive: access.appAccessActive,
+      courseAccess: access.courseAccess,
       plan: access.plan,
       planStatus: access.planStatus,
       expiresAt: access.expiresAt,

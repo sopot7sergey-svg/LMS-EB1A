@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { useAuthStore, useCaseStore } from '@/lib/store';
 import { api } from '@/lib/api';
-import { BookOpen, FileText, MessageSquare, ArrowRight } from 'lucide-react';
+import { BookOpen, FileText, MessageSquare, ArrowRight, Lock } from 'lucide-react';
 
 interface ModuleProgressData {
   moduleId: string;
@@ -83,6 +83,34 @@ export default function DashboardPage() {
           />
           <span className="ml-3">Loading...</span>
         </div>
+      </DashboardLayout>
+    );
+  }
+
+  const hasAccess = user?.courseAccess || user?.appAccessActive;
+  if (!hasAccess && user?.role === 'student') {
+    return (
+      <DashboardLayout>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Welcome, {user?.name}</h1>
+          <p className="mt-2 text-foreground-secondary">
+            Your account is ready. Upgrade to access the course and case tools.
+          </p>
+        </div>
+        <Card className="max-w-xl">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Lock className="h-12 w-12 text-foreground-muted mb-4" />
+            <p className="text-center text-foreground-secondary mb-6">
+              My Courses and My Case are locked. Use an access code at sign-up or upgrade your plan to unlock.
+            </p>
+            <Link href="/account/plans">
+              <Button>View Plans</Button>
+            </Link>
+            <Link href="/account" className="mt-4 text-sm text-primary hover:underline">
+              Account & Billing
+            </Link>
+          </CardContent>
+        </Card>
       </DashboardLayout>
     );
   }

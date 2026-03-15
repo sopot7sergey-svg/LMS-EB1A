@@ -101,6 +101,49 @@ export function canAccessCourse(access: AccessResult): boolean {
   return access.courseAccess && !access.suspended;
 }
 
+/** Grant access from a valid access code (course + Start plan). */
+export async function grantAccessFromCode(
+  userId: string,
+  options: { courseAccess: boolean; startAccess: boolean; startDurationDays: number }
+): Promise<void> {
+  const { courseAccess, startAccess, startDurationDays } = options;
+
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + startDurationDays);
+
+  await prisma.$transaction(async (tx) => {
+    if (courseAccess) {
+      await tx.courseEntitlement.upsert({
+        where: { userId },
+        create: { userId, purchasedAt: new Date(), activatedAt: new Date() },
+        update: {},
+      });
+    }
+    if (startAccess) {
+      await tx.appAccess.upsert({
+        where: { userId },
+        create: {
+          userId,
+          plan: 'start',
+          status: 'active',
+          startedAt: new Date(),
+          expiresAt,
+          maxCases: 3,
+          uploadEnabled: false,
+        },
+        update: {
+          plan: 'start',
+          status: 'active',
+          startedAt: new Date(),
+          expiresAt,
+          maxCases: 3,
+          uploadEnabled: false,
+        },
+      });
+    }
+  });
+}
+
 /** Grant Start plan (30 days) after course purchase. */
 export async function grantStartAfterCoursePurchase(userId: string): Promise<void> {
   const expiresAt = new Date();

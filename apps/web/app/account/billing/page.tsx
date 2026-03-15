@@ -200,12 +200,6 @@ export default function BillingPage() {
               {usage ? `${usage.coverLetterGenerates ?? 0} / ${usage.limits?.coverLetterGenerateLimit ?? '—'}` : '—'}
             </span>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-foreground-secondary">Est. monthly AI cost</span>
-            <span className={usage?.blocked ? 'text-error font-medium' : ''}>
-              {usage ? `$${(usage.estimatedCostUsd ?? 0).toFixed(2)} / $${(usage.limits?.monthlyCostLimitUsd ?? 0).toFixed(2)}` : '—'}
-            </span>
-          </div>
           {usage?.nearOrAtLimit && (
             <div className="mt-3 flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-600 dark:text-amber-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
