@@ -4,7 +4,8 @@ const fs = require('fs');
 function getApiUrl() {
   if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
   try {
-    const portFile = path.join(process.cwd(), '..', '..', '.dev-api-port');
+    // Use __dirname so path is correct regardless of process.cwd() (project root vs apps/web)
+    const portFile = path.join(__dirname, '..', '..', '.dev-api-port');
     const port = fs.readFileSync(portFile, 'utf8').trim();
     if (port) return `http://localhost:${port}`;
   } catch (_) {}

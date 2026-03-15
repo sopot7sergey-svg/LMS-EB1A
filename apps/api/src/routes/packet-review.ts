@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { getAccess } from '../services/access';
+import { checkQuota, recordUsage } from '../services/ai/quota';
 import { runPacketReview } from '../services/packet-review/reviewer';
 
 const router = Router();
 const prisma = new PrismaClient();
 
 function getUserId(req: any): string | null {
-  return (req as any).user?.userId ?? null;
+  return (req as any).user?.userId ?? (req as any).user?.id ?? null;
 }
 
 function authMiddleware(req: any, res: any, next: any) {
@@ -64,6 +66,13 @@ router.post('/cases/:caseId/packet-review', async (req, res) => {
       return res.status(400).json({ error: 'Compile job has not completed yet' });
     }
 
+    const userId = caseRecord.userId;
+    const access = await getAccess(userId);
+    const quotaCheck = await checkQuota(userId, 'final_audit', access.plan as any, access.appAccessActive);
+    if (!quotaCheck.allowed) {
+      return res.status(403).json({ error: quotaCheck.message ?? 'Final audit limit reached' });
+    }
+
     const report = await runPacketReview(caseId, compileJobId);
 
     const artifact = await prisma.compileArtifact.findUnique({ where: { jobId: compileJobId } });
@@ -76,6 +85,15 @@ router.post('/cases/:caseId/packet-review', async (req, res) => {
         where: { id: artifact.id },
         data: { optionsHash: JSON.stringify(existing) },
       });
+    }
+
+    if (report.usedAI) {
+      try {
+        const model = process.env.OPENAI_MODEL || 'gpt-4o';
+        await recordUsage(userId, 'final_audit', model, 10000, 4000);
+      } catch (err) {
+        console.error('[PacketReview] Failed to record usage:', err);
+      }
     }
 
     res.json({ report });

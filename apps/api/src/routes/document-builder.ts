@@ -15,6 +15,7 @@ import {
 } from '@aipas/shared';
 import { authenticate, type AuthRequest } from '../middleware/auth';
 import { canAccessApp, getAccess } from '../services/access';
+import { checkQuota, recordUsage } from '../services/ai/quota';
 import { generateDocumentDraft, renderDraftText } from '../services/documents/builder-generator';
 import { suggestIntakePrefill } from '../services/documents/intake-prefill';
 import { ensureCaseDocumentDir, getCanonicalDocumentPath } from '../services/documents/storage';
@@ -510,6 +511,15 @@ router.post('/:slotType/generate', authenticate, async (req: AuthRequest, res) =
       return res.status(400).json({ error: generateValidationError });
     }
 
+    if (slotType === 'cover_letter_draft') {
+      const userId = caseRecord.userId;
+      const access = await getAccess(userId);
+      const quotaCheck = await checkQuota(userId, 'cover_letter_generate', access.plan as any, access.appAccessActive);
+      if (!quotaCheck.allowed) {
+        return res.status(403).json({ error: quotaCheck.message ?? 'Cover letter generation limit reached' });
+      }
+    }
+
     const priorDocuments = config.prefillFromSlots?.length
       ? await prisma.documentBuilderState.findMany({
           where: {
@@ -567,6 +577,15 @@ router.post('/:slotType/generate', authenticate, async (req: AuthRequest, res) =
       priorDocuments: normalizedPriorDocuments,
       caseContext,
     });
+
+    if (slotType === 'cover_letter_draft') {
+      try {
+        const model = process.env.OPENAI_MODEL || 'gpt-4o';
+        await recordUsage(caseRecord.userId, 'cover_letter_generate', model, 3000, 2000);
+      } catch (err) {
+        console.error('[DocumentBuilder] Failed to record cover letter usage:', err);
+      }
+    }
 
     const draftText = renderDraftText(draft);
     const state = await prisma.documentBuilderState.upsert({

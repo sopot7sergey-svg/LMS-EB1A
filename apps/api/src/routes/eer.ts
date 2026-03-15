@@ -3,6 +3,8 @@ import fs from 'fs';
 import { randomUUID } from 'crypto';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { getAccess } from '../services/access';
+import { checkQuota, recordUsage } from '../services/ai/quota';
 import { EEROrchestrator } from '../services/ai/eer-orchestrator';
 import {
   makeReviewDocumentName,
@@ -107,6 +109,15 @@ router.post('/review-documents', authenticate, async (req: AuthRequest, res) => 
     if (!caseRecord) return res.status(404).json({ error: 'Case not found' });
     if (req.user!.role !== 'admin' && caseRecord.userId !== req.user!.id) {
       return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const userId = caseRecord.userId;
+    const access = await getAccess(userId);
+    const quotaCheck = await checkQuota(userId, 'document_review', access.plan as any, access.appAccessActive, {
+      increment: documentIds.length,
+    });
+    if (!quotaCheck.allowed) {
+      return res.status(403).json({ error: quotaCheck.message ?? 'Document review limit reached' });
     }
 
     const documents = await prisma.document.findMany({
@@ -254,6 +265,18 @@ router.post('/review-documents', authenticate, async (req: AuthRequest, res) => 
         };
       })
     );
+
+    const hasAI = Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your-openai-api-key');
+    if (hasAI && documents.length > 0) {
+      const model = process.env.OPENAI_MODEL || 'gpt-4o';
+      for (let i = 0; i < documents.length; i++) {
+        try {
+          await recordUsage(userId, 'document_review', model, 1000, 400);
+        } catch (err) {
+          console.error('[EER] Failed to record document review usage:', err);
+        }
+      }
+    }
 
     res.status(201).json({ reviews: persistedReviews });
   } catch (error) {

@@ -15,6 +15,7 @@ export default function BillingPage() {
   const { token } = useAuthStore();
   const router = useRouter();
   const [status, setStatus] = useState<any>(null);
+  const [usage, setUsage] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
@@ -25,8 +26,14 @@ export default function BillingPage() {
   const refresh = () => {
     if (!token) return;
     setIsLoading(true);
-    api.billing.status(token)
-      .then(setStatus)
+    Promise.all([
+      api.billing.status(token),
+      api.account.usage(token).catch(() => null),
+    ])
+      .then(([s, u]) => {
+        setStatus(s);
+        setUsage(u);
+      })
       .catch(console.error)
       .finally(() => setIsLoading(false));
   };
@@ -42,8 +49,14 @@ export default function BillingPage() {
       setIsLoading(false);
       return;
     }
-    api.billing.status(token)
-      .then(setStatus)
+    Promise.all([
+      api.billing.status(token),
+      api.account.usage(token).catch(() => null),
+    ])
+      .then(([s, u]) => {
+        setStatus(s);
+        setUsage(u);
+      })
       .catch(console.error)
       .finally(() => setIsLoading(false));
   }, [mounted, token, router]);
@@ -148,6 +161,59 @@ export default function BillingPage() {
             <span className="text-foreground-secondary">Document upload</span>
             <span>{status?.uploadEnabled ? <Check className="h-5 w-5 text-success" /> : 'Disabled'}</span>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6 max-w-xl">
+        <CardHeader>
+          <CardTitle>AI Usage</CardTitle>
+          <p className="text-sm text-foreground-secondary">
+            {usage ? (
+              <>Period: {usage.periodStart ? new Date(usage.periodStart).toLocaleDateString() : '—'} to {usage.periodEnd ? new Date(usage.periodEnd).toLocaleDateString() : '—'}</>
+            ) : (
+              <>Unable to load usage. <button type="button" onClick={refresh} className="underline hover:no-underline">Refresh</button></>
+            )}
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-foreground-secondary">Advisor Chat</span>
+            <span className={usage?.blocked ? 'text-error font-medium' : ''}>
+              {usage ? `${usage.advisorChatCalls ?? 0} / ${usage.limits?.advisorChatCallLimit ?? '—'}` : '—'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-foreground-secondary">Document Review</span>
+            <span className={usage?.blocked ? 'text-error font-medium' : ''}>
+              {usage ? `${usage.documentReviewCalls ?? 0} / ${usage.limits?.documentReviewLimit ?? '—'}` : '—'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-foreground-secondary">Final Audit</span>
+            <span className={usage?.blocked ? 'text-error font-medium' : ''}>
+              {usage ? `${usage.finalAuditCalls ?? 0} / ${usage.limits?.finalAuditLimit ?? '—'}` : '—'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-foreground-secondary">Cover Letter</span>
+            <span className={usage?.blocked ? 'text-error font-medium' : ''}>
+              {usage ? `${usage.coverLetterGenerates ?? 0} / ${usage.limits?.coverLetterGenerateLimit ?? '—'}` : '—'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-foreground-secondary">Est. monthly AI cost</span>
+            <span className={usage?.blocked ? 'text-error font-medium' : ''}>
+              {usage ? `$${(usage.estimatedCostUsd ?? 0).toFixed(2)} / $${(usage.limits?.monthlyCostLimitUsd ?? 0).toFixed(2)}` : '—'}
+            </span>
+          </div>
+          {usage?.nearOrAtLimit && (
+            <div className="mt-3 flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-600 dark:text-amber-400">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              {usage.blocked
+                ? 'You have reached your AI usage limits. Limits reset at the start of next month.'
+                : 'You are approaching your AI usage limits.'}
+            </div>
+          )}
         </CardContent>
       </Card>
 

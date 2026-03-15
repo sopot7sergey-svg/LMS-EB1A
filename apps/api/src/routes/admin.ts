@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
+import { getUsageSummary } from '../services/ai/quota';
 import {
   getAccess,
   grantStartAfterCoursePurchase,
@@ -273,6 +274,7 @@ router.get('/users/:id', authenticate, requireAdmin, async (req: AuthRequest, re
     });
     if (!user) return res.status(404).json({ error: 'User not found' });
     const access = await getAccess(user.id);
+    const usage = await getUsageSummary(user.id, access.plan as any);
     res.json({
       ...user,
       appAccessActive: access.appAccessActive,
@@ -281,6 +283,7 @@ router.get('/users/:id', authenticate, requireAdmin, async (req: AuthRequest, re
       expiresAt: access.expiresAt,
       maxCases: access.maxCases,
       uploadEnabled: user.uploadEnabled,
+      aiUsage: usage,
     });
   } catch (error) {
     console.error('Get admin user error:', error);

@@ -593,6 +593,22 @@ async function main() {
     },
   });
 
+  for (const plan of ['start', 'pro', 'ultra'] as const) {
+    await prisma.aIQuotaPolicy.upsert({
+      where: { plan },
+      create: {
+        plan,
+        advisorChatCallLimit: plan === 'start' ? 5 : plan === 'pro' ? 25 : 100,
+        documentReviewLimit: plan === 'start' ? 3 : plan === 'pro' ? 15 : 50,
+        finalAuditLimit: plan === 'start' ? 2 : plan === 'pro' ? 10 : 30,
+        coverLetterGenerateLimit: plan === 'start' ? 1 : plan === 'pro' ? 5 : 20,
+        monthlyCostLimitUsd: plan === 'start' ? 2 : plan === 'pro' ? 15 : 50,
+      },
+      update: {},
+    });
+  }
+  console.log('Created AI quota policies for start, pro, ultra');
+
   for (const chunk of ragChunks) {
     const existing = await prisma.rAGChunk.findFirst({
       where: {

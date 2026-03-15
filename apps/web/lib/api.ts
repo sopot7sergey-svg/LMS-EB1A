@@ -81,6 +81,20 @@ export const api = {
   account: {
     access: (token: string) =>
       fetchAPI<any>('/api/account/access', { token }),
+    usage: (token: string) =>
+      fetchAPI<{
+        plan: string;
+        periodStart: string;
+        periodEnd: string;
+        advisorChatCalls: number;
+        documentReviewCalls: number;
+        finalAuditCalls: number;
+        coverLetterGenerates: number;
+        estimatedCostUsd: number;
+        limits: Record<string, number>;
+        nearOrAtLimit: boolean;
+        blocked: boolean;
+      }>('/api/account/usage', { token }),
     changePassword: (currentPassword: string, newPassword: string, token: string) =>
       fetchAPI<{ message: string }>('/api/account/password', {
         method: 'PATCH',

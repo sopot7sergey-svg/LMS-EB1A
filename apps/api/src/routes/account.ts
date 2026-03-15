@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
 import { authenticate, AuthRequest } from '../middleware/auth';
 import { getAccess, registerDevice } from '../services/access';
+import { getUsageSummary } from '../services/ai/quota';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -36,6 +37,17 @@ router.get('/access', authenticate, async (req: AuthRequest, res: Response) => {
   } catch (error) {
     console.error('Get access error:', error);
     res.status(500).json({ error: 'Failed to get access' });
+  }
+});
+
+router.get('/usage', authenticate, async (req: AuthRequest, res: Response) => {
+  try {
+    const access = await getAccess(req.user!.id);
+    const usage = await getUsageSummary(req.user!.id, access.plan as any);
+    res.json(usage);
+  } catch (error) {
+    console.error('Get usage error:', error);
+    res.status(500).json({ error: 'Failed to get usage' });
   }
 });
 

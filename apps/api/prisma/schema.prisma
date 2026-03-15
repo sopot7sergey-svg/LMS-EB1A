@@ -94,6 +94,8 @@ model User {
   subscriptionRecords SubscriptionRecord[]
   deviceAccesses   DeviceAccess[]
   ultraEligibilityRequests UltraEligibilityRequest[]
+  aiUsagePeriod   AIUsagePeriod?
+  aiUsageLogs     AIUsageLog[]
 }
 
 model CourseEntitlement {
@@ -461,4 +463,52 @@ model RAGChunk {
   jurisdiction  String?
   topicTags     String[]
   createdAt     DateTime @default(now())
+}
+
+// AI usage quota: plan limits, per-user usage, per-action log
+model AIQuotaPolicy {
+  id                        String @id @default(uuid())
+  plan                      AppPlan @unique
+  advisorChatCallLimit      Int     @default(10)
+  documentReviewLimit       Int     @default(5)
+  finalAuditLimit           Int     @default(3)
+  coverLetterGenerateLimit Int     @default(2)
+  monthlyCostLimitUsd      Float   @default(5.0)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+}
+
+model AIUsagePeriod {
+  id                        String   @id @default(uuid())
+  userId                    String   @unique
+  periodStart               DateTime
+  periodEnd                 DateTime
+  advisorChatCalls          Int      @default(0)
+  documentReviewCalls       Int      @default(0)
+  finalAuditCalls           Int      @default(0)
+  coverLetterGenerates     Int      @default(0)
+  estimatedCostUsd         Float    @default(0)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([periodEnd])
+}
+
+model AIUsageLog {
+  id             String   @id @default(uuid())
+  userId         String
+  feature        String
+  model          String?
+  inputTokens    Int      @default(0)
+  outputTokens   Int      @default(0)
+  estimatedCostUsd Float  @default(0)
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
 }

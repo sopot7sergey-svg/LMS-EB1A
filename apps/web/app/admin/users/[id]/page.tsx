@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
-import { ArrowLeft, Lock, Unlock, Smartphone, Shield, Upload } from 'lucide-react';
+import { ArrowLeft, Lock, Unlock, Smartphone, Upload, AlertCircle } from 'lucide-react';
 
 export default function AdminUserProfilePage() {
   const params = useParams();
@@ -316,7 +316,7 @@ export default function AdminUserProfilePage() {
               <h4 className="font-medium">Access enforcement</h4>
               <div className="flex flex-wrap gap-2">
                 <Button
-                  variant={user.appAccessActive ? 'destructive' : 'secondary'}
+                  variant={user.appAccessActive ? 'danger' : 'secondary'}
                   size="sm"
                   onClick={handleLockAccess}
                   isLoading={actionLoading === 'lock'}
@@ -326,7 +326,7 @@ export default function AdminUserProfilePage() {
                   Lock App Access
                 </Button>
                 <Button
-                  variant={!user.appAccessActive ? 'default' : 'secondary'}
+                  variant={!user.appAccessActive ? 'primary' : 'secondary'}
                   size="sm"
                   onClick={handleUnlockAccess}
                   isLoading={actionLoading === 'unlock'}
@@ -375,6 +375,49 @@ export default function AdminUserProfilePage() {
                 >
                   Grant Course + Start
                 </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>AI Usage</CardTitle>
+            <p className="text-sm text-foreground-secondary">
+              {user.aiUsage ? (
+                <>Period: {user.aiUsage.periodStart ? new Date(user.aiUsage.periodStart).toLocaleDateString() : '—'} to {user.aiUsage.periodEnd ? new Date(user.aiUsage.periodEnd).toLocaleDateString() : '—'}</>
+              ) : (
+                <>No usage data available</>
+              )}
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="flex justify-between">
+                <span className="text-foreground-secondary">Advisor Chat</span>
+                <span>{user.aiUsage ? `${user.aiUsage.advisorChatCalls ?? 0} / ${user.aiUsage.limits?.advisorChatCallLimit ?? '—'}` : '—'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-foreground-secondary">Document Review</span>
+                <span>{user.aiUsage ? `${user.aiUsage.documentReviewCalls ?? 0} / ${user.aiUsage.limits?.documentReviewLimit ?? '—'}` : '—'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-foreground-secondary">Final Audit</span>
+                <span>{user.aiUsage ? `${user.aiUsage.finalAuditCalls ?? 0} / ${user.aiUsage.limits?.finalAuditLimit ?? '—'}` : '—'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-foreground-secondary">Cover Letter</span>
+                <span>{user.aiUsage ? `${user.aiUsage.coverLetterGenerates ?? 0} / ${user.aiUsage.limits?.coverLetterGenerateLimit ?? '—'}` : '—'}</span>
+              </div>
+            </div>
+            <div className="flex justify-between border-t pt-3">
+              <span className="text-foreground-secondary">Est. monthly cost</span>
+              <span>{user.aiUsage ? `$${(user.aiUsage.estimatedCostUsd ?? 0).toFixed(2)} / $${(user.aiUsage.limits?.monthlyCostLimitUsd ?? 0).toFixed(2)}` : '—'}</span>
+            </div>
+            {user.aiUsage?.blocked && (
+              <div className="flex items-center gap-2 rounded-lg border border-error/50 bg-error/10 px-3 py-2 text-sm text-error">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                Student is blocked by AI quota
               </div>
             )}
           </CardContent>

@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { authenticate, AuthRequest } from '../middleware/auth';
+import { getAccess } from '../services/access';
+import { checkQuota, recordUsage } from '../services/ai/quota';
 import { AIGateway } from '../services/ai/gateway';
 import type { AIChatResult } from '../services/ai/gateway';
 import {
@@ -212,6 +214,13 @@ router.post('/ask', authenticate, async (req: AuthRequest, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
+    const userId = req.user!.role === 'admin' ? caseRecord.userId : req.user!.id;
+    const access = await getAccess(userId);
+    const quotaCheck = await checkQuota(userId, 'advisor_chat', access.plan as any, access.appAccessActive);
+    if (!quotaCheck.allowed) {
+      return res.status(403).json({ error: quotaCheck.message ?? 'AI usage limit reached' });
+    }
+
     const uniqueDocIds = deduplicateIds(Array.isArray(documentIds) ? documentIds : []);
 
     let documentContext = '';
@@ -269,7 +278,7 @@ router.post('/ask', authenticate, async (req: AuthRequest, res) => {
 
     let answer: string;
     let usedAI = false;
-    let aiMeta: Pick<AIChatResult, 'model' | 'totalTokens' | 'durationMs'> | null = null;
+    let aiMeta: Pick<AIChatResult, 'model' | 'totalTokens' | 'promptTokens' | 'completionTokens' | 'durationMs'> | null = null;
 
     if (aiDiag.available) {
       console.log(`[Advisor Chat] PATH: AI (model=${aiDiag.model})`);
@@ -315,7 +324,7 @@ router.post('/ask', authenticate, async (req: AuthRequest, res) => {
               extractionResults.length > 0 ? extractionResults : undefined
             );
             usedAI = true;
-            aiMeta = { model: aiDiag.model, totalTokens: 0, durationMs: 0 };
+            aiMeta = { model: aiDiag.model, totalTokens: 0, promptTokens: 0, completionTokens: 0, durationMs: 0 };
           } else {
             const intakeUserParts = [
               legalRefBlock ? `LEGAL REFERENCE MATERIALS:\n${legalRefBlock}` : '',
@@ -346,7 +355,7 @@ router.post('/ask', authenticate, async (req: AuthRequest, res) => {
 
             answer = result.content || '';
             usedAI = true;
-            aiMeta = { model: result.model, totalTokens: result.totalTokens, durationMs: result.durationMs };
+            aiMeta = { model: result.model, totalTokens: result.totalTokens, promptTokens: result.promptTokens, completionTokens: result.completionTokens, durationMs: result.durationMs };
             console.log(
               `[Advisor Chat] AI response: model=${result.model}, tokens=${result.totalTokens} (prompt=${result.promptTokens}, completion=${result.completionTokens}), duration=${result.durationMs}ms`
             );
@@ -380,7 +389,7 @@ router.post('/ask', authenticate, async (req: AuthRequest, res) => {
 
           answer = result.content || '';
           usedAI = true;
-          aiMeta = { model: result.model, totalTokens: result.totalTokens, durationMs: result.durationMs };
+          aiMeta = { model: result.model, totalTokens: result.totalTokens, promptTokens: result.promptTokens, completionTokens: result.completionTokens, durationMs: result.durationMs };
           console.log(
             `[Advisor Chat] AI response: model=${result.model}, tokens=${result.totalTokens} (prompt=${result.promptTokens}, completion=${result.completionTokens}), duration=${result.durationMs}ms`
           );
@@ -418,6 +427,20 @@ router.post('/ask', authenticate, async (req: AuthRequest, res) => {
         console.log(`[Advisor Chat] Saved to AI Insights: "${savedDocumentName}"`);
       } catch (err) {
         console.error('[Advisor Chat] Failed to save AI Insight:', err);
+      }
+    }
+
+    if (usedAI && aiMeta && aiMeta.totalTokens > 0) {
+      try {
+        await recordUsage(
+          userId,
+          'advisor_chat',
+          aiMeta.model,
+          aiMeta.promptTokens ?? Math.floor(aiMeta.totalTokens * 0.7),
+          aiMeta.completionTokens ?? Math.ceil(aiMeta.totalTokens * 0.3)
+        );
+      } catch (err) {
+        console.error('[Advisor Chat] Failed to record usage:', err);
       }
     }
 
