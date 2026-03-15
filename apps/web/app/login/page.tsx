@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import { getOrCreateDeviceId } from '@/lib/device-id';
+import { ServerUnavailable } from '@/components/ui/server-unavailable';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [ready, setReady] = useState(false);
+  const [apiReachable, setApiReachable] = useState<boolean | null>(null);
 
   useEffect(() => {
     setReady(true);
@@ -34,6 +36,14 @@ export default function LoginPage() {
       router.replace('/dashboard');
     }
   }, [ready, isAuthenticated, router]);
+
+  // Server availability check using /api/health (not root /)
+  useEffect(() => {
+    if (!ready) return;
+    api.health()
+      .then(() => setApiReachable(true))
+      .catch(() => setApiReachable(false));
+  }, [ready]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +75,17 @@ export default function LoginPage() {
           />
           <span>Loading...</span>
         </div>
+      </div>
+    );
+  }
+
+  if (apiReachable === false) {
+    return (
+      <div
+        className="flex min-h-screen items-center justify-center bg-background px-4"
+        style={{ backgroundColor: '#0a0a0f' }}
+      >
+        <ServerUnavailable />
       </div>
     );
   }

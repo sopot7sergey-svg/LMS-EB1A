@@ -78,6 +78,10 @@ app.use('/api/eer', eerRoutes);
 app.use('/api/advisor-chat', advisorChatRoutes);
 app.use('/api', packetReviewRoutes);
 
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });

@@ -63,6 +63,9 @@ async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promis
 }
 
 export const api = {
+  health: () =>
+    fetchAPI<{ status: string }>('/api/health'),
+
   auth: {
     login: (email: string, password: string, deviceId?: string) =>
       fetchAPI<{ user: any; token: string }>('/api/auth/login', {
