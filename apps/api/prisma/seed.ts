@@ -461,50 +461,45 @@ async function main() {
   });
   console.log('Created admin user:', admin.email);
 
-  const testPassword = await bcrypt.hash('Test1234', 12);
-  const testUser = await prisma.user.upsert({
-    where: { email: 'test@example.com' },
-    update: { password: testPassword },
+  // Production admin: sopot7sergey@gmail.com (permanent admin access)
+  const prodAdminPassword = await bcrypt.hash('AdminSeed2025', 12);
+  const prodAdmin = await prisma.user.upsert({
+    where: { email: 'sopot7sergey@gmail.com' },
+    update: { role: 'admin', password: prodAdminPassword },
     create: {
-      email: 'test@example.com',
-      password: testPassword,
-      name: 'Test Student',
-      role: 'student',
+      email: 'sopot7sergey@gmail.com',
+      password: prodAdminPassword,
+      name: 'Production Admin',
+      role: 'admin',
     },
   });
-  console.log('Created test user:', testUser.email);
+  console.log('Upserted production admin:', prodAdmin.email);
 
-  await grantStartAfterCoursePurchase(testUser.id);
-
-  const test2Password = await bcrypt.hash('Test1234', 12);
-  const test2User = await prisma.user.upsert({
-    where: { email: 'test2@example.com' },
-    update: { password: test2Password },
-    create: {
-      email: 'test2@example.com',
-      password: test2Password,
-      name: 'Test Student 2',
-      role: 'student',
-    },
-  });
-  console.log('Created test user:', test2User.email);
-
-  await grantStartAfterCoursePurchase(test2User.id);
-
-  const test3Password = await bcrypt.hash('Test1234', 12);
-  const test3User = await prisma.user.upsert({
-    where: { email: 'test3@example.com' },
-    update: { password: test3Password },
-    create: {
-      email: 'test3@example.com',
-      password: test3Password,
-      name: 'Test Student 3',
-      role: 'student',
-    },
-  });
-  console.log('Created test user:', test3User.email);
-
-  await grantStartAfterCoursePurchase(test3User.id);
+  // 5 test students with lifetime course + Start 30 days
+  const TEST_PASSWORD = 'Test1234';
+  const testStudents = [
+    { email: 'test1@example.com', name: 'Test Student 1' },
+    { email: 'test2@example.com', name: 'Test Student 2' },
+    { email: 'test3@example.com', name: 'Test Student 3' },
+    { email: 'test4@example.com', name: 'Test Student 4' },
+    { email: 'test5@example.com', name: 'Test Student 5' },
+  ];
+  const hashedTestPassword = await bcrypt.hash(TEST_PASSWORD, 12);
+  for (const s of testStudents) {
+    const user = await prisma.user.upsert({
+      where: { email: s.email },
+      update: { password: hashedTestPassword },
+      create: {
+        email: s.email,
+        password: hashedTestPassword,
+        name: s.name,
+        role: 'student',
+      },
+    });
+    await grantStartAfterCoursePurchase(user.id);
+    console.log('Upserted test student:', user.email);
+  }
+  console.log(`Test students password: ${TEST_PASSWORD}`);
 
   const existingStudents = await prisma.user.findMany({
     where: { role: 'student' },
@@ -650,6 +645,12 @@ async function main() {
   }
   console.log(`Created ${testAccessCodes.length} test access codes: ${testAccessCodes.join(', ')}`);
 
+  console.log('');
+  console.log('=== PRODUCTION SEED SUMMARY ===');
+  console.log('Admin: sopot7sergey@gmail.com / AdminSeed2025');
+  console.log('Test students: test1@example.com .. test5@example.com / Test1234');
+  console.log('Access codes:', testAccessCodes.join(', '));
+  console.log('===============================');
   console.log('Seed completed!');
 }
 
