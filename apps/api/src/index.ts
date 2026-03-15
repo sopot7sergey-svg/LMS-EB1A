@@ -64,6 +64,14 @@ app.use(cors({
 app.use('/api/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 app.use(express.json());
 
+// Public health endpoints (must be before any auth-protected /api routes)
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cases', caseRoutes);
@@ -80,14 +88,6 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/eer', eerRoutes);
 app.use('/api/advisor-chat', advisorChatRoutes);
 app.use('/api', packetReviewRoutes);
-
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
 
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
