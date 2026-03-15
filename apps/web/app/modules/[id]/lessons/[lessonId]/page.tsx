@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
 import { ArrowLeft, CheckCircle, Loader2 } from 'lucide-react';
+import { getValidEmbedUrl } from '@/lib/video-embed';
 
 interface Lesson {
   id: string;
@@ -19,29 +20,6 @@ interface Lesson {
   completed: boolean;
   completedAt: string | null;
   module: { id: string; title: string };
-}
-
-/** Convert YouTube/Vimeo watch URLs to embed URLs for iframe */
-function toEmbedUrl(url: string): string {
-  try {
-    const u = new URL(url);
-    // YouTube: watch?v=xxx or youtu.be/xxx
-    if (u.hostname.includes('youtube.com') && u.searchParams.has('v')) {
-      return `https://www.youtube.com/embed/${u.searchParams.get('v')}`;
-    }
-    if (u.hostname === 'youtu.be') {
-      return `https://www.youtube.com/embed${u.pathname}`;
-    }
-    // Vimeo: vimeo.com/123456
-    if (u.hostname.includes('vimeo.com')) {
-      const id = u.pathname.replace(/^\//, '').split('/')[0];
-      return `https://player.vimeo.com/video/${id}`;
-    }
-    // Already embed or other URL
-    return url;
-  } catch {
-    return url;
-  }
 }
 
 export default function LessonPage() {
@@ -142,26 +120,27 @@ export default function LessonPage() {
 
         {/* Video player */}
         <div className="rounded-xl border border-border bg-background-card overflow-hidden">
-          {lesson.videoEmbed ? (
-            <div
-              className="aspect-video w-full"
-              dangerouslySetInnerHTML={{ __html: lesson.videoEmbed }}
-            />
-          ) : lesson.videoUrl ? (
-            <div className="aspect-video w-full">
-              <iframe
-                src={toEmbedUrl(lesson.videoUrl)}
-                title={lesson.title}
-                className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          ) : (
-            <div className="flex aspect-video items-center justify-center bg-background-tertiary text-foreground-muted">
-              No video available
-            </div>
-          )}
+          {(() => {
+            const embedUrl = getValidEmbedUrl(lesson.videoUrl, lesson.videoEmbed);
+            if (embedUrl) {
+              return (
+                <div className="aspect-video w-full">
+                  <iframe
+                    src={embedUrl}
+                    title={lesson.title}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              );
+            }
+            return (
+              <div className="flex aspect-video items-center justify-center bg-background-tertiary text-foreground-muted">
+                No video available
+              </div>
+            );
+          })()}
         </div>
 
         {!lesson.completed && (

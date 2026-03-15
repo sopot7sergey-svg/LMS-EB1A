@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
 import { Plus, Edit2, Trash2, Save, X, Video } from 'lucide-react';
+import { parseVideoInput, parseVideoInputWithStatus } from '@/lib/video-embed';
 
 interface Lesson {
   id: string;
@@ -35,19 +36,18 @@ export default function AdminLessonsPage() {
   const [editForm, setEditForm] = useState({
     title: '',
     description: '',
-    videoUrl: '',
-    videoEmbed: '',
+    videoEmbedInput: '',
   });
   const [isCreating, setIsCreating] = useState(false);
   const [newLesson, setNewLesson] = useState({
     moduleId: '',
     title: '',
     description: '',
-    videoUrl: '',
-    videoEmbed: '',
+    videoEmbedInput: '',
     order: 1,
   });
   const [filterModuleId, setFilterModuleId] = useState('');
+  const [videoError, setVideoError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!token) {
@@ -75,19 +75,38 @@ export default function AdminLessonsPage() {
 
   const handleEdit = (lesson: Lesson) => {
     setEditingId(lesson.id);
+    setVideoError(null);
     setEditForm({
       title: lesson.title,
       description: lesson.description || '',
-      videoUrl: lesson.videoUrl || '',
-      videoEmbed: lesson.videoEmbed || '',
+      videoEmbedInput: lesson.videoUrl || lesson.videoEmbed || '',
     });
   };
 
   const handleSave = async (id: string) => {
     if (!token) return;
 
+    const parsed = parseVideoInputWithStatus(editForm.videoEmbedInput);
+    if (!parsed.ok && parsed.error !== 'empty') {
+      setVideoError(
+        parsed.error === 'unsupported_domain'
+          ? 'Unsupported video domain. Use Bunny Stream, YouTube, or Vimeo only.'
+          : 'Invalid format. Paste a URL or iframe embed code.'
+      );
+      return;
+    }
+    setVideoError(null);
+
+    const normalizedUrl = parsed.ok ? parsed.url : null;
+    const payload = {
+      title: editForm.title,
+      description: editForm.description,
+      videoUrl: normalizedUrl,
+      videoEmbed: null,
+    };
+
     try {
-      const updated = await api.admin.lessons.update(id, editForm, token);
+      const updated = await api.admin.lessons.update(id, payload, token);
       setLessons((prev) =>
         prev.map((l) => (l.id === id ? { ...l, ...updated } : l))
       );
@@ -111,8 +130,29 @@ export default function AdminLessonsPage() {
   const handleCreate = async () => {
     if (!token || !newLesson.title || !newLesson.moduleId) return;
 
+    const parsed = parseVideoInputWithStatus(newLesson.videoEmbedInput);
+    if (!parsed.ok && parsed.error !== 'empty') {
+      setVideoError(
+        parsed.error === 'unsupported_domain'
+          ? 'Unsupported video domain. Use Bunny Stream, YouTube, or Vimeo only.'
+          : 'Invalid format. Paste a URL or iframe embed code.'
+      );
+      return;
+    }
+    setVideoError(null);
+
+    const normalizedUrl = parsed.ok ? parsed.url : null;
+    const payload = {
+      moduleId: newLesson.moduleId,
+      title: newLesson.title,
+      description: newLesson.description,
+      videoUrl: normalizedUrl,
+      videoEmbed: null,
+      order: newLesson.order,
+    };
+
     try {
-      const created = await api.admin.lessons.create(newLesson, token);
+      const created = await api.admin.lessons.create(payload, token);
       const moduleInfo = modules.find((m) => m.id === newLesson.moduleId);
       setLessons((prev) => [
         ...prev,
@@ -123,8 +163,7 @@ export default function AdminLessonsPage() {
         moduleId: '',
         title: '',
         description: '',
-        videoUrl: '',
-        videoEmbed: '',
+        videoEmbedInput: '',
         order: 1,
       });
     } catch (error) {
@@ -217,24 +256,22 @@ export default function AdminLessonsPage() {
                 }
                 placeholder="Lesson description"
               />
-              <Input
-                label="Video URL"
-                value={newLesson.videoUrl}
-                onChange={(e) =>
-                  setNewLesson((prev) => ({ ...prev, videoUrl: e.target.value }))
-                }
-                placeholder="https://..."
-              />
               <div>
-                <label className="label mb-2 block">Video Embed Code</label>
+                <label className="label mb-2 block">Video Embed URL or Iframe Code</label>
                 <textarea
-                  value={newLesson.videoEmbed}
+                  value={newLesson.videoEmbedInput}
                   onChange={(e) =>
-                    setNewLesson((prev) => ({ ...prev, videoEmbed: e.target.value }))
+                    setNewLesson((prev) => ({ ...prev, videoEmbedInput: e.target.value }))
                   }
                   className="input min-h-[100px]"
-                  placeholder="<iframe>...</iframe>"
+                  placeholder="https://player.mediadelivery.net/embed/LIBRARY_ID/VIDEO_ID or &lt;iframe&gt;...&lt;/iframe&gt;"
                 />
+                <p className="mt-1.5 text-xs text-foreground-muted">
+                  Paste a Bunny Stream player URL or iframe embed code. YouTube and Vimeo are also supported.
+                </p>
+                {videoError && isCreating && (
+                  <p className="mt-1.5 text-xs text-error">{videoError}</p>
+                )}
               </div>
               <Input
                 label="Order"
@@ -246,7 +283,7 @@ export default function AdminLessonsPage() {
               />
               <div className="flex gap-2">
                 <Button onClick={handleCreate}>Create Lesson</Button>
-                <Button variant="secondary" onClick={() => setIsCreating(false)}>
+                <Button variant="secondary" onClick={() => { setIsCreating(false); setVideoError(null); }}>
                   Cancel
                 </Button>
               </div>
@@ -275,22 +312,22 @@ export default function AdminLessonsPage() {
                       setEditForm((prev) => ({ ...prev, description: e.target.value }))
                     }
                   />
-                  <Input
-                    label="Video URL"
-                    value={editForm.videoUrl}
-                    onChange={(e) =>
-                      setEditForm((prev) => ({ ...prev, videoUrl: e.target.value }))
-                    }
-                  />
                   <div>
-                    <label className="label mb-2 block">Video Embed Code</label>
+                    <label className="label mb-2 block">Video Embed URL or Iframe Code</label>
                     <textarea
-                      value={editForm.videoEmbed}
+                      value={editForm.videoEmbedInput}
                       onChange={(e) =>
-                        setEditForm((prev) => ({ ...prev, videoEmbed: e.target.value }))
+                        setEditForm((prev) => ({ ...prev, videoEmbedInput: e.target.value }))
                       }
                       className="input min-h-[100px]"
+                      placeholder="https://player.mediadelivery.net/embed/LIBRARY_ID/VIDEO_ID or &lt;iframe&gt;...&lt;/iframe&gt;"
                     />
+                    <p className="mt-1.5 text-xs text-foreground-muted">
+                      Paste a Bunny Stream player URL or iframe embed code. YouTube and Vimeo are also supported.
+                    </p>
+                    {videoError && editingId === lesson.id && (
+                      <p className="mt-1.5 text-xs text-error">{videoError}</p>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" onClick={() => handleSave(lesson.id)}>
@@ -300,7 +337,7 @@ export default function AdminLessonsPage() {
                     <Button
                       size="sm"
                       variant="secondary"
-                      onClick={() => setEditingId(null)}
+                      onClick={() => { setEditingId(null); setVideoError(null); }}
                     >
                       <X className="mr-2 h-4 w-4" />
                       Cancel
@@ -327,9 +364,9 @@ export default function AdminLessonsPage() {
                         {lesson.description}
                       </p>
                     )}
-                    {lesson.videoUrl && (
+                    {(lesson.videoUrl || lesson.videoEmbed) && (
                       <p className="text-xs text-foreground-muted mt-1 truncate">
-                        {lesson.videoUrl}
+                        {lesson.videoUrl || (lesson.videoEmbed && 'Embed configured')}
                       </p>
                     )}
                   </div>

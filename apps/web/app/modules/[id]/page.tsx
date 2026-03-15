@@ -16,6 +16,7 @@ import {
   BookOpen,
   Loader2,
 } from 'lucide-react';
+import { getValidEmbedUrl } from '@/lib/video-embed';
 
 interface Lesson {
   id: string;
@@ -23,6 +24,7 @@ interface Lesson {
   description: string | null;
   order: number;
   videoUrl: string | null;
+  videoEmbed?: string | null;
   completed: boolean;
   completedAt: string | null;
 }
@@ -32,7 +34,7 @@ interface Module {
   title: string;
   description: string;
   order: number;
-  lessons: { id: string; title: string; description: string | null; order: number; videoUrl: string | null }[];
+  lessons: { id: string; title: string; description: string | null; order: number; videoUrl: string | null; videoEmbed?: string | null }[];
 }
 
 function getLessonDisplayLabel(moduleOrder: number, lessonOrder: number): string {
@@ -68,7 +70,7 @@ export default function ModuleDetailPage() {
   // Merge module lessons with completion data
   const buildLessons = useCallback(
     (
-      rawLessons: { id: string; title: string; description: string | null; order: number; videoUrl: string | null }[],
+      rawLessons: { id: string; title: string; description: string | null; order: number; videoUrl: string | null; videoEmbed?: string | null }[],
       progressData: { id: string; completed: boolean; completedAt: string | null }[]
     ): Lesson[] => {
       const completionMap = new Map(progressData.map((p) => [p.id, p]));
@@ -290,7 +292,7 @@ export default function ModuleDetailPage() {
 
               {/* Action buttons */}
               <div className="flex flex-shrink-0 items-center gap-2">
-                {lesson.videoUrl && (
+                {getValidEmbedUrl(lesson.videoUrl, lesson.videoEmbed) && (
                   <Link href={`/modules/${moduleId}/lessons/${lesson.id}`}>
                     <Button variant="secondary" size="sm" className="gap-1.5">
                       <PlayCircle className="h-3.5 w-3.5" />
