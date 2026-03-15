@@ -2,6 +2,9 @@
   "name": "@aipas/api",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
