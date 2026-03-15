@@ -31,8 +31,8 @@ const PREFERRED_PORT = parseInt(process.env.PORT || '3001', 10);
 const PORT_RANGE = [3001, 3002, 3003, 3004, 3005, 24601, 24602, 24603, 24604, 24605];
 
 // Allow localhost on any port during development (web app may use 3000, 3001, 3002, 3003, 3004, etc.)
-const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(',').map((u) => u.trim())
+const baseOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map((u) => u.trim()).filter(Boolean)
   : [
       'http://localhost:3000',
       'http://localhost:3001',
@@ -46,6 +46,9 @@ const allowedOrigins = process.env.FRONTEND_URL
       'http://localhost:24604',
       'http://localhost:24605',
     ];
+
+const productionWebOrigin = 'https://aipasweb-production.up.railway.app';
+const allowedOrigins = [...new Set([...baseOrigins, productionWebOrigin])];
 
 app.use(cors({
   origin: (origin, callback) => {
