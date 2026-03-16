@@ -48,7 +48,8 @@ const baseOrigins = process.env.FRONTEND_URL
     ];
 
 const productionWebOrigin = 'https://aipasweb-production.up.railway.app';
-const allowedOrigins = [...new Set([...baseOrigins, productionWebOrigin])];
+const productionCustomDomain = 'https://madeinaiusa.com';
+const allowedOrigins = [...new Set([...baseOrigins, productionWebOrigin, productionCustomDomain])];
 
 app.use(cors({
   origin: (origin, callback) => {
