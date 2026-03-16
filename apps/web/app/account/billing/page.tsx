@@ -115,11 +115,11 @@ export default function BillingPage() {
           <CardTitle>Current Plan</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-foreground-secondary">Plan</span>
             <span className="font-medium capitalize">{status?.plan ?? 'none'}</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-foreground-secondary">Status</span>
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -132,7 +132,7 @@ export default function BillingPage() {
             </span>
           </div>
           {status?.expiresAt && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">
                 {status?.cancelAtPeriodEnd ? 'Access until' : 'Renews'}
               </span>
@@ -146,18 +146,18 @@ export default function BillingPage() {
             </div>
           )}
           {status?.billingCycle && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">Billing cycle</span>
               <span className="capitalize">{status.billingCycle}</span>
             </div>
           )}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-foreground-secondary">Cases</span>
             <span>
               {status?.caseCount ?? 0} / {status?.maxCases ?? 0}
             </span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-foreground-secondary">Document upload</span>
             <span>{status?.uploadEnabled ? <Check className="h-5 w-5 text-success" /> : 'Disabled'}</span>
           </div>
@@ -182,19 +182,19 @@ export default function BillingPage() {
               {usage ? `${usage.advisorChatCalls ?? 0} / ${usage.limits?.advisorChatCallLimit ?? '—'}` : '—'}
             </span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-foreground-secondary">Document Review</span>
             <span className={usage?.blocked ? 'text-error font-medium' : ''}>
               {usage ? `${usage.documentReviewCalls ?? 0} / ${usage.limits?.documentReviewLimit ?? '—'}` : '—'}
             </span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-foreground-secondary">Final Audit</span>
             <span className={usage?.blocked ? 'text-error font-medium' : ''}>
               {usage ? `${usage.finalAuditCalls ?? 0} / ${usage.limits?.finalAuditLimit ?? '—'}` : '—'}
             </span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-foreground-secondary">Cover Letter</span>
             <span className={usage?.blocked ? 'text-error font-medium' : ''}>
               {usage ? `${usage.coverLetterGenerates ?? 0} / ${usage.limits?.coverLetterGenerateLimit ?? '—'}` : '—'}
@@ -227,6 +227,7 @@ export default function BillingPage() {
         {canManage && (
           <Button
             variant="secondary"
+            className="min-h-[44px]"
             onClick={handleManageBilling}
             disabled={!!loadingAction}
           >
@@ -238,12 +239,13 @@ export default function BillingPage() {
             variant="danger"
             onClick={() => setCancelDialogOpen(true)}
             disabled={!!loadingAction}
+            className="min-h-[44px]"
           >
             Cancel Subscription
           </Button>
         )}
         <Link href="/account/plans">
-          <Button variant="secondary">
+          <Button variant="secondary" className="min-h-[44px]">
             {canManage ? 'Change Plan' : 'View Plans'}
           </Button>
         </Link>

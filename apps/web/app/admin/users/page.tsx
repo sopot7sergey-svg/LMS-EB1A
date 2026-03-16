@@ -121,7 +121,65 @@ export default function AdminUsersPage() {
           <CardTitle>All Users</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          {/* Mobile/tablet: card layout */}
+          <div className="space-y-4 lg:hidden">
+            {users.map((user) => (
+              <div
+                key={user.id}
+                className="flex flex-col gap-3 rounded-lg border border-border p-4"
+              >
+                <Link
+                  href={`/admin/users/${user.id}`}
+                  className="flex items-center gap-3 hover:opacity-80"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-sm">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium truncate">{user.name}</p>
+                    <p className="text-sm text-foreground-muted truncate">{user.email}</p>
+                  </div>
+                </Link>
+                <div className="flex flex-wrap items-center gap-2 text-sm">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      user.role === 'admin'
+                        ? 'bg-warning/10 text-warning'
+                        : 'bg-primary/10 text-primary'
+                    }`}
+                  >
+                    {user.role}
+                  </span>
+                  <span className="text-foreground-secondary">
+                    Plan: <span className="capitalize text-foreground">{user.plan ?? '—'}</span>
+                    {user.appAccessActive === false && user.role === 'student' && (
+                      <span className="text-warning"> (locked)</span>
+                    )}
+                  </span>
+                  <span className="text-foreground-secondary">
+                    Cases: {user._count.cases} · Lessons: {user._count.lessonProgress}
+                  </span>
+                  <span className="text-foreground-muted">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                {user.id !== currentUser?.id && (
+                  <select
+                    value={user.role}
+                    onChange={(e) =>
+                      handleRoleChange(user.id, e.target.value as 'student' | 'admin')
+                    }
+                    className="min-h-[44px] w-full max-w-[140px] rounded border border-border bg-background-secondary px-3 py-2 text-sm"
+                  >
+                    <option value="student">Student</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                )}
+              </div>
+            ))}
+          </div>
+          {/* Desktop: table */}
+          <div className="hidden overflow-x-auto lg:block">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">

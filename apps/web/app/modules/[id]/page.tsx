@@ -219,7 +219,7 @@ export default function ModuleDetailPage() {
           </div>
 
           {/* Module completion ring + bar */}
-          <div className="flex flex-shrink-0 flex-col items-end gap-2 min-w-[180px]">
+          <div className="flex w-full flex-shrink-0 flex-col items-center gap-2 sm:w-auto sm:min-w-[180px] sm:items-end">
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold tabular-nums">{percentage}%</span>
               <span className="text-sm text-foreground-secondary">complete</span>
@@ -246,7 +246,7 @@ export default function ModuleDetailPage() {
           return (
             <div
               key={lesson.id}
-              className={`group relative flex items-start gap-4 rounded-xl border p-5 transition-all duration-200 ${
+              className={`group relative flex flex-col gap-4 rounded-xl border p-5 transition-all duration-200 sm:flex-row sm:items-start ${
                 lesson.completed
                   ? 'border-success/30 bg-success/5'
                   : 'border-border bg-background-card hover:border-border-hover'
@@ -268,7 +268,7 @@ export default function ModuleDetailPage() {
               </div>
 
               {/* Title + description */}
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-mono text-foreground-muted">Lesson {lessonLabel}</span>
                   {lesson.completed && (
@@ -291,10 +291,10 @@ export default function ModuleDetailPage() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex flex-shrink-0 items-center gap-2">
+              <div className="flex flex-shrink-0 flex-wrap items-center gap-2 sm:flex-nowrap">
                 {getValidEmbedUrl(lesson.videoUrl, lesson.videoEmbed) && (
                   <Link href={`/modules/${moduleId}/lessons/${lesson.id}`}>
-                    <Button variant="secondary" size="sm" className="gap-1.5">
+                    <Button variant="secondary" size="sm" className="min-h-[44px] gap-1.5">
                       <PlayCircle className="h-3.5 w-3.5" />
                       Watch
                     </Button>
@@ -306,7 +306,7 @@ export default function ModuleDetailPage() {
                     size="sm"
                     onClick={() => handleCompleteLesson(lesson.id)}
                     disabled={isCompleting}
-                    className="gap-1.5"
+                    className="min-h-[44px] gap-1.5"
                   >
                     {isCompleting ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -321,7 +321,7 @@ export default function ModuleDetailPage() {
                     size="sm"
                     onClick={() => handleUncompleteLesson(lesson.id)}
                     disabled={isCompleting}
-                    className="gap-1.5 text-foreground-muted hover:text-foreground"
+                    className="min-h-[44px] gap-1.5 text-foreground-muted hover:text-foreground"
                   >
                     {isCompleting ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -339,7 +339,7 @@ export default function ModuleDetailPage() {
 
       {/* Module complete banner */}
       {percentage === 100 && totalCount > 0 && (
-        <div className="mt-8 flex flex-col items-center gap-4 rounded-xl border border-success/40 bg-success/5 p-8 text-center">
+        <div className="mt-8 flex flex-col items-center gap-4 rounded-xl border border-success/40 bg-success/5 p-4 text-center sm:p-6 lg:p-8">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-success/15">
             <CheckCircle className="h-7 w-7 text-success" />
           </div>

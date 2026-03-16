@@ -203,9 +203,9 @@ export function ChecklistAccordion({
                               {compiledPackets.map((packet) => (
                                 <div
                                   key={packet.jobId}
-                                  className="flex items-center justify-between rounded px-2 py-1.5 hover:bg-background-tertiary group"
+                                  className="flex flex-col gap-3 rounded px-2 py-1.5 hover:bg-background-tertiary group sm:flex-row sm:items-center sm:justify-between"
                                 >
-                                  <div className="flex items-center gap-2 min-w-0">
+                                  <div className="flex min-w-0 flex-wrap items-center gap-2">
                                     <FileStack className="h-4 w-4 text-primary shrink-0" />
                                     <span className="text-sm text-white">Version {packet.version}</span>
                                     <span className="text-xs text-foreground-muted">
@@ -231,11 +231,12 @@ export function ChecklistAccordion({
                                       </span>
                                     )}
                                   </div>
-                                  <div className="flex items-center gap-2 shrink-0">
+                                  <div className="flex shrink-0 flex-wrap items-center gap-2">
                                     {onRunAudit && (
                                       <Button
                                         variant="secondary"
                                         size="sm"
+                                        className="min-h-[44px] sm:min-h-0"
                                         onClick={() => onRunAudit(packet.jobId)}
                                       >
                                         {packet.reviewedAt ? 'Re-audit' : 'Run Audit'}
@@ -245,6 +246,7 @@ export function ChecklistAccordion({
                                       <Button
                                         variant="ghost"
                                         size="sm"
+                                        className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0"
                                         onClick={() => onDownloadPacket(packet.jobId, packet.version)}
                                       >
                                         <Download className="h-3.5 w-3.5" />
@@ -314,9 +316,9 @@ export function ChecklistAccordion({
                                 return (
                                   <div
                                     key={`audit-${packet.jobId}`}
-                                    className={`flex items-center justify-between rounded px-2 py-1.5 hover:bg-background-tertiary group ${riskStyle}`}
+                                    className={`flex flex-col gap-3 rounded px-2 py-1.5 hover:bg-background-tertiary group sm:flex-row sm:items-center sm:justify-between ${riskStyle}`}
                                   >
-                                    <div className="flex items-center gap-2 min-w-0">
+                                    <div className="flex min-w-0 flex-wrap items-center gap-2">
                                       <ShieldCheck className={`h-4 w-4 shrink-0 ${riskTextColor}`} />
                                       <span className="text-sm text-white">
                                         Version {packet.version} — <span className={riskTextColor}>{riskLabel}</span>
@@ -329,11 +331,12 @@ export function ChecklistAccordion({
                                         })}
                                       </span>
                                     </div>
-                                    <div className="flex items-center gap-2 shrink-0">
+                                    <div className="flex shrink-0 flex-wrap items-center gap-2">
                                       {onViewAuditReport && (
                                         <Button
                                           variant="secondary"
                                           size="sm"
+                                          className="min-h-[44px] sm:min-h-0"
                                           onClick={() => onViewAuditReport(packet.jobId, packet.version)}
                                         >
                                           Open Report
@@ -343,6 +346,7 @@ export function ChecklistAccordion({
                                         <Button
                                           variant="ghost"
                                           size="sm"
+                                          className="min-h-[44px] sm:min-h-0"
                                           onClick={() => onRunAudit(packet.jobId)}
                                         >
                                           Re-audit
@@ -663,7 +667,7 @@ function ChecklistSectionContent({
                         <button
                           type="button"
                           onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
-                          className="shrink-0 rounded p-1 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors"
+                          className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
                           title="Delete"
                         >
                           <Trash2 className="h-4 w-4" />

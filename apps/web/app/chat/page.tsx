@@ -129,7 +129,7 @@ export default function ChatPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3 h-[600px]">
+      <div className="grid min-h-[400px] gap-6 lg:grid-cols-3 lg:h-[600px]">
         <div className="lg:col-span-1">
           <Card className="h-full flex flex-col">
             <CardHeader className="flex-shrink-0">
@@ -222,7 +222,7 @@ export default function ChatPage() {
                         }`}
                       >
                         <div
-                          className={`max-w-[70%] rounded-lg p-3 ${
+                          className={`max-w-[85%] sm:max-w-[70%] rounded-lg p-3 ${
                             message.senderRole === 'student'
                               ? 'bg-primary text-white'
                               : 'bg-background-secondary'
@@ -257,8 +257,9 @@ export default function ChatPage() {
                           handleSendMessage();
                         }
                       }}
+                      className="min-h-[44px] min-w-0 flex-1"
                     />
-                    <Button onClick={handleSendMessage} isLoading={isSending}>
+                    <Button onClick={handleSendMessage} isLoading={isSending} className="min-h-[44px] min-w-[44px] shrink-0">
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>

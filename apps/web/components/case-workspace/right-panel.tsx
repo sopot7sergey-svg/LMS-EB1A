@@ -126,7 +126,7 @@ export function RightPanel({
                     <button
                       type="button"
                       onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
-                      className="shrink-0 rounded p-1 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors"
+                      className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
                       title="Delete"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -180,7 +180,7 @@ export function RightPanel({
                     <button
                       type="button"
                       onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
-                      className="shrink-0 rounded p-1 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors"
+                      className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
                       title="Delete"
                     >
                       <Trash2 className="h-4 w-4" />

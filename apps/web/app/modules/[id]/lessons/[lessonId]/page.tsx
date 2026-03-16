@@ -124,7 +124,7 @@ export default function LessonPage() {
             const embedUrl = getValidEmbedUrl(lesson.videoUrl, lesson.videoEmbed);
             if (embedUrl) {
               return (
-                <div className="aspect-video w-full">
+                <div className="aspect-video w-full max-w-full overflow-hidden">
                   <iframe
                     src={embedUrl}
                     title={lesson.title}
@@ -144,7 +144,7 @@ export default function LessonPage() {
         </div>
 
         {!lesson.completed && (
-          <Button onClick={handleComplete} disabled={isCompleting}>
+          <Button onClick={handleComplete} disabled={isCompleting} className="min-h-[44px]">
             {isCompleting ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (

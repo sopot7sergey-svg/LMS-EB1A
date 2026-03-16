@@ -141,7 +141,7 @@ export default function PlansPage() {
                   {data.proActive ? (
                     <Button
                       variant="secondary"
-                      className="w-full"
+                      className="min-h-[44px] w-full"
                       onClick={() => {
                         if (!token) return;
                         setLoadingAction('portal');
@@ -165,7 +165,7 @@ export default function PlansPage() {
                       </Button>
                       <Button
                         variant="secondary"
-                        className="w-full"
+                        className="min-h-[44px] w-full"
                         onClick={() => handleCheckout('pro', 'annual')}
                         disabled={!!loadingAction}
                       >
@@ -196,7 +196,7 @@ export default function PlansPage() {
                     data?.currentPlan !== 'ultra' && (
                     <Button
                       variant="secondary"
-                      className="w-full"
+                      className="min-h-[44px] w-full"
                       onClick={handleRequestUltra}
                       disabled={!!loadingAction}
                     >

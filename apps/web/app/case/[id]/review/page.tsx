@@ -137,14 +137,14 @@ export default function ReviewPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to case
         </Link>
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Officer-Style Review</h1>
             <p className="mt-2 text-foreground-secondary">
               Get Evidence Enhancement Requests (EER) with citations to authoritative sources.
             </p>
           </div>
-          <Button onClick={handleGenerateEER} isLoading={isGenerating}>
+          <Button onClick={handleGenerateEER} isLoading={isGenerating} className="min-h-[44px] w-full sm:w-auto shrink-0">
             <RefreshCw className="mr-2 h-4 w-4" />
             Generate New EER
           </Button>

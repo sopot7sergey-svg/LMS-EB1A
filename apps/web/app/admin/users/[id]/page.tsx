@@ -213,21 +213,22 @@ export default function AdminUserProfilePage() {
             <CardTitle>Account</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">Name</span>
               <span>{user.name}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">Role</span>
               <span className="capitalize">{user.role}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">Suspended</span>
               <span>{user.suspended ? 'Yes' : 'No'}</span>
             </div>
             <Button
               variant="secondary"
               size="sm"
+              className="min-h-[44px] sm:min-h-0"
               onClick={() => handleSuspend(!user.suspended)}
               isLoading={actionLoading === 'suspend'}
             >
@@ -294,6 +295,7 @@ export default function AdminUserProfilePage() {
                 <Button
                   variant="secondary"
                   size="sm"
+                  className="min-h-[44px] sm:min-h-0"
                   onClick={handleSetPro}
                   isLoading={actionLoading === 'pro'}
                   disabled={!!actionLoading}
@@ -303,6 +305,7 @@ export default function AdminUserProfilePage() {
                 <Button
                   variant="secondary"
                   size="sm"
+                  className="min-h-[44px] sm:min-h-0"
                   onClick={handleSetUltra}
                   isLoading={actionLoading === 'ultra'}
                   disabled={!!actionLoading}
@@ -318,6 +321,7 @@ export default function AdminUserProfilePage() {
                 <Button
                   variant={user.appAccessActive ? 'danger' : 'secondary'}
                   size="sm"
+                  className="min-h-[44px] sm:min-h-0"
                   onClick={handleLockAccess}
                   isLoading={actionLoading === 'lock'}
                   disabled={!!actionLoading}
@@ -328,6 +332,7 @@ export default function AdminUserProfilePage() {
                 <Button
                   variant={!user.appAccessActive ? 'primary' : 'secondary'}
                   size="sm"
+                  className="min-h-[44px] sm:min-h-0"
                   onClick={handleUnlockAccess}
                   isLoading={actionLoading === 'unlock'}
                   disabled={!!actionLoading}
@@ -344,6 +349,7 @@ export default function AdminUserProfilePage() {
                 <Button
                   variant="secondary"
                   size="sm"
+                  className="min-h-[44px] sm:min-h-0"
                   onClick={() => handleUploadToggle(true)}
                   isLoading={actionLoading === 'upload'}
                   disabled={!!actionLoading}
@@ -354,6 +360,7 @@ export default function AdminUserProfilePage() {
                 <Button
                   variant="secondary"
                   size="sm"
+                  className="min-h-[44px] sm:min-h-0"
                   onClick={() => handleUploadToggle(false)}
                   isLoading={actionLoading === 'upload'}
                   disabled={!!actionLoading}
@@ -369,6 +376,7 @@ export default function AdminUserProfilePage() {
                 <Button
                   variant="secondary"
                   size="sm"
+                  className="min-h-[44px] sm:min-h-0"
                   onClick={handleGrantCourse}
                   isLoading={actionLoading === 'grant'}
                   disabled={!!actionLoading}
@@ -393,24 +401,24 @@ export default function AdminUserProfilePage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-foreground-secondary">Advisor Chat</span>
                 <span>{user.aiUsage ? `${user.aiUsage.advisorChatCalls ?? 0} / ${user.aiUsage.limits?.advisorChatCallLimit ?? '—'}` : '—'}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-foreground-secondary">Document Review</span>
                 <span>{user.aiUsage ? `${user.aiUsage.documentReviewCalls ?? 0} / ${user.aiUsage.limits?.documentReviewLimit ?? '—'}` : '—'}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-foreground-secondary">Final Audit</span>
                 <span>{user.aiUsage ? `${user.aiUsage.finalAuditCalls ?? 0} / ${user.aiUsage.limits?.finalAuditLimit ?? '—'}` : '—'}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-foreground-secondary">Cover Letter</span>
                 <span>{user.aiUsage ? `${user.aiUsage.coverLetterGenerates ?? 0} / ${user.aiUsage.limits?.coverLetterGenerateLimit ?? '—'}` : '—'}</span>
               </div>
             </div>
-            <div className="flex justify-between border-t pt-3">
+            <div className="flex flex-col gap-1 border-t pt-3 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">Est. monthly cost</span>
               <span>{user.aiUsage ? `$${(user.aiUsage.estimatedCostUsd ?? 0).toFixed(2)} / $${(user.aiUsage.limits?.monthlyCostLimitUsd ?? 0).toFixed(2)}` : '—'}</span>
             </div>
@@ -428,13 +436,14 @@ export default function AdminUserProfilePage() {
             <CardTitle>Devices</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">
                 Active devices: {user.deviceAccesses?.length ?? 0} / 2
               </span>
               <Button
                 variant="secondary"
                 size="sm"
+                className="min-h-[44px] sm:min-h-0"
                 onClick={handleResetDevices}
                 isLoading={actionLoading === 'devices'}
               >

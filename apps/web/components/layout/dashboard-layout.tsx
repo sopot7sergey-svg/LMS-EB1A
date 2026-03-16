@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Sidebar } from './sidebar';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
+import { Menu } from 'lucide-react';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const { token, isAuthenticated, isAdmin, setAuth } = useAuthStore();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [progress, setProgress] = useState<{ completed: number; total: number } | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   const [authReady, setAuthReady] = useState(false);
@@ -57,6 +59,28 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => clearTimeout(t);
   }, [authReady]);
 
+  // Lock body scroll when mobile drawer is open (below lg only)
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const mq = window.matchMedia('(max-width: 1023px)');
+    if (!mq.matches) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [sidebarOpen]);
+
+  // Close drawer when viewport becomes lg or larger (prevents stale overlay/state after resize)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const handler = () => {
+      if (mq.matches) setSidebarOpen(false);
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   if (needsRedirect) {
     return (
       <div
@@ -84,9 +108,27 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background" style={{ backgroundColor: '#0a0a0f' }}>
-      <Sidebar progress={progress} />
-      <main className="ml-64 min-h-screen p-8" style={{ color: '#ffffff' }}>{children}</main>
+    <div className="min-h-screen overflow-x-hidden bg-background" style={{ backgroundColor: '#0a0a0f' }}>
+      <Sidebar progress={progress} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+      <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border bg-background-secondary px-4 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          className="-ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-foreground-secondary hover:bg-background-tertiary hover:text-foreground"
+          aria-label="Open menu"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+        <span className="font-semibold">Aipas</span>
+      </header>
+      <main className="ml-0 min-h-screen p-4 sm:p-6 lg:ml-64 lg:p-8" style={{ color: '#ffffff' }}>{children}</main>
     </div>
   );
 }

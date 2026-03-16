@@ -102,14 +102,14 @@ export default function AdminModulesPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold">Manage Modules</h1>
           <p className="mt-2 text-foreground-secondary">
             Add, edit, and remove course modules.
           </p>
         </div>
-        <Button onClick={() => setIsCreating(true)}>
+        <Button onClick={() => setIsCreating(true)} className="min-h-[44px]">
           <Plus className="mr-2 h-4 w-4" />
           Add Module
         </Button>
@@ -146,9 +146,9 @@ export default function AdminModulesPage() {
                   setNewModule((prev) => ({ ...prev, order: parseInt(e.target.value) }))
                 }
               />
-              <div className="flex gap-2">
-                <Button onClick={handleCreate}>Create Module</Button>
-                <Button variant="secondary" onClick={() => setIsCreating(false)}>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={handleCreate} className="min-h-[44px]">Create Module</Button>
+                <Button variant="secondary" onClick={() => setIsCreating(false)} className="min-h-[44px]">
                   Cancel
                 </Button>
               </div>
@@ -177,8 +177,8 @@ export default function AdminModulesPage() {
                       setEditForm((prev) => ({ ...prev, description: e.target.value }))
                     }
                   />
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => handleSave(module.id)}>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" onClick={() => handleSave(module.id)} className="min-h-[44px]">
                       <Save className="mr-2 h-4 w-4" />
                       Save
                     </Button>
@@ -186,6 +186,7 @@ export default function AdminModulesPage() {
                       size="sm"
                       variant="secondary"
                       onClick={() => setEditingId(null)}
+                      className="min-h-[44px]"
                     >
                       <X className="mr-2 h-4 w-4" />
                       Cancel
@@ -193,11 +194,11 @@ export default function AdminModulesPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary font-semibold">
                     {module.order}
                   </div>
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-semibold">{module.title}</h3>
                     <p className="text-sm text-foreground-secondary">
                       {module.description}
@@ -206,11 +207,12 @@ export default function AdminModulesPage() {
                       {module._count.lessons} lessons
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-shrink-0 flex-wrap gap-2">
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => handleEdit(module)}
+                      className="min-h-[44px] min-w-[44px]"
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
@@ -218,6 +220,7 @@ export default function AdminModulesPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleDelete(module.id)}
+                      className="min-h-[44px] min-w-[44px]"
                     >
                       <Trash2 className="h-4 w-4 text-error" />
                     </Button>

@@ -117,16 +117,16 @@ export default function AdminChatPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3 h-[600px]">
+      <div className="grid min-h-[400px] gap-6 lg:grid-cols-3 lg:h-[600px]">
         <div className="lg:col-span-1">
           <Card className="h-full flex flex-col">
             <CardHeader className="flex-shrink-0">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <CardTitle>Conversations</CardTitle>
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as 'all' | 'open' | 'closed')}
-                  className="rounded border border-border bg-background-secondary px-2 py-1 text-sm"
+                  className="min-h-[44px] w-full rounded border border-border bg-background-secondary px-3 py-2 text-sm sm:min-h-0 sm:w-auto sm:px-2 sm:py-1"
                 >
                   <option value="all">All</option>
                   <option value="open">Open</option>
@@ -198,12 +198,12 @@ export default function AdminChatPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle>{selectedThread.subject || 'Conversation'}</CardTitle>
-                      <p className="text-sm text-foreground-secondary mt-1">
+                      <p className="text-sm text-foreground-secondary mt-1 truncate">
                         {selectedThread.student.name} ({selectedThread.student.email})
                       </p>
                     </div>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
                         selectedThread.status === 'open'
                           ? 'bg-success/10 text-success'
                           : 'bg-foreground-muted/10 text-foreground-muted'
@@ -223,7 +223,7 @@ export default function AdminChatPage() {
                         }`}
                       >
                         <div
-                          className={`max-w-[70%] rounded-lg p-3 ${
+                          className={`max-w-[85%] sm:max-w-[70%] rounded-lg p-3 ${
                             message.senderRole === 'admin'
                               ? 'bg-primary text-white'
                               : 'bg-background-secondary'
@@ -258,8 +258,9 @@ export default function AdminChatPage() {
                           handleSendMessage();
                         }
                       }}
+                      className="min-h-[44px] min-w-0 flex-1"
                     />
-                    <Button onClick={handleSendMessage} isLoading={isSending}>
+                    <Button onClick={handleSendMessage} isLoading={isSending} className="min-h-[44px] min-w-[44px] shrink-0">
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>

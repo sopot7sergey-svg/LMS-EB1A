@@ -20,9 +20,11 @@ import {
 
 interface SidebarProps {
   progress?: { completed: number; total: number };
+  open?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ progress }: SidebarProps) {
+export function Sidebar({ progress, open = true, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, clearAuth, isAdmin } = useAuthStore();
 
@@ -46,7 +48,12 @@ export function Sidebar({ progress }: SidebarProps) {
   const links = isAdmin() ? adminLinks : studentLinks;
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-background-secondary">
+    <aside
+      className={cn(
+        'fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-background-secondary transition-transform duration-200 ease-out',
+        open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      )}
+    >
       <div className="flex h-full flex-col">
         <div className="flex h-16 items-center gap-2 border-b border-border px-4">
           <div className="h-8 w-8 rounded-lg bg-primary" />
@@ -78,8 +85,9 @@ export function Sidebar({ progress }: SidebarProps) {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={onClose}
                 className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                  'flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors lg:py-2',
                   isActive
                     ? 'bg-primary/10 text-primary'
                     : 'text-foreground-secondary hover:bg-background-tertiary hover:text-foreground'
@@ -96,7 +104,8 @@ export function Sidebar({ progress }: SidebarProps) {
         <div className="border-t border-border p-4">
           <Link
             href={isAdmin() ? '/admin/dashboard' : '/account'}
-            className="mb-4 flex items-center gap-3 rounded-lg px-2 py-1 -mx-2 transition-colors hover:bg-background-tertiary"
+            onClick={onClose}
+            className="mb-4 flex min-h-[44px] items-center gap-3 rounded-lg px-2 py-2 -mx-2 transition-colors hover:bg-background-tertiary lg:py-1"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
               {user?.name?.charAt(0).toUpperCase()}
@@ -111,7 +120,7 @@ export function Sidebar({ progress }: SidebarProps) {
               clearAuth();
               window.location.href = '/login';
             }}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground-secondary transition-colors hover:bg-background-tertiary hover:text-foreground"
+            className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-3 text-sm text-foreground-secondary transition-colors hover:bg-background-tertiary hover:text-foreground lg:py-2"
           >
             <LogOut className="h-5 w-5" />
             Sign Out

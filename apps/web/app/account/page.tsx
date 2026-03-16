@@ -144,19 +144,19 @@ export default function AccountProfilePage() {
                 {message.text}
               </div>
             )}
-            <Button type="submit" isLoading={isLoading}>
+            <Button type="submit" isLoading={isLoading} className="min-h-[44px]">
               Update Password
             </Button>
           </form>
         </CardContent>
       </Card>
 
-      <div className="mt-8 flex gap-4">
+      <div className="mt-8 flex flex-wrap gap-3">
         <Link href="/account/billing">
-          <Button variant="secondary">Billing & Subscription</Button>
+          <Button variant="secondary" className="min-h-[44px]">Billing & Subscription</Button>
         </Link>
         <Link href="/account/plans">
-          <Button variant="secondary">View Plans</Button>
+          <Button variant="secondary" className="min-h-[44px]">View Plans</Button>
         </Link>
       </div>
     </div>

@@ -187,14 +187,14 @@ export default function AdminLessonsPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold">Manage Lessons</h1>
           <p className="mt-2 text-foreground-secondary">
             Add, edit, and manage video lessons.
           </p>
         </div>
-        <Button onClick={() => setIsCreating(true)}>
+        <Button onClick={() => setIsCreating(true)} className="min-h-[44px]">
           <Plus className="mr-2 h-4 w-4" />
           Add Lesson
         </Button>
@@ -281,7 +281,7 @@ export default function AdminLessonsPage() {
                   setNewLesson((prev) => ({ ...prev, order: parseInt(e.target.value) }))
                 }
               />
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button onClick={handleCreate}>Create Lesson</Button>
                 <Button variant="secondary" onClick={() => { setIsCreating(false); setVideoError(null); }}>
                   Cancel
@@ -329,8 +329,8 @@ export default function AdminLessonsPage() {
                       <p className="mt-1.5 text-xs text-error">{videoError}</p>
                     )}
                   </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => handleSave(lesson.id)}>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" onClick={() => handleSave(lesson.id)} className="min-h-[44px]">
                       <Save className="mr-2 h-4 w-4" />
                       Save
                     </Button>
@@ -338,6 +338,7 @@ export default function AdminLessonsPage() {
                       size="sm"
                       variant="secondary"
                       onClick={() => { setEditingId(null); setVideoError(null); }}
+                      className="min-h-[44px]"
                     >
                       <X className="mr-2 h-4 w-4" />
                       Cancel
@@ -345,11 +346,11 @@ export default function AdminLessonsPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-background-tertiary">
                     <Video className="h-5 w-5 text-foreground-muted" />
                   </div>
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-medium text-primary">
                         {lesson.module.title}
@@ -370,11 +371,12 @@ export default function AdminLessonsPage() {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-shrink-0 flex-wrap gap-2">
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => handleEdit(lesson)}
+                      className="min-h-[44px] min-w-[44px]"
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
@@ -382,6 +384,7 @@ export default function AdminLessonsPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleDelete(lesson.id)}
+                      className="min-h-[44px] min-w-[44px]"
                     >
                       <Trash2 className="h-4 w-4 text-error" />
                     </Button>

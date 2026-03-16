@@ -21,8 +21,8 @@ export default function AccountLayout({
 
   return (
     <DashboardLayout>
-      <div className="flex gap-8">
-        <nav className="w-56 shrink-0 space-y-1">
+      <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+        <nav className="w-full shrink-0 space-y-1 lg:w-56">
           {links.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href || (link.href !== '/account' && pathname.startsWith(link.href));
@@ -31,7 +31,7 @@ export default function AccountLayout({
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                  'flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors lg:py-2',
                   isActive
                     ? 'bg-primary/10 text-primary'
                     : 'text-foreground-secondary hover:bg-background-tertiary hover:text-foreground'

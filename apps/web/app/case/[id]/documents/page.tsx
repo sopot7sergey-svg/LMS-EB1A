@@ -163,7 +163,7 @@ export default function DocumentsPage() {
 
               <div
                 {...getRootProps()}
-                className={`cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
+                className={`cursor-pointer rounded-lg border-2 border-dashed p-4 text-center transition-colors sm:p-6 lg:p-8 ${
                   isDragActive
                     ? 'border-primary bg-primary/5'
                     : 'border-border hover:border-border-hover'
@@ -211,14 +211,14 @@ export default function DocumentsPage() {
                     return (
                       <div
                         key={doc.id}
-                        className="flex items-center gap-4 rounded-lg border border-border p-4"
+                        className="flex flex-col gap-3 rounded-lg border border-border p-4 sm:flex-row sm:items-center sm:gap-4"
                       >
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-background-tertiary">
                           <Icon className="h-5 w-5 text-foreground-muted" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">{doc.originalName}</p>
-                          <div className="flex items-center gap-2 text-sm text-foreground-muted">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-foreground-muted">
                             <span className="capitalize">{doc.category}</span>
                             <span>•</span>
                             <span>{formatFileSize(doc.size)}</span>
@@ -232,6 +232,7 @@ export default function DocumentsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(doc.id)}
+                          className="min-h-[44px] min-w-[44px] self-start sm:self-center"
                         >
                           <Trash2 className="h-4 w-4 text-error" />
                         </Button>

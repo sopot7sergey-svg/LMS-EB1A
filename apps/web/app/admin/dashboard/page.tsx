@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
               {recentActivity.map((activity) => (
                 <div
                   key={activity.id}
-                  className="flex items-center gap-4 rounded-lg border border-border p-4"
+                  className="flex flex-col gap-3 rounded-lg border border-border p-4 sm:flex-row sm:items-center sm:gap-4"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                     {activity.user.name.charAt(0).toUpperCase()}

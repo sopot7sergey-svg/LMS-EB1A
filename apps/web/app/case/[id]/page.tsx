@@ -455,7 +455,7 @@ export default function CaseDetailPage() {
         </Link>
 
         {/* Header */}
-        <div className="flex flex-wrap items-center gap-4 border-b border-border pb-6">
+        <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:flex-wrap sm:items-center">
           <div className="flex-1 min-w-0">
             {isEditingName ? (
               <div className="flex items-center gap-2">
@@ -500,15 +500,15 @@ export default function CaseDetailPage() {
             {lifecycleStatus.replace('_', ' ')}
           </span>
 
-          <div className="flex items-center gap-6">
-            <div className="w-32">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <div className="w-32 min-w-0">
               <p className="text-xs text-foreground-muted mb-1">Checklist</p>
               <ProgressBar value={checklistCompletionPercent} size="sm" />
               <p className="text-xs text-foreground-secondary mt-0.5">
                 {checklistCompletionPercent}%
               </p>
             </div>
-            <div className="w-32">
+            <div className="w-32 min-w-0">
               <p className="text-xs text-foreground-muted mb-1">Evidence Coverage</p>
               <p className="text-lg font-semibold">
                 {evidenceCoverageCount}/10
@@ -516,7 +516,7 @@ export default function CaseDetailPage() {
             </div>
           </div>
 
-          <Button variant="primary" onClick={() => setCompileModalOpen(true)}>
+          <Button variant="primary" onClick={() => setCompileModalOpen(true)} className="min-h-[44px] w-full sm:w-auto">
             <FileStack className="mr-2 h-4 w-4" />
             Compile Officer Packet
           </Button>

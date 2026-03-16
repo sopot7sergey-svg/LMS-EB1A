@@ -138,14 +138,14 @@ export default function CasesPage() {
 
   return (
     <DashboardLayout>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold">My Cases</h1>
           <p className="mt-2 text-foreground-secondary">
             Manage your EB-1A petition cases.
           </p>
         </div>
-        <Button onClick={handleCreateCase} isLoading={isCreating}>
+            <Button onClick={handleCreateCase} isLoading={isCreating} className="min-h-[44px]">
           <Plus className="mr-2 h-4 w-4" />
           New Case
         </Button>
@@ -174,7 +174,7 @@ export default function CasesPage() {
                 : 'Renew your plan to create new cases.'}
             </p>
             {appAccessActive && (
-              <Button className="mt-4" onClick={handleCreateCase} isLoading={isCreating}>
+              <Button className="mt-4 min-h-[44px]" onClick={handleCreateCase} isLoading={isCreating}>
                 Create Case
               </Button>
             )}
@@ -210,7 +210,7 @@ export default function CasesPage() {
                   <button
                     type="button"
                     onClick={() => appAccessActive && setCaseToDelete(caseItem)}
-                    className="shrink-0 rounded-md p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-md text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Delete case"
                     aria-label={`Delete ${caseItem.caseAxisStatement || 'Untitled Case'}`}
                     disabled={deletingCaseId === caseItem.id || !appAccessActive}

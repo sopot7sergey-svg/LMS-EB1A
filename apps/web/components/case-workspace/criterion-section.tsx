@@ -106,11 +106,11 @@ export function CriterionSection({
             key={criterionId}
             className="rounded-lg border border-border bg-background-secondary/30 overflow-hidden"
           >
-            <div className="flex items-center gap-2 p-3">
+            <div className="flex flex-wrap items-center gap-2 p-3">
               <button
                 type="button"
                 onClick={() => toggleCriterion(criterionId)}
-                className="shrink-0 text-foreground-muted hover:text-foreground"
+                className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center text-foreground-muted hover:text-foreground sm:min-h-0 sm:min-w-0"
               >
                 {isExpanded ? (
                   <ChevronDown className="h-5 w-5" />
@@ -128,7 +128,7 @@ export function CriterionSection({
                   onStatusChange(criterionId, e.target.value as CriterionEvidenceStatus)
                 }
                 className={cn(
-                  'rounded border border-border bg-background-tertiary px-2 py-1 text-sm',
+                  'min-h-[44px] min-w-[120px] rounded border border-border bg-background-tertiary px-3 py-2 text-sm sm:min-h-0 sm:min-w-0 sm:px-2 sm:py-1',
                   'focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
                 )}
               >
@@ -153,7 +153,7 @@ export function CriterionSection({
 
                     return (
                       <div key={slotLabel} className="rounded border border-border/50 bg-background-tertiary/30 overflow-hidden">
-                        <div className="flex items-center justify-between px-3 py-2">
+                        <div className="flex flex-col gap-2 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
                           <button
                             type="button"
                             onClick={() =>
@@ -178,12 +178,12 @@ export function CriterionSection({
                               </span>
                             )}
                           </button>
-                          <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex flex-shrink-0 flex-wrap items-center gap-2">
                             {slotLabel === 'Narrative' ? (
                               <button
                                 type="button"
                                 onClick={() => onGenerateNarrative(criterionId)}
-                                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                                className="inline-flex min-h-[44px] items-center gap-1 px-2 text-xs font-medium text-primary hover:underline sm:min-h-0"
                               >
                                 <Sparkles className="h-3.5 w-3.5" />
                                 Open Document Assistant
@@ -192,7 +192,7 @@ export function CriterionSection({
                               <button
                                 type="button"
                                 onClick={() => onCreateWithAI('s5', criterionId, slotType)}
-                                className="text-sm font-medium text-primary hover:underline"
+                                className="min-h-[44px] text-sm font-medium text-primary hover:underline sm:min-h-0"
                               >
                                 Create
                               </button>
@@ -204,7 +204,7 @@ export function CriterionSection({
                                   prev === uploadSlotKey ? null : uploadSlotKey
                                 )
                               }
-                              className="text-sm font-medium text-primary hover:underline"
+                              className="min-h-[44px] text-sm font-medium text-primary hover:underline sm:min-h-0"
                             >
                               + Add
                             </button>
@@ -229,7 +229,7 @@ export function CriterionSection({
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
-                                  className="shrink-0 rounded p-1 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors"
+                                  className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
                                   title="Delete"
                                 >
                                   <Trash2 className="h-4 w-4" />

@@ -65,10 +65,10 @@ export default function AdminUltraRequestsPage() {
   return (
     <DashboardLayout>
       <div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-3xl font-bold">Ultra Eligibility Requests</h1>
           <Link href="/admin/users">
-            <Button variant="secondary">Back to Users</Button>
+            <Button variant="secondary" className="min-h-[44px]">Back to Users</Button>
           </Link>
         </div>
         <p className="mt-2 text-foreground-secondary">
@@ -104,10 +104,11 @@ export default function AdminUltraRequestsPage() {
                         </p>
                       </div>
                       {req.status === 'pending' && (
-                        <div className="flex gap-2">
+                        <div className="flex flex-shrink-0 flex-wrap gap-2">
                           <Button
                             variant="secondary"
                             size="sm"
+                            className="min-h-[44px]"
                             onClick={() => handleReject(req.id)}
                             disabled={actionId !== null}
                           >
@@ -116,6 +117,7 @@ export default function AdminUltraRequestsPage() {
                           </Button>
                           <Button
                             size="sm"
+                            className="min-h-[44px]"
                             onClick={() => handleApprove(req.id)}
                             disabled={actionId !== null}
                           >
