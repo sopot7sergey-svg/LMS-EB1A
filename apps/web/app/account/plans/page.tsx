@@ -96,7 +96,7 @@ export default function PlansPage() {
         App access plans. Course access is lifetime after purchase.
       </p>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
         {data?.plans.map((plan) => (
           <Card key={plan.id} className="flex flex-col">
             <CardHeader>
