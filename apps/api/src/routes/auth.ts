@@ -31,7 +31,7 @@ router.post(
         return res.status(400).json({ error: 'Email already registered' });
       }
 
-      let codeRecord: { id: string; grantCourseAccess: boolean; grantStartAccess: boolean; startDurationDays: number } | null = null;
+      let codeRecord: { grantCourseAccess: boolean; grantStartAccess: boolean; startDurationDays: number } | null = null;
 
       if (accessCode && typeof accessCode === 'string' && accessCode.trim()) {
         const trimmed = accessCode.trim();
@@ -45,7 +45,6 @@ router.post(
           return res.status(400).json({ error: `This access code has already been used or is no longer valid (status: ${found.status}).` });
         }
         codeRecord = {
-          id: found.id,
           grantCourseAccess: found.grantCourseAccess,
           grantStartAccess: found.grantStartAccess,
           startDurationDays: found.startDurationDays,
@@ -64,14 +63,18 @@ router.post(
       });
 
       if (codeRecord) {
+        const updated = await prisma.accessCode.updateMany({
+          where: { code: accessCode.trim(), status: 'active' },
+          data: { status: 'used', usedByUserId: user.id, usedAt: new Date() },
+        });
+        if (updated.count === 0) {
+          await prisma.user.delete({ where: { id: user.id } });
+          return res.status(400).json({ error: 'This access code has already been used.' });
+        }
         await grantAccessFromCode(user.id, {
           courseAccess: codeRecord.grantCourseAccess,
           startAccess: codeRecord.grantStartAccess,
           startDurationDays: codeRecord.startDurationDays,
-        });
-        await prisma.accessCode.update({
-          where: { id: codeRecord.id },
-          data: { status: 'used', usedByUserId: user.id, usedAt: new Date() },
         });
       }
 

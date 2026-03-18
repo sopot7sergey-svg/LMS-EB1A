@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { grantStartAfterCoursePurchase } from '../src/services/access';
+import { generateWelcomeCodes } from '../src/lib/welcome-codes';
 
 const prisma = new PrismaClient();
 
@@ -623,14 +624,11 @@ async function main() {
   }
   console.log(`Created ${ragChunks.length} RAG chunks`);
 
-  const testAccessCodes = [
-    'WELCOME2025',
-    'TEST001',
-    'TEST002',
-    'TEST003',
-    'LOCAL01',
-  ];
-  for (const code of testAccessCodes) {
+  const welcomeCodes = generateWelcomeCodes();
+  const testCodes = welcomeCodes.filter((c) => c.isTest).map((c) => c.code);
+  const productionCodes = welcomeCodes.filter((c) => !c.isTest).map((c) => c.code);
+
+  for (const { code } of welcomeCodes) {
     await prisma.accessCode.upsert({
       where: { code },
       create: {
@@ -643,13 +641,15 @@ async function main() {
       update: {},
     });
   }
-  console.log(`Created ${testAccessCodes.length} test access codes: ${testAccessCodes.join(', ')}`);
+  console.log(`Created ${welcomeCodes.length} welcome access codes (200 production + 5 TEST)`);
+  console.log('TEST codes:', testCodes.join(', '));
 
   console.log('');
   console.log('=== PRODUCTION SEED SUMMARY ===');
   console.log('Admin: sopot7sergey@gmail.com / AdminSeed2025');
   console.log('Test students: test1@example.com .. test5@example.com / Test1234');
-  console.log('Access codes:', testAccessCodes.join(', '));
+  console.log('Welcome codes: 205 total (200 production + 5 TEST)');
+  console.log('TEST codes:', testCodes.join(', '));
   console.log('===============================');
   console.log('Seed completed!');
 }
