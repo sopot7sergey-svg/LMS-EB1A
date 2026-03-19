@@ -162,8 +162,8 @@ export function ChecklistAccordion({
                 </div>
                 {compiledPackets.length > 0 && (
                   <span className="shrink-0 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary">
-                    {compiledPackets.length} packet{compiledPackets.length > 1 ? 's' : ''}
-                    {reviewedPackets.length > 0 && ` · ${reviewedPackets.length} audited`}
+                    {compiledPackets.length} пакет{compiledPackets.length === 1 ? '' : 'ов'}
+                    {reviewedPackets.length > 0 && ` · ${reviewedPackets.length} проверено`}
                   </span>
                 )}
               </button>
@@ -184,7 +184,7 @@ export function ChecklistAccordion({
                           ) : (
                             <ChevronRight className="h-4 w-4 shrink-0 text-foreground-muted" />
                           )}
-                          <span className="block text-sm text-white">Compiled Packets</span>
+                          <span className="block text-sm text-white">Собранные пакеты</span>
                           {compiledPackets.length > 0 && (
                             <span className="shrink-0 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary">
                               {compiledPackets.length}
@@ -196,7 +196,7 @@ export function ChecklistAccordion({
                         <div className="border-t border-border px-3 py-2 pl-9 space-y-2">
                           {compiledPackets.length === 0 ? (
                             <p className="text-sm text-foreground-muted">
-                              No compiled packets yet. Use "Compile Officer Packet" to create one.
+                              Собранных пакетов пока нет. Используйте «Собрать пакет для офицера».
                             </p>
                           ) : (
                             <div className="space-y-1">
@@ -207,7 +207,7 @@ export function ChecklistAccordion({
                                 >
                                   <div className="flex min-w-0 flex-wrap items-center gap-2">
                                     <FileStack className="h-4 w-4 text-primary shrink-0" />
-                                    <span className="text-sm text-white">Version {packet.version}</span>
+                                    <span className="text-sm text-white">Версия {packet.version}</span>
                                     <span className="text-xs text-foreground-muted">
                                       {new Date(packet.createdAt).toLocaleDateString(undefined, {
                                         month: 'short', day: 'numeric', year: 'numeric',
@@ -217,7 +217,7 @@ export function ChecklistAccordion({
                                     {packet.reviewedAt ? (
                                       <span className="flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-[11px] font-medium text-green-700">
                                         <ShieldCheck className="h-3 w-3" />
-                                        Audited
+                                        Проверено
                                         {packet.riskLevel && (
                                           <span className="ml-0.5 opacity-70">
                                             ({packet.riskLevel.replace('_', ' ')})
@@ -227,7 +227,7 @@ export function ChecklistAccordion({
                                     ) : (
                                       <span className="flex items-center gap-1 rounded-full bg-gray-500/10 px-2 py-0.5 text-[11px] font-medium text-foreground-muted">
                                         <ShieldX className="h-3 w-3" />
-                                        Not audited
+                                        Не проверено
                                       </span>
                                     )}
                                   </div>
@@ -239,7 +239,7 @@ export function ChecklistAccordion({
                                         className="min-h-[44px] sm:min-h-0"
                                         onClick={() => onRunAudit(packet.jobId)}
                                       >
-                                        {packet.reviewedAt ? 'Re-audit' : 'Run Audit'}
+                                        {packet.reviewedAt ? 'Повторить аудит' : 'Запустить аудит'}
                                       </Button>
                                     )}
                                     {onDownloadPacket && (
@@ -274,7 +274,7 @@ export function ChecklistAccordion({
                           ) : (
                             <ChevronRight className="h-4 w-4 shrink-0 text-foreground-muted" />
                           )}
-                          <span className="block text-sm text-white">Reviewed Packets / Final Audits</span>
+                          <span className="block text-sm text-white">Проверенные пакеты / Финальные аудиты</span>
                           {reviewedPackets.length > 0 && (
                             <span className="shrink-0 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary">
                               {reviewedPackets.length}
@@ -286,7 +286,7 @@ export function ChecklistAccordion({
                         <div className="border-t border-border px-3 py-2 pl-9 space-y-2">
                           {reviewedPackets.length === 0 ? (
                             <p className="text-sm text-foreground-muted">
-                              No completed audits yet. Run a Final Audit on a compiled packet to see results here.
+                              Завершённых аудитов пока нет. Запустите финальный аудит собранного пакета.
                             </p>
                           ) : (
                             <div className="space-y-1">
@@ -298,10 +298,10 @@ export function ChecklistAccordion({
                                   critical_gaps: 'border-red-200/20 bg-red-500/5',
                                 };
                                 const riskLabels: Record<string, string> = {
-                                  low_risk: 'Low Risk',
-                                  medium_risk: 'Medium Risk',
-                                  high_risk: 'High Risk',
-                                  critical_gaps: 'Critical Gaps',
+                                  low_risk: 'Низкий риск',
+                                  medium_risk: 'Средний риск',
+                                  high_risk: 'Высокий риск',
+                                  critical_gaps: 'Критические пробелы',
                                 };
                                 const riskTextColors: Record<string, string> = {
                                   low_risk: 'text-green-400',
@@ -310,7 +310,7 @@ export function ChecklistAccordion({
                                   critical_gaps: 'text-red-400',
                                 };
                                 const riskStyle = riskColors[packet.riskLevel ?? ''] ?? '';
-                                const riskLabel = riskLabels[packet.riskLevel ?? ''] ?? 'Unknown';
+                                const riskLabel = riskLabels[packet.riskLevel ?? ''] ?? 'Неизвестно';
                                 const riskTextColor = riskTextColors[packet.riskLevel ?? ''] ?? 'text-foreground-muted';
 
                                 return (
@@ -321,7 +321,7 @@ export function ChecklistAccordion({
                                     <div className="flex min-w-0 flex-wrap items-center gap-2">
                                       <ShieldCheck className={`h-4 w-4 shrink-0 ${riskTextColor}`} />
                                       <span className="text-sm text-white">
-                                        Version {packet.version} — <span className={riskTextColor}>{riskLabel}</span>
+                                        Версия {packet.version} — <span className={riskTextColor}>{riskLabel}</span>
                                       </span>
                                       <span className="text-xs text-foreground-muted">
                                         <Calendar className="inline h-3 w-3 mr-0.5" />
@@ -339,7 +339,7 @@ export function ChecklistAccordion({
                                           className="min-h-[44px] sm:min-h-0"
                                           onClick={() => onViewAuditReport(packet.jobId, packet.version)}
                                         >
-                                          Open Report
+                                          Открыть отчёт
                                         </Button>
                                       )}
                                       {onRunAudit && (
@@ -349,7 +349,7 @@ export function ChecklistAccordion({
                                           className="min-h-[44px] sm:min-h-0"
                                           onClick={() => onRunAudit(packet.jobId)}
                                         >
-                                          Re-audit
+                                          Повторить аудит
                                         </Button>
                                       )}
                                     </div>
@@ -532,7 +532,7 @@ function ChecklistSectionContent({
         },
         (err) => {
           console.error(err);
-          alert(err instanceof Error ? err.message : 'Failed to open document');
+          alert(err instanceof Error ? err.message : 'Не удалось открыть документ');
         }
       );
     }
@@ -540,13 +540,13 @@ function ChecklistSectionContent({
 
   const handleDeleteDoc = async (docId: string, docName: string) => {
     if (!token) return;
-    if (!confirm(`Delete "${docName}"?`)) return;
+    if (!confirm(`Удалить «${docName}»?`)) return;
     try {
       await api.documents.delete(docId, token);
       onUploadSuccess?.();
     } catch (err) {
       console.error(err);
-      alert('Failed to delete document');
+          alert('Не удалось удалить документ');
     }
   };
 
@@ -584,7 +584,7 @@ function ChecklistSectionContent({
                       <span className="block text-xs text-foreground-muted">{builderConfig.description}</span>
                       {slotStatus !== 'not_started' ? (
                         <span className="block text-[11px] text-foreground-muted">
-                          Progress summary: {builderProgress}% ready
+                          Прогресс: {builderProgress}% готово
                         </span>
                       ) : null}
                     </>
@@ -608,7 +608,7 @@ function ChecklistSectionContent({
                   }}
                   onCreate={() => onCreateWithAI(sectionId, null, slotType)}
                   onTemplate={() => onOpenTemplate(sectionId, slotType)}
-                  primaryActionLabel={isFillMode ? 'Fill' : 'Create'}
+                  primaryActionLabel={isFillMode ? 'Заполнить' : 'Создать'}
                 />
               ) : (
                 <>
@@ -628,7 +628,7 @@ function ChecklistSectionContent({
                         : 'text-primary hover:underline'
                     }`}
                   >
-                    + Add
+                    + Добавить
                   </button>
                   {showUploadMsg === slotType && (
                     <UploadDisabledPopover
@@ -659,7 +659,7 @@ function ChecklistSectionContent({
                           <span className="truncate text-primary hover:underline">{doc.originalName}</span>
                           {isReviewArtifact(doc.metadata as Record<string, unknown> | undefined) && (
                             <span className="shrink-0 rounded-full border border-violet-400/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-violet-200">
-                              Review
+                              Проверка
                             </span>
                           )}
                           <ExternalLink className="h-3.5 w-3.5 shrink-0 text-foreground-muted opacity-70 group-hover:opacity-100" aria-label="Open" />
@@ -668,7 +668,7 @@ function ChecklistSectionContent({
                           type="button"
                           onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
                           className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
-                          title="Delete"
+                          title="Удалить"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

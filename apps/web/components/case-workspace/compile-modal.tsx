@@ -10,49 +10,49 @@ import { FileDown, Loader2, CheckCircle, AlertCircle, ChevronDown, ChevronRight 
 const PACKET_SECTIONS = [
   {
     code: 'A',
-    title: 'Filing Core',
-    description: 'Administrative filing materials like forms and fee proof.',
+    title: 'Ядро подачи',
+    description: 'Административные материалы: формы и подтверждение оплаты.',
     toggleKey: 'includeForms' as const,
   },
   {
     code: 'B',
     title: 'Legal Brief / TOC',
-    description: 'Cover letter, generated table of contents, and positioning summaries.',
+    description: 'Cover letter, оглавление и позиционирование.',
   },
   {
     code: 'C',
-    title: 'Identity / Status',
-    description: 'Core identity, status, CV, bio, and background documents.',
+    title: 'Идентичность / статус',
+    description: 'CV, bio и фоновые документы.',
   },
   {
     code: 'D',
-    title: 'Criterion Evidence',
-    description: 'Canonical criterion evidence block filtered by the selected criteria below.',
+    title: 'Доказательства по критериям',
+    description: 'Блок доказательств, отфильтрованный по выбранным критериям.',
   },
   {
     code: 'E',
-    title: 'Expert Letters',
-    description: 'Expert and recommendation letter materials.',
+    title: 'Экспертные письма',
+    description: 'Материалы экспертных и рекомендательных писем.',
   },
   {
     code: 'F',
-    title: 'Review / QA',
-    description: 'Generated exhibit index, officer-style review, and document review reports.',
+    title: 'Проверка / QA',
+    description: 'Индекс exhibits, officer-style review и отчёты проверки документов.',
   },
 ] as const;
 
 const CRITERION_FILTER_OPTIONS = [
-  { id: 'C1', label: 'Criterion 1 — Awards' },
-  { id: 'C2', label: 'Criterion 2 — Memberships' },
-  { id: 'C3', label: 'Criterion 3 — Published Material About You' },
-  { id: 'C4', label: 'Criterion 4 — Judging' },
-  { id: 'C5', label: 'Criterion 5 — Original Contributions' },
-  { id: 'C6', label: 'Criterion 6 — Scholarly Articles' },
-  { id: 'C7', label: 'Criterion 7 — Artistic Exhibitions' },
-  { id: 'C8', label: 'Criterion 8 — Leading / Critical Role' },
-  { id: 'C9', label: 'Criterion 9 — High Salary' },
-  { id: 'C10', label: 'Criterion 10 — Commercial Success' },
-  { id: 'C-C', label: 'Comparable Evidence' },
+  { id: 'C1', label: 'Критерий 1 — Награды' },
+  { id: 'C2', label: 'Критерий 2 — Членства' },
+  { id: 'C3', label: 'Критерий 3 — Публикации о вас' },
+  { id: 'C4', label: 'Критерий 4 — Судейство' },
+  { id: 'C5', label: 'Критерий 5 — Оригинальный вклад' },
+  { id: 'C6', label: 'Критерий 6 — Научные статьи' },
+  { id: 'C7', label: 'Критерий 7 — Художественные выставки' },
+  { id: 'C8', label: 'Критерий 8 — Ведущая / Ключевая роль' },
+  { id: 'C9', label: 'Критерий 9 — Высокая зарплата' },
+  { id: 'C10', label: 'Критерий 10 — Коммерческий успех' },
+  { id: 'C-C', label: 'Сопоставимые доказательства' },
 ] as const;
 
 interface CompileModalProps {
@@ -110,7 +110,7 @@ export function CompileModal({
       setError(res.error || null);
       return res;
     } catch {
-      setError('Failed to get status');
+      setError('Не удалось получить статус');
       return null;
     }
   }, [token, caseId, jobId]);
@@ -146,7 +146,7 @@ export function CompileModal({
       setJobId(res.jobId);
       setStatus(res.status);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start');
+      setError(err instanceof Error ? err.message : 'Не удалось запустить');
     }
   };
 
@@ -163,7 +163,7 @@ export function CompileModal({
       URL.revokeObjectURL(url);
       onComplete?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Download failed');
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки');
     } finally {
       setIsDownloading(false);
     }
@@ -172,19 +172,18 @@ export function CompileModal({
   const isRunning = status && status !== 'completed' && status !== 'failed';
 
   return (
-    <Dialog open={open} onClose={onClose} title="Compile Officer Packet" className="max-w-2xl">
+    <Dialog open={open} onClose={onClose} title="Собрать пакет для офицера" className="max-w-2xl">
       <div className="p-6 space-y-6">
         <div className="rounded-lg border border-border bg-background-secondary p-4">
           <p className="text-sm text-foreground-secondary">
-            Builds the canonical officer packet in packet order `A → B → C → D → E → F`, using
-            reviewed documents, exhibit codes, generated TOC, and exhibit index.
+            Собирает канонический пакет в порядке A → B → C → D → E → F, используя проверенные документы, коды exhibits, сгенерированное оглавление и индекс exhibits.
           </p>
         </div>
 
         {!jobId ? (
           <>
             <div>
-              <h3 className="mb-3 font-medium">Packet structure</h3>
+              <h3 className="mb-3 font-medium">Структура пакета</h3>
               <div className="grid gap-3 md:grid-cols-2">
                 {PACKET_SECTIONS.map((section) => (
                   <div
@@ -194,7 +193,7 @@ export function CompileModal({
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-sm font-medium text-white">
-                          Section {section.code} — {section.title}
+                          Секция {section.code} — {section.title}
                         </p>
                         <p className="mt-1 text-xs text-foreground-muted">{section.description}</p>
                       </div>
@@ -206,11 +205,11 @@ export function CompileModal({
                             onChange={(e) => setIncludeForms(e.target.checked)}
                             className="mr-2 rounded border-border"
                           />
-                          Include
+                          Включить
                         </label>
                       ) : (
                         <span className="shrink-0 rounded-full bg-primary/15 px-2 py-1 text-[11px] font-medium text-primary">
-                          Included when available
+                          Включается при наличии
                         </span>
                       )}
                     </div>
@@ -222,14 +221,13 @@ export function CompileModal({
             <div>
               <div className="mb-2 flex items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-medium">Criterion Evidence filter</h3>
+                  <h3 className="font-medium">Фильтр доказательств по критериям</h3>
                   <p className="text-xs text-foreground-muted">
-                    This filters only Section D. The packet structure still stays in canonical
-                    order.
+                    Фильтрует только секцию D. Структура пакета остаётся канонической.
                   </p>
                 </div>
                 <span className="rounded-full bg-background-secondary px-2 py-1 text-xs text-foreground-secondary">
-                  {selectedCriterionLabels.length} selected
+                  {selectedCriterionLabels.length} выбрано
                 </span>
               </div>
               <div className="grid gap-2 md:grid-cols-2">
@@ -256,16 +254,16 @@ export function CompileModal({
               </div>
               {selectedCriterionLabels.length > 0 && (
                 <p className="mt-2 text-xs text-foreground-muted">
-                  Selected: {selectedCriterionLabels.join(' • ')}
+                  Выбрано: {selectedCriterionLabels.join(' • ')}
                 </p>
               )}
             </div>
 
             <div className="space-y-3">
               <div>
-                <h3 className="font-medium">Packet outputs</h3>
+                <h3 className="font-medium">Результаты пакета</h3>
                 <p className="text-xs text-foreground-muted">
-                  These outputs match the canonical officer packet workflow.
+                  Соответствуют каноническому workflow пакета для офицера.
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -276,7 +274,7 @@ export function CompileModal({
                     onChange={(e) => setIncludeTOC(e.target.checked)}
                     className="rounded border-border"
                   />
-                  <span className="text-sm">Generate Table of Contents</span>
+                  <span className="text-sm">Сгенерировать оглавление</span>
                 </label>
                 <label className="flex items-center gap-2 rounded-lg border border-border bg-background-secondary px-3 py-2 cursor-pointer">
                   <input
@@ -285,20 +283,20 @@ export function CompileModal({
                     onChange={(e) => setIncludeExhibitIndex(e.target.checked)}
                     className="rounded border-border"
                   />
-                  <span className="text-sm">Generate Exhibit Index</span>
+                  <span className="text-sm">Сгенерировать индекс exhibits</span>
                 </label>
               </div>
             </div>
 
             <div>
-              <h3 className="mb-2 font-medium">Page numbering</h3>
+              <h3 className="mb-2 font-medium">Нумерация страниц</h3>
               <select
                 value={pageNumberFormat}
                 onChange={(e) => setPageNumberFormat(e.target.value as 'simple' | 'bates')}
                 className="input"
               >
-                <option value="simple">Simple page numbers</option>
-                <option value="bates">Bates numbering (EB1A-0001...)</option>
+                <option value="simple">Простая нумерация</option>
+                <option value="bates">Bates (EB1A-0001...)</option>
               </select>
             </div>
 
@@ -309,9 +307,9 @@ export function CompileModal({
                 className="flex w-full items-center justify-between px-4 py-3 text-left"
               >
                 <div>
-                  <p className="text-sm font-medium text-white">Advanced</p>
+                  <p className="text-sm font-medium text-white">Дополнительно</p>
                   <p className="text-xs text-foreground-muted">
-                    Internal or exception-path options for packet preparation.
+                    Дополнительные опции подготовки пакета.
                   </p>
                 </div>
                 {showAdvanced ? (
@@ -329,7 +327,7 @@ export function CompileModal({
                       onChange={(e) => setIncludeDrafts(e.target.checked)}
                       className="rounded border-border"
                     />
-                    <span className="text-sm">Include draft documents</span>
+                    <span className="text-sm">Включить черновики</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -338,7 +336,7 @@ export function CompileModal({
                       onChange={(e) => setIncludeDuplicates(e.target.checked)}
                       className="rounded border-border"
                     />
-                    <span className="text-sm">Allow duplicate source files</span>
+                    <span className="text-sm">Разрешить дубликаты файлов</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer md:col-span-2">
                     <input
@@ -347,23 +345,21 @@ export function CompileModal({
                       onChange={(e) => setIncludeLowConfidence(e.target.checked)}
                       className="rounded border-border"
                     />
-                    <span className="text-sm">Include low-confidence reviewed documents</span>
+                    <span className="text-sm">Включить документы с низкой уверенностью</span>
                   </label>
                 </div>
               )}
             </div>
 
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-              <p className="text-sm font-medium text-white">Default compile path</p>
+              <p className="text-sm font-medium text-white">Стандартный порядок сборки</p>
               <p className="mt-1 text-sm text-foreground-secondary">
-                Canonical officer packet order: Section A Filing Core, Section B Legal Brief / TOC,
-                Section C Identity / Status, Section D Criterion Evidence, Section E Expert Letters,
-                and Section F Review / QA.
+                Канонический порядок: A Ядро подачи, B Legal Brief / TOC, C Идентичность / статус, D Доказательства по критериям, E Экспертные письма, F Проверка / QA.
               </p>
             </div>
 
             <Button onClick={handleStart} className="w-full">
-              Compile Canonical Officer Packet
+              Собрать канонический пакет
             </Button>
           </>
         ) : (
@@ -388,8 +384,8 @@ export function CompileModal({
               <div className="flex items-center gap-3 rounded-lg bg-success/10 p-4 text-success">
                 <CheckCircle className="h-8 w-8" />
                 <div>
-                  <p className="font-medium">Compilation complete</p>
-                  <p className="text-sm opacity-90">Download your PDF or save as artifact.</p>
+                  <p className="font-medium">Сборка завершена</p>
+                  <p className="text-sm opacity-90">Скачайте PDF или сохраните как артефакт.</p>
                 </div>
               </div>
             )}
@@ -398,7 +394,7 @@ export function CompileModal({
               <div className="flex items-center gap-3 rounded-lg bg-error/10 p-4 text-error">
                 <AlertCircle className="h-8 w-8" />
                 <div>
-                  <p className="font-medium">Compilation failed</p>
+                  <p className="font-medium">Сборка не удалась</p>
                   <p className="text-sm">{error}</p>
                 </div>
               </div>
@@ -412,17 +408,17 @@ export function CompileModal({
               <div className="flex gap-2">
                 <Button onClick={handleDownload} disabled={isDownloading} className="flex-1">
                   <FileDown className="mr-2 h-4 w-4" />
-                  {isDownloading ? 'Downloading...' : 'Download PDF'}
+                  {isDownloading ? 'Загрузка...' : 'Скачать PDF'}
                 </Button>
                 <Button variant="secondary" onClick={onClose}>
-                  Close
+                  Закрыть
                 </Button>
               </div>
             )}
 
             {(status === 'failed' || status === 'completed') && (
               <Button variant="ghost" onClick={() => { setJobId(null); setStatus(''); }}>
-                Start new compilation
+                Новая сборка
               </Button>
             )}
           </div>

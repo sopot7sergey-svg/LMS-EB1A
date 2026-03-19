@@ -16,11 +16,11 @@ interface Document {
 }
 
 const CRITERION_STATUS_OPTIONS: { value: CriterionEvidenceStatus; label: string }[] = [
-  { value: 'not_started', label: 'Not started' },
-  { value: 'in_progress', label: 'In progress' },
-  { value: 'supported', label: 'Supported' },
-  { value: 'strongly_supported', label: 'Strongly supported' },
-  { value: 'not_pursued', label: 'Not pursued' },
+  { value: 'not_started', label: 'Не начат' },
+  { value: 'in_progress', label: 'В процессе' },
+  { value: 'supported', label: 'Поддерживается' },
+  { value: 'strongly_supported', label: 'Сильно поддерживается' },
+  { value: 'not_pursued', label: 'Не используется' },
 ];
 
 interface CriterionSectionProps {
@@ -67,7 +67,7 @@ export function CriterionSection({
         },
         (err) => {
           console.error(err);
-          alert(err instanceof Error ? err.message : 'Failed to open document');
+          alert(err instanceof Error ? err.message : 'Не удалось открыть документ');
         }
       );
     }
@@ -75,13 +75,13 @@ export function CriterionSection({
 
   const handleDeleteDoc = async (docId: string, docName: string) => {
     if (!token) return;
-    if (!confirm(`Delete "${docName}"?`)) return;
+    if (!confirm(`Удалить «${docName}»?`)) return;
     try {
       await api.documents.delete(docId, token);
       onUploadSuccess?.();
     } catch (err) {
       console.error(err);
-      alert('Failed to delete document');
+          alert('Не удалось удалить документ');
     }
   };
 
@@ -186,7 +186,7 @@ export function CriterionSection({
                                 className="inline-flex min-h-[44px] items-center gap-1 px-2 text-xs font-medium text-primary hover:underline sm:min-h-0"
                               >
                                 <Sparkles className="h-3.5 w-3.5" />
-                                Open Document Assistant
+                                Открыть помощник по документам
                               </button>
                             ) : (
                               <button
@@ -194,7 +194,7 @@ export function CriterionSection({
                                 onClick={() => onCreateWithAI('s5', criterionId, slotType)}
                                 className="min-h-[44px] text-sm font-medium text-primary hover:underline sm:min-h-0"
                               >
-                                Create
+                                Создать
                               </button>
                             )}
                             <button
@@ -206,7 +206,7 @@ export function CriterionSection({
                               }
                               className="min-h-[44px] text-sm font-medium text-primary hover:underline sm:min-h-0"
                             >
-                              + Add
+                              + Добавить
                             </button>
                           </div>
                         </div>
@@ -230,7 +230,7 @@ export function CriterionSection({
                                   type="button"
                                   onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
                                   className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
-                                  title="Delete"
+                                  title="Удалить"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </button>

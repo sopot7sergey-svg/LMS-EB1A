@@ -46,19 +46,19 @@ export function DocumentAssistantModal({
   };
 
   return (
-    <Dialog open={true} onClose={onClose} title="Document Assistant" className="max-w-3xl">
+    <Dialog open={true} onClose={onClose} title="Помощник по документам" className="max-w-3xl">
       <div className="space-y-6 p-6">
         <div className="rounded-lg border border-border bg-background-secondary p-4">
           <p className="text-sm text-foreground-secondary">
-            One guided assistant for both drafting documents and preparing forms. Every flow uses the same step-based builder with progress, autosave, and continue-later support.
+            Единый помощник для составления документов и заполнения форм. Каждый сценарий использует пошаговый конструктор с прогрессом, автосохранением и возможностью продолжить позже.
           </p>
         </div>
 
         <section className="space-y-3">
           <div>
-            <h3 className="text-sm font-semibold text-white">Create mode</h3>
+            <h3 className="text-sm font-semibold text-white">Режим создания</h3>
             <p className="mt-1 text-xs text-foreground-muted">
-              Guided drafting flows for supported case documents.
+              Пошаговое составление поддерживаемых документов дела.
             </p>
           </div>
           <div className="grid gap-3 md:grid-cols-2">
@@ -73,7 +73,7 @@ export function DocumentAssistantModal({
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-white">{config.shortLabel}</p>
                   <span className="rounded-full bg-primary/10 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-primary">
-                    Create
+                    Создать
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-foreground-muted">{config.description}</p>
@@ -84,9 +84,9 @@ export function DocumentAssistantModal({
 
         <section className="space-y-3">
           <div>
-            <h3 className="text-sm font-semibold text-white">Fill mode</h3>
+            <h3 className="text-sm font-semibold text-white">Режим заполнения</h3>
             <p className="mt-1 text-xs text-foreground-muted">
-              Guided form prep with short per-gap help based on USCIS instructions.
+              Заполнение форм с подсказками по каждому полю на основе инструкций USCIS.
             </p>
           </div>
           <div className="grid gap-3 md:grid-cols-2">
@@ -101,7 +101,7 @@ export function DocumentAssistantModal({
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-white">{config.shortLabel}</p>
                   <span className="rounded-full bg-sky-500/10 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-sky-300">
-                    Fill
+                    Заполнить
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-foreground-muted">{config.description}</p>
@@ -111,7 +111,7 @@ export function DocumentAssistantModal({
         </section>
 
         <p className="text-xs text-foreground-muted">
-          You can also launch these same flows directly from the checklist using Create, Fill, Template, or + Add.
+          Эти же сценарии можно запустить из чеклиста: Создать, Заполнить, Шаблон или + Добавить.
         </p>
       </div>
     </Dialog>
@@ -188,7 +188,7 @@ export function AdvisorChatModal({ toolId, onClose, caseId, caseDocuments = [], 
       const assistantMsg: ChatMessage = {
         id: `asst-${Date.now()}`,
         role: 'assistant',
-        content: response.answer || 'No response received.',
+        content: response.answer || 'Ответ не получен.',
         disclaimer: response.disclaimer,
         attachedDocuments: response.attachedDocuments,
         usedAI: response.usedAI,
@@ -198,13 +198,13 @@ export function AdvisorChatModal({ toolId, onClose, caseId, caseDocuments = [], 
       setMessages([userMsg, assistantMsg]);
       if (response.savedDocumentName) {
         onDocumentsRefresh?.();
-        setSaveNotice('Saved to AI Insights');
+        setSaveNotice('Сохранено в AI Insights');
       }
     } catch (error) {
       const errMsg: ChatMessage = {
         id: `err-${Date.now()}`,
         role: 'assistant',
-        content: `Error: ${error instanceof Error ? error.message : 'Failed to get response'}. Please try again.`,
+        content: `Ошибка: ${error instanceof Error ? error.message : 'Не удалось получить ответ'}. Попробуйте ещё раз.`,
       };
       setMessages([userMsg, errMsg]);
     } finally {
@@ -215,25 +215,25 @@ export function AdvisorChatModal({ toolId, onClose, caseId, caseDocuments = [], 
   if (toolId !== 'advisor-chat') return null;
 
   return (
-    <Dialog open={true} onClose={onClose} title="Advisor Chat" className="max-w-2xl">
+    <Dialog open={true} onClose={onClose} title="Чат с советником" className="max-w-2xl">
       <div className="flex flex-col" style={{ height: 'min(70vh, 600px)' }}>
         <div className="border-b border-border px-6 py-3">
           <p className="text-xs text-foreground-muted">
-            EB1A procedural Q&A, document analysis, and general case guidance. No approval predictions or legal advice.
+            Вопросы по процедуре EB-1A, анализ документов и общие рекомендации. Без прогнозов по одобрению и без юридических советов.
           </p>
         </div>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
           {messages.length === 0 && (
             <div className="text-center py-8 space-y-3 text-foreground-muted">
-              <p className="text-sm">Ask a question about your EB1A case.</p>
-              <p className="text-xs">You can attach documents for context-aware answers.</p>
+              <p className="text-sm">Задайте вопрос о вашем деле EB-1A.</p>
+              <p className="text-xs">Можно прикрепить документы для ответов с учётом контекста.</p>
               <div className="text-xs text-left max-w-sm mx-auto space-y-1">
-                <p className="font-medium text-foreground-secondary">Try asking:</p>
-                <p>&bull; &quot;What does USCIS generally look for in EB-1A petitions?&quot;</p>
-                <p>&bull; &quot;What are the 10 EB1A criteria?&quot;</p>
-                <p>&bull; &quot;What evidence typically supports original contributions (C5)?&quot;</p>
-                <p>&bull; &quot;What should I prepare before starting my case?&quot;</p>
+                <p className="font-medium text-foreground-secondary">Примеры вопросов:</p>
+                <p>&bull; &quot;Что обычно ищет USCIS в петициях EB-1A?&quot;</p>
+                <p>&bull; &quot;Какие 10 критериев EB-1A?&quot;</p>
+                <p>&bull; &quot;Какие доказательства поддерживают оригинальный вклад (C5)?&quot;</p>
+                <p>&bull; &quot;Что подготовить до начала дела?&quot;</p>
               </div>
             </div>
           )}
@@ -252,19 +252,19 @@ export function AdvisorChatModal({ toolId, onClose, caseId, caseDocuments = [], 
               >
                 {msg.attachedDocuments?.length && msg.role === 'user' ? (
                   <p className="mb-2 text-xs opacity-80">
-                    Attached: {msg.attachedDocuments.join(', ')}
+                    Прикреплено: {msg.attachedDocuments.join(', ')}
                   </p>
                 ) : null}
                 {msg.disclaimer && msg.role === 'assistant' ? (
                   <div className="mb-3 flex items-start gap-2 rounded border border-amber-500/30 bg-amber-500/10 p-2 text-xs text-amber-200">
                     <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                    <span>This is not legal advice. It does not predict outcomes. Final decisions may require professional legal review.</span>
+                    <span>Это не юридическая консультация. Не прогнозирует исходы. Итоговые решения могут потребовать профессиональной юридической проверки.</span>
                   </div>
                 ) : null}
                 {msg.role === 'assistant' && msg.usedAI === false ? (
                   <div className="mb-3 flex items-start gap-2 rounded border border-orange-500/30 bg-orange-500/10 p-2 text-xs text-orange-200">
                     <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                    <span>AI unavailable — fallback response used.</span>
+                    <span>ИИ недоступен — использован ответ по умолчанию.</span>
                   </div>
                 ) : null}
                 <div className="whitespace-pre-wrap">{msg.content}</div>
@@ -278,7 +278,7 @@ export function AdvisorChatModal({ toolId, onClose, caseId, caseDocuments = [], 
           {isSending && (
             <div className="flex justify-start">
               <div className="rounded-lg border border-border bg-background-secondary px-4 py-3 text-sm text-foreground-muted">
-                Thinking...
+                Думаю...
               </div>
             </div>
           )}
@@ -298,7 +298,7 @@ export function AdvisorChatModal({ toolId, onClose, caseId, caseDocuments = [], 
             selectedIds={attachedDocIds}
             onSelectionChange={setAttachedDocIds}
             onUploadSuccess={onDocumentsRefresh}
-            label="Attach"
+            label="Прикрепить"
             compact
           />
 
@@ -312,7 +312,7 @@ export function AdvisorChatModal({ toolId, onClose, caseId, caseDocuments = [], 
                   sendMessage();
                 }
               }}
-              placeholder="Ask about your EB1A case..."
+              placeholder="Спросите о вашем деле EB-1A..."
               className="flex-1 resize-none rounded-lg border border-border bg-background-tertiary px-3 py-2 text-sm placeholder:text-foreground-muted focus:border-primary focus:outline-none"
               rows={2}
               disabled={isSending}

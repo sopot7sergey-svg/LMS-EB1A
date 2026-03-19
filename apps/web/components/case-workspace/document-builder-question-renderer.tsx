@@ -152,7 +152,7 @@ export function DocumentBuilderQuestionRenderer({
             onClick={() => onChange([...(items || []), {}])}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Add {question.itemLabel}
+            Добавить {question.itemLabel}
           </Button>
         </div>
         <div className="space-y-3">

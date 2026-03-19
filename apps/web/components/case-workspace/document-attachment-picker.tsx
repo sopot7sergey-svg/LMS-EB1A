@@ -31,7 +31,7 @@ export function DocumentAttachmentPicker({
   onSelectionChange,
   onUploadSuccess,
   maxSelections,
-  label = 'Attach documents',
+  label = 'Прикрепить документы',
   compact = false,
 }: DocumentAttachmentPickerProps) {
   const [showUpload, setShowUpload] = useState(false);
@@ -93,7 +93,7 @@ export function DocumentAttachmentPicker({
             onClick={() => setShowUpload(!showUpload)}
           >
             <Upload className="mr-1.5 h-3.5 w-3.5" />
-            Upload new
+            Загрузить новый
           </Button>
         </div>
 
@@ -118,7 +118,7 @@ export function DocumentAttachmentPicker({
           </div>
         )}
         {showPicker && unselectedDocs.length === 0 && (
-          <p className="text-xs text-foreground-muted">No other documents available.</p>
+          <p className="text-xs text-foreground-muted">Других документов нет.</p>
         )}
 
         {showUpload && (
@@ -150,7 +150,7 @@ export function DocumentAttachmentPicker({
             onClick={() => setShowPicker(!showPicker)}
           >
             <Paperclip className="mr-1.5 h-3.5 w-3.5" />
-            Select existing
+            Выбрать из существующих
           </Button>
           <Button
             type="button"
@@ -159,7 +159,7 @@ export function DocumentAttachmentPicker({
             onClick={() => setShowUpload(!showUpload)}
           >
             <Upload className="mr-1.5 h-3.5 w-3.5" />
-            Upload new
+            Загрузить новый
           </Button>
         </div>
       </div>
@@ -167,7 +167,7 @@ export function DocumentAttachmentPicker({
       {selectedDocs.length > 0 && (
         <div className="space-y-1.5">
           <p className="text-xs text-foreground-muted">
-            {selectedDocs.length} document{selectedDocs.length > 1 ? 's' : ''} attached
+            {selectedDocs.length} документ{selectedDocs.length > 1 ? 'ов' : ''} прикреплено
           </p>
           {selectedDocs.map((doc) => (
             <div
@@ -211,7 +211,7 @@ export function DocumentAttachmentPicker({
             ))
           ) : (
             <p className="px-3 py-2 text-sm text-foreground-muted">
-              No other documents available. Upload a new one.
+              Других документов нет. Загрузите новый.
             </p>
           )}
         </div>

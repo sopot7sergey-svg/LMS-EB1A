@@ -30,7 +30,7 @@ export function DocumentBuilderStepper({
                 : 'border-border bg-background-secondary text-foreground-secondary hover:border-border-hover'
             }`}
           >
-            <div className="mb-1 font-medium">Step {String.fromCharCode(65 + index)}</div>
+            <div className="mb-1 font-medium">Шаг {String.fromCharCode(65 + index)}</div>
             <div>{step}</div>
           </button>
         );

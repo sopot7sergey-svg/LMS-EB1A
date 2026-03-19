@@ -38,10 +38,10 @@ type RiskLevel = 'low_risk' | 'medium_risk' | 'high_risk' | 'critical_gaps';
 type ModalView = 'setup' | 'running' | 'report';
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string; border: string; icon: typeof ShieldCheck }> = {
-  low_risk: { label: 'Low Risk', color: 'text-green-700', bg: 'bg-green-50', border: 'border-green-200', icon: ShieldCheck },
-  medium_risk: { label: 'Medium Risk', color: 'text-yellow-700', bg: 'bg-yellow-50', border: 'border-yellow-200', icon: Shield },
-  high_risk: { label: 'High Risk', color: 'text-orange-700', bg: 'bg-orange-50', border: 'border-orange-200', icon: ShieldAlert },
-  critical_gaps: { label: 'Critical Gaps', color: 'text-red-700', bg: 'bg-red-50', border: 'border-red-200', icon: ShieldX },
+  low_risk: { label: 'Низкий риск', color: 'text-green-700', bg: 'bg-green-50', border: 'border-green-200', icon: ShieldCheck },
+  medium_risk: { label: 'Средний риск', color: 'text-yellow-700', bg: 'bg-yellow-50', border: 'border-yellow-200', icon: Shield },
+  high_risk: { label: 'Высокий риск', color: 'text-orange-700', bg: 'bg-orange-50', border: 'border-orange-200', icon: ShieldAlert },
+  critical_gaps: { label: 'Критические пробелы', color: 'text-red-700', bg: 'bg-red-50', border: 'border-red-200', icon: ShieldX },
 };
 
 const SUPPORT_LEVEL_STYLES: Record<string, string> = {
@@ -58,6 +58,13 @@ const FILING_STATUS_STYLES: Record<string, { color: string; icon: typeof CheckCi
   missing: { color: 'text-red-600', icon: CircleSlash },
   incomplete: { color: 'text-yellow-600', icon: CircleDot },
   needs_correction: { color: 'text-orange-600', icon: AlertCircle },
+};
+
+const FILING_STATUS_LABELS: Record<string, string> = {
+  present: 'Присутствует',
+  missing: 'Отсутствует',
+  incomplete: 'Неполный',
+  needs_correction: 'Требуется исправление',
 };
 
 function Section({ title, children, defaultOpen = false, badge, badgeColor }: {
@@ -139,7 +146,7 @@ export function PacketReviewModal({
       onReviewComplete?.();
       setView('report');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Packet review failed');
+      setError(err instanceof Error ? err.message : 'Проверка пакета не удалась');
       setView('setup');
     } finally {
       setLoading(false);
@@ -156,8 +163,8 @@ export function PacketReviewModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b px-6 py-4">
           <div>
-            <h2 className="text-lg font-bold">Final Audit Report</h2>
-            <p className="text-xs text-gray-500">Packet-level risk assessment — not a legal determination</p>
+            <h2 className="text-lg font-bold">Отчёт финальной проверки</h2>
+            <p className="text-xs text-gray-500">Оценка рисков на уровне пакета — не юридическое заключение</p>
           </div>
           <button type="button" onClick={onClose} className="rounded p-1 hover:bg-gray-100">
             <X className="h-5 w-5" />
@@ -171,20 +178,20 @@ export function PacketReviewModal({
               <div className="text-center py-8 space-y-4">
                 <FileWarning className="mx-auto h-12 w-12 text-gray-300" />
                 <div>
-                  <p className="font-medium text-lg">Run a Final Audit</p>
+                  <p className="font-medium text-lg">Запустить финальную проверку</p>
                   <p className="text-sm text-gray-500 mt-1 max-w-md mx-auto">
-                    Evaluates your compiled officer packet for structure, evidence quality,
-                    criterion coverage, and missing items.
+                    Оценка собранного пакета: структура, качество доказательств,
+                    покрытие критериев и недостающие элементы.
                   </p>
                 </div>
                 {!latestCompileJobId && (
                   <p className="text-sm text-orange-600">
-                    No completed compile found. Compile your packet first.
+                    Сборка не найдена. Сначала соберите пакет.
                   </p>
                 )}
                 {latestCompileJobId && packetVersion && (
                   <p className="text-sm text-gray-600">
-                    Auditing: <strong>Compiled Packet Version {packetVersion}</strong>
+                    Проверка: <strong>Версия пакета {packetVersion}</strong>
                   </p>
                 )}
               </div>
@@ -200,10 +207,10 @@ export function PacketReviewModal({
                   onClick={handleRunReview}
                   disabled={!latestCompileJobId || loading}
                 >
-                  Run Audit
+                  Запустить проверку
                 </Button>
                 <Button variant="secondary" onClick={onClose}>
-                  Close
+                  Закрыть
                 </Button>
               </div>
             </div>
@@ -214,9 +221,9 @@ export function PacketReviewModal({
             <div className="text-center py-16 space-y-4">
               <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
               <div>
-                <p className="font-medium">{savedReportJobId ? 'Loading saved audit report...' : 'Running Final Audit...'}</p>
+                <p className="font-medium">{savedReportJobId ? 'Загрузка сохранённого отчёта...' : 'Выполняется финальная проверка...'}</p>
                 <p className="text-sm text-gray-500 mt-1">
-                  Analyzing packet structure, evidence quality, and legal references.
+                  Анализ структуры пакета, качества доказательств и юридических ссылок.
                 </p>
               </div>
             </div>
@@ -277,7 +284,7 @@ function ReportContent({
               <span className={`text-xl font-bold ${riskCfg.color}`}>{riskCfg.label}</span>
               {packetVersion && (
                 <span className="text-xs bg-white/60 rounded-full px-2.5 py-1 text-gray-600">
-                  Packet Version {packetVersion}
+                  Версия пакета {packetVersion}
                 </span>
               )}
             </div>
@@ -290,8 +297,8 @@ function ReportContent({
                 })}
               </span>
               {report.packetSource && <span>{report.packetSource}</span>}
-              {report.usedAI && <span>Model: {report.modelUsed ?? 'AI'}</span>}
-              {!report.usedAI && <span>Deterministic review only</span>}
+              {report.usedAI && <span>Модель: {report.modelUsed ?? 'AI'}</span>}
+              {!report.usedAI && <span>Только детерминированная проверка</span>}
             </div>
           </div>
         </div>
@@ -299,7 +306,7 @@ function ReportContent({
 
       {/* 2. Executive Conclusion */}
       <div className="space-y-2">
-        <h3 className="font-bold text-base">Executive Conclusion</h3>
+        <h3 className="font-bold text-base">Итоговое заключение</h3>
         <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed">
           <p>{report.executiveConclusion?.summary}</p>
           {report.executiveConclusion?.structuralVerdict && (
@@ -312,15 +319,15 @@ function ReportContent({
 
       {/* 3. Threshold Deficiencies */}
       <Section
-        title="3. Threshold Deficiencies"
+        title="3. Пороговые недостатки"
         defaultOpen={thresholdCount > 0}
-        badge={thresholdCount > 0 ? `${criticalThresholds} critical` : 'None'}
+        badge={thresholdCount > 0 ? `${criticalThresholds} критических` : 'Нет'}
         badgeColor={criticalThresholds > 0 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}
       >
         {thresholdCount === 0 ? (
           <p className="text-gray-500 mt-2 flex items-center gap-1">
             <CheckCircle2 className="h-4 w-4 text-green-500" />
-            No threshold deficiencies detected.
+            Пороговые недостатки не обнаружены.
           </p>
         ) : (
           <div className="space-y-3 mt-3">
@@ -344,7 +351,7 @@ function ReportContent({
                       </div>
                       <p className="text-xs text-gray-700">{td.whyItMatters}</p>
                       <p className="text-xs text-gray-500">
-                        <span className="font-medium">Expected:</span> {td.expectedPacketItem}
+                        <span className="font-medium">Ожидается:</span> {td.expectedPacketItem}
                       </p>
                     </div>
                   </div>
@@ -357,9 +364,9 @@ function ReportContent({
 
       {/* 4. Filing Completeness / Mandatory Packet Components */}
       <Section
-        title="4. Filing Completeness"
+        title="4. Полнота подачи"
         defaultOpen={filingMissing > 0}
-        badge={filingMissing > 0 ? `${filingMissing} missing` : 'Complete'}
+        badge={filingMissing > 0 ? `${filingMissing} отсутствует` : 'Полностью'}
         badgeColor={filingMissing > 0 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}
       >
         <div className="mt-3 space-y-1.5">
@@ -376,7 +383,7 @@ function ReportContent({
                   )}
                 </div>
                 <span className={`text-[10px] font-semibold uppercase tracking-wide ${statusCfg.color}`}>
-                  {item.status.replace('_', ' ')}
+                  {FILING_STATUS_LABELS[item.status] ?? item.status.replace('_', ' ')}
                 </span>
               </div>
             );
@@ -386,23 +393,23 @@ function ReportContent({
 
       {/* 5. Criterion Coverage Assessment */}
       <Section
-        title="5. Criterion Coverage Assessment"
+        title="5. Оценка покрытия критериев"
         badge={report.criterionCoverage?.length ?? 0}
         defaultOpen
       >
         {(report.criterionCoverage ?? []).length === 0 ? (
           <p className="text-gray-600 mt-2">
-            Criterion coverage could not be meaningfully assessed because the packet lacks mapped criterion evidence.
-            Add evidence documents mapped to specific criteria in the Submission Checklist before re-running the audit.
+            Покрытие критериев не удалось оценить — в пакете нет доказательств, привязанных к критериям.
+            Добавьте документы-доказательства в чеклист подачи перед повторной проверкой.
           </p>
         ) : (
           <div className="space-y-3 mt-2">
             {(report.criterionCoverage ?? []).map((c: any) => {
               const style = SUPPORT_LEVEL_STYLES[c.supportLevel] ?? SUPPORT_LEVEL_STYLES.missing;
               const statusLabel = c.supportLevel === 'not_assessable'
-                ? 'Not Assessable'
+                ? 'Не оценивается'
                 : c.supportLevel === 'not_claimed'
-                  ? 'Not Claimed'
+                  ? 'Не заявлено'
                   : c.supportLevel;
               return (
                 <div key={c.criterionId} className="rounded border p-3">
@@ -417,13 +424,13 @@ function ReportContent({
                   )}
                   {c.exhibitCount > 0 && (
                     <p className="text-xs text-gray-500 mt-1">
-                      {c.exhibitCount} exhibit{c.exhibitCount !== 1 ? 's' : ''} ({c.primaryCount} primary, {c.supportingCount} supporting)
-                      {c.reviewedCount > 0 && ` · ${c.reviewedCount} reviewed`}
+                      {c.exhibitCount} экспонат{c.exhibitCount !== 1 ? 'ов' : ''} ({c.primaryCount} основных, {c.supportingCount} вспомогательных)
+                      {c.reviewedCount > 0 && ` · ${c.reviewedCount} проверено`}
                     </p>
                   )}
                   {c.supportPresent?.length > 0 && (
                     <div className="mt-1.5">
-                      <span className="text-[10px] font-semibold uppercase tracking-wide text-green-600">Support present:</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-green-600">Поддержка есть:</span>
                       <ul className="mt-0.5 space-y-0.5 text-xs text-gray-600">
                         {c.supportPresent.map((s: string, si: number) => (
                           <li key={si} className="flex items-start gap-1.5">
@@ -436,7 +443,7 @@ function ReportContent({
                   )}
                   {c.supportMissing?.length > 0 && (
                     <div className="mt-1.5">
-                      <span className="text-[10px] font-semibold uppercase tracking-wide text-red-600">Support missing:</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-red-600">Поддержки нет:</span>
                       <ul className="mt-0.5 space-y-0.5 text-xs text-gray-600">
                         {c.supportMissing.map((s: string, si: number) => (
                           <li key={si} className="flex items-start gap-1.5">
@@ -465,34 +472,34 @@ function ReportContent({
       </Section>
 
       {/* 6. Final Merits Assessment */}
-      <Section title="6. Final Merits Assessment" defaultOpen>
+      <Section title="6. Оценка по существу" defaultOpen>
         {report.finalMeritsAssessment ? (
           <div className="space-y-3 mt-2">
             {([
-              ['sustainedAcclaim', 'Sustained Acclaim'],
-              ['topOfFieldSignaling', 'Top-of-Field Positioning'],
-              ['futureWorkContinuity', 'Future Work Continuity'],
-              ['evidentiaryCoherence', 'Evidentiary Coherence'],
+              ['sustainedAcclaim', 'Устойчивое признание'],
+              ['topOfFieldSignaling', 'Позиционирование в топе области'],
+              ['futureWorkContinuity', 'Продолжение работы в будущем'],
+              ['evidentiaryCoherence', 'Согласованность доказательств'],
             ] as const).map(([key, label]) => (
               <div key={key} className="rounded border p-3">
                 <div className="font-medium text-xs text-gray-800">{label}</div>
                 <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                  {report.finalMeritsAssessment[key] || 'Not assessed.'}
+                  {report.finalMeritsAssessment[key] || 'Не оценено.'}
                 </p>
               </div>
             ))}
           </div>
-        ) : <p className="text-gray-500 mt-2">Not assessed.</p>}
+        ) : <p className="text-gray-500 mt-2">Не оценено.</p>}
       </Section>
 
       {/* 7. Evidence Quality and Weight */}
       <Section
-        title="7. Evidence Quality and Weight"
+        title="7. Качество и вес доказательств"
         badge={report.evidenceQualityIssues?.length ?? 0}
       >
         {(report.evidenceQualityIssues ?? []).length === 0 ? (
           <p className="text-gray-500 mt-2 flex items-center gap-1">
-            <CheckCircle2 className="h-4 w-4 text-green-500" /> No evidence quality issues detected.
+            <CheckCircle2 className="h-4 w-4 text-green-500" /> Проблем с качеством доказательств не обнаружено.
           </p>
         ) : (
           <ul className="space-y-2 mt-2">
@@ -516,12 +523,12 @@ function ReportContent({
 
       {/* 8. Packet Structure / Exhibit Problems */}
       <Section
-        title="8. Packet Structure / Exhibit Problems"
+        title="8. Структура пакета / Проблемы экспонатов"
         badge={report.packetArchitectureIssues?.length ?? 0}
       >
         {(report.packetArchitectureIssues ?? []).length === 0 ? (
           <p className="text-gray-500 mt-2 flex items-center gap-1">
-            <CheckCircle2 className="h-4 w-4 text-green-500" /> No structural issues detected.
+            <CheckCircle2 className="h-4 w-4 text-green-500" /> Структурных проблем не обнаружено.
           </p>
         ) : (
           <ul className="space-y-2 mt-2">
@@ -541,7 +548,7 @@ function ReportContent({
 
       {/* 9. Required Additions / Corrections */}
       <Section
-        title="9. Required Additions / Corrections"
+        title="9. Необходимые дополнения / Исправления"
         badge={(report.requiredAdditions?.length ?? 0) || (report.missingItems?.length ?? 0)}
         defaultOpen={requiredAdditions.length > 0}
       >
@@ -549,10 +556,10 @@ function ReportContent({
           {/* A. Required before meaningful reliance */}
           <div>
             <h4 className="text-xs font-bold text-red-700 uppercase tracking-wide mb-2">
-              A. Required before meaningful reliance
+              A. Обязательно перед использованием
             </h4>
             {requiredAdditions.length === 0 ? (
-              <p className="text-xs text-gray-500 pl-2">No mandatory additions identified.</p>
+              <p className="text-xs text-gray-500 pl-2">Обязательных дополнений не выявлено.</p>
             ) : (
               <div className="space-y-1.5">
                 {requiredAdditions.map((item: any, i: number) => (
@@ -560,7 +567,7 @@ function ReportContent({
                     <AlertCircle className="h-3.5 w-3.5 text-red-500 shrink-0 mt-0.5" />
                     <div>
                       <span className="text-gray-800">{item.description}</span>
-                      <span className="text-gray-400 ml-1">→ Section {item.expectedSection}</span>
+                      <span className="text-gray-400 ml-1">→ Раздел {item.expectedSection}</span>
                     </div>
                   </div>
                 ))}
@@ -571,10 +578,10 @@ function ReportContent({
           {/* B. Strengthening actions */}
           <div>
             <h4 className="text-xs font-bold text-yellow-700 uppercase tracking-wide mb-2">
-              B. Strengthening actions
+              B. Рекомендации по усилению
             </h4>
             {strengtheningAdditions.length === 0 ? (
-              <p className="text-xs text-gray-500 pl-2">No strengthening actions identified.</p>
+              <p className="text-xs text-gray-500 pl-2">Рекомендаций по усилению не выявлено.</p>
             ) : (
               <div className="space-y-1.5">
                 {strengtheningAdditions.map((item: any, i: number) => (
@@ -582,7 +589,7 @@ function ReportContent({
                     <Info className="h-3.5 w-3.5 text-yellow-500 shrink-0 mt-0.5" />
                     <div>
                       <span className="text-gray-800">{item.description}</span>
-                      <span className="text-gray-400 ml-1">→ Section {item.expectedSection}</span>
+                      <span className="text-gray-400 ml-1">→ Раздел {item.expectedSection}</span>
                     </div>
                   </div>
                 ))}
@@ -605,7 +612,7 @@ function ReportContent({
                     <div>
                       <span className="text-gray-800">{item.description}</span>
                       <span className="text-gray-400 ml-1">
-                        → Section {item.expectedSection} · {item.action}
+                        → Раздел {item.expectedSection} · {item.action}
                       </span>
                     </div>
                   </div>
@@ -618,12 +625,12 @@ function ReportContent({
 
       {/* 10. Priority Fixes */}
       <Section
-        title="10. Priority Fixes"
+        title="10. Приоритетные исправления"
         badge={report.priorityFixes?.length ?? 0}
         defaultOpen
       >
         {(report.priorityFixes ?? []).length === 0 ? (
-          <p className="text-gray-500 mt-2">No priority fixes identified.</p>
+          <p className="text-gray-500 mt-2">Приоритетных исправлений не выявлено.</p>
         ) : (
           <ol className="space-y-3 mt-2">
             {(report.priorityFixes ?? []).map((fix: any) => (
@@ -647,9 +654,9 @@ function ReportContent({
       </Section>
 
       {/* 11. Source Basis (collapsed by default) */}
-      <Section title="11. Source Basis" badge={report.sourceBasis?.length ?? 0}>
+      <Section title="11. Источники" badge={report.sourceBasis?.length ?? 0}>
         {(report.sourceBasis ?? []).length === 0 ? (
-          <p className="text-gray-500 mt-2">No sources recorded.</p>
+          <p className="text-gray-500 mt-2">Источники не зафиксированы.</p>
         ) : (
           <ul className="space-y-1 mt-2">
             {(report.sourceBasis ?? []).map((s: any, i: number) => (
@@ -669,10 +676,10 @@ function ReportContent({
       <div className="flex items-center gap-3 pt-2 border-t">
         <Button variant="secondary" size="sm" onClick={handleRunReview} disabled={loading}>
           {loading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-          Re-run on this packet
+          Повторить проверку
         </Button>
         <div className="flex-1" />
-        <Button variant="secondary" onClick={onClose}>Close</Button>
+        <Button variant="secondary" onClick={onClose}>Закрыть</Button>
       </div>
     </div>
   );

@@ -176,15 +176,15 @@ export const CRITERION_SLOTS: Record<string, string[]> = {
 
 /** Checklist section definitions */
 export const CHECKLIST_SECTIONS = [
-  { id: 's1', title: '1. Case Intake & Profile', subtitle: '' },
-  { id: 's2', title: '2. Forms & Fees', subtitle: '' },
-  { id: 's3', title: '3. Identity & Status', subtitle: '' },
-  { id: 's4', title: '4. Cover Letter / Legal Brief', subtitle: '' },
-  { id: 's5', title: '5. Evidence (Criteria)', subtitle: '' },
-  { id: 's6', title: '6. Comparable Evidence', subtitle: '' },
-  { id: 's7', title: '7. Expert Letters', subtitle: '' },
-  { id: 's8', title: '8. Translations', subtitle: '' },
-  { id: 's9', title: '9. Responses to USCIS (RFE/NOID)', subtitle: '' },
-  { id: 's10', title: '10. Filing & Tracking', subtitle: '' },
-  { id: 's11', title: '11. Packet Compilation & Audit', subtitle: '' },
+  { id: 's1', title: '1. Анкета и профиль дела', subtitle: '' },
+  { id: 's2', title: '2. Формы и сборы', subtitle: '' },
+  { id: 's3', title: '3. Идентичность и статус', subtitle: '' },
+  { id: 's4', title: '4. Сопроводительное письмо / Legal Brief', subtitle: '' },
+  { id: 's5', title: '5. Доказательства (критерии)', subtitle: '' },
+  { id: 's6', title: '6. Сопоставимые доказательства', subtitle: '' },
+  { id: 's7', title: '7. Экспертные письма', subtitle: '' },
+  { id: 's8', title: '8. Переводы', subtitle: '' },
+  { id: 's9', title: '9. Ответы USCIS (RFE/NOID)', subtitle: '' },
+  { id: 's10', title: '10. Подача и отслеживание', subtitle: '' },
+  { id: 's11', title: '11. Сборка пакета и проверка', subtitle: '' },
 ] as const;

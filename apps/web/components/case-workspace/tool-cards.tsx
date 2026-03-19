@@ -21,20 +21,20 @@ interface ToolCardProps {
 const TOOLS: Omit<ToolCardProps, 'onClick'>[] = [
   {
     id: 'document-assistant',
-    title: 'Document Assistant',
-    description: 'Guided create and fill flows for supported documents and forms',
+    title: 'Помощник по документам',
+    description: 'Пошаговое создание и заполнение поддерживаемых документов и форм',
     icon: <FileEdit className="h-8 w-8" />,
   },
   {
     id: 'officer-review',
-    title: 'Review & Audit',
-    description: 'Document review, whole-packet audit, and Final Audit Report',
+    title: 'Проверка и аудит',
+    description: 'Проверка документов, аудит всего пакета и финальный отчёт',
     icon: <ClipboardCheck className="h-8 w-8" />,
   },
   {
     id: 'advisor-chat',
-    title: 'Advisor Chat',
-    description: 'Ask procedural questions (no approval predictions, no odds)',
+    title: 'Чат с советником',
+    description: 'Процедурные вопросы (без прогнозов одобрения и шансов)',
     icon: <MessageCircle className="h-8 w-8" />,
   },
 ];

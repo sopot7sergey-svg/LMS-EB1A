@@ -13,11 +13,11 @@ const STATUS_STYLES: Record<DocumentBuilderStatus, string> = {
 };
 
 const STATUS_LABELS: Record<DocumentBuilderStatus, string> = {
-  not_started: 'Not started',
-  in_progress: 'In progress',
-  added: 'Added',
-  created: 'Created',
-  completed: 'Completed',
+  not_started: 'Не начат',
+  in_progress: 'В процессе',
+  added: 'Добавлено',
+  created: 'Создано',
+  completed: 'Завершено',
 };
 
 const UPLOAD_DISABLED_MESSAGE =
@@ -83,7 +83,7 @@ export function UploadDisabledPopover({
         onClick={onClose}
         className="mt-2 text-xs text-primary hover:underline"
       >
-        Dismiss
+        Закрыть
       </button>
     </div>
   );
@@ -95,7 +95,7 @@ export function DocumentActionBar({
   onAdd,
   onCreate,
   onTemplate,
-  primaryActionLabel = 'Create',
+  primaryActionLabel = 'Создать',
   uploadDisabled = false,
 }: DocumentActionBarProps) {
   const [showUploadMsg, setShowUploadMsg] = useState(false);
@@ -123,7 +123,7 @@ export function DocumentActionBar({
           }
         }}
       >
-        Add
+        Добавить
       </Button>
       {showUploadMsg && (
         <UploadDisabledPopover anchorRef={addBtnRef} onClose={handleClose} />
@@ -132,7 +132,7 @@ export function DocumentActionBar({
         {primaryActionLabel}
       </Button>
       <Button type="button" size="sm" variant="ghost" onClick={onTemplate}>
-        Template
+        Шаблон
       </Button>
     </div>
   );

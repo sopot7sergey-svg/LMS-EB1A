@@ -88,13 +88,13 @@ export function DocumentUploadBlock({
     <div className="mt-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
       <div className="mb-2 flex items-center justify-between">
         <span className="text-xs font-medium text-foreground-secondary">
-          Upload document ({acceptedLabel})
+          Загрузить документ ({acceptedLabel})
         </span>
         <button
           type="button"
           onClick={onClose}
           className="rounded p-1 text-foreground-muted hover:bg-background-tertiary hover:text-foreground"
-          aria-label="Close"
+          aria-label="Закрыть"
         >
           <X className="h-4 w-4" />
         </button>
@@ -111,10 +111,10 @@ export function DocumentUploadBlock({
         <input {...getInputProps()} />
         <Upload className="mx-auto mb-2 h-8 w-8 text-foreground-muted" />
         {isUploading ? (
-          <p className="text-sm text-foreground-secondary">Uploading...</p>
+          <p className="text-sm text-foreground-secondary">Загрузка...</p>
         ) : (
           <p className="text-sm text-foreground-secondary">
-            {isDragActive ? 'Drop files here...' : 'Drag & drop or click to select'}
+            {isDragActive ? 'Отпустите файлы здесь...' : 'Перетащите или нажмите для выбора'}
           </p>
         )}
       </div>

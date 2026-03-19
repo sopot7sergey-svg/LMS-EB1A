@@ -32,15 +32,15 @@ export function hasDocumentReview(metadata?: DocumentMetadata | Record<string, u
 export function formatDocumentReviewStatus(status?: DocumentReviewFinalStatus | null): string {
   switch (status) {
     case 'usable':
-      return 'Usable';
+      return 'Пригоден';
     case 'weak':
-      return 'Weak';
+      return 'Слабый';
     case 'irrelevant':
-      return 'Irrelevant';
+      return 'Не релевантен';
     case 'needs_context':
-      return 'Needs context';
+      return 'Нужен контекст';
     default:
-      return 'Reviewed';
+      return 'Проверено';
   }
 }
 
@@ -57,8 +57,8 @@ export function DocumentReviewIndicator({
   return (
     <span
       className={`inline-flex h-5 w-5 items-center justify-center rounded-[4px] border ${STATUS_STYLES[review.finalStatus]} ${className}`}
-      title={`Reviewed by Document Review agent: ${formatDocumentReviewStatus(review.finalStatus)}`}
-      aria-label={`Reviewed by Document Review agent: ${formatDocumentReviewStatus(review.finalStatus)}`}
+      title={`Проверено агентом: ${formatDocumentReviewStatus(review.finalStatus)}`}
+      aria-label={`Проверено агентом: ${formatDocumentReviewStatus(review.finalStatus)}`}
     >
       <Check className="h-3.5 w-3.5" />
     </span>

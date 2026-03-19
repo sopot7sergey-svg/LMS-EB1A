@@ -124,19 +124,17 @@ export function EERModal({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} title="Review & Audit" className="max-w-3xl">
+    <Dialog open={open} onClose={onClose} title="Проверка и аудит" className="max-w-3xl">
       <div className="p-6 space-y-6">
         <div className="rounded-lg border border-border bg-background-secondary p-4">
           <p className="text-sm text-foreground-secondary">
-            <strong>Disclaimer:</strong> This review does not provide legal advice or predict
-            immigration outcomes. Document review outputs Enhancement Evidence Requests (EER).
-            Whole-packet audit produces a Final Audit Report with risk assessment.
+            <strong>Важно:</strong> Проверка не даёт юридических консультаций и не предсказывает исход иммиграционных дел. Проверка документов выдаёт Enhancement Evidence Requests (EER). Аудит всего пакета создаёт финальный отчёт с оценкой рисков.
           </p>
         </div>
 
         {/* Scope selection */}
         <div>
-          <h3 className="font-medium mb-3">Review scope</h3>
+          <h3 className="font-medium mb-3">Область проверки</h3>
           <div className="grid gap-3 sm:grid-cols-2">
             <button
               type="button"
@@ -148,9 +146,9 @@ export function EERModal({
                   : 'border-border hover:border-foreground-muted'
               )}
             >
-              <div className="font-medium text-sm">Selected document(s)</div>
+              <div className="font-medium text-sm">Выбранные документы</div>
               <p className="text-xs text-foreground-secondary mt-1">
-                Review individual documents for quality, evidence strength, and gaps
+                Проверка отдельных документов на качество, силу доказательств и пробелы
               </p>
             </button>
             <button
@@ -163,9 +161,9 @@ export function EERModal({
                   : 'border-border hover:border-foreground-muted'
               )}
             >
-              <div className="font-medium text-sm">Whole package</div>
+              <div className="font-medium text-sm">Весь пакет</div>
               <p className="text-xs text-foreground-secondary mt-1">
-                Run a Final Audit on a compiled officer packet
+                Финальный аудит собранного пакета для офицера
               </p>
             </button>
           </div>
@@ -180,7 +178,7 @@ export function EERModal({
               selectedIds={selectedDocIds}
               onSelectionChange={setSelectedDocIds}
               onUploadSuccess={onDocumentsRefresh}
-              label="Select documents to review"
+              label="Выберите документы для проверки"
             />
           </div>
         )}
@@ -188,7 +186,7 @@ export function EERModal({
         {/* Whole package path */}
         {reviewScope === 'whole' && (
           <div className="space-y-4">
-            <h4 className="text-sm font-medium">Packet source</h4>
+            <h4 className="text-sm font-medium">Источник пакета</h4>
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
@@ -202,11 +200,11 @@ export function EERModal({
               >
                 <FileStack className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-medium text-sm">Use saved compiled packet</div>
+                  <div className="font-medium text-sm">Использовать сохранённый пакет</div>
                   <p className="text-xs text-foreground-secondary mt-1">
                     {compiledPackets.length > 0
-                      ? `${compiledPackets.length} version${compiledPackets.length > 1 ? 's' : ''} available`
-                      : 'No compiled packets yet'}
+                      ? `${compiledPackets.length} верси${compiledPackets.length === 1 ? 'я' : 'й'} доступн${compiledPackets.length === 1 ? 'а' : 'о'}`
+                      : 'Собранных пакетов пока нет'}
                   </p>
                 </div>
               </button>
@@ -222,9 +220,9 @@ export function EERModal({
               >
                 <Upload className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-medium text-sm">Upload external packet PDF</div>
+                  <div className="font-medium text-sm">Загрузить внешний PDF пакета</div>
                   <p className="text-xs text-foreground-secondary mt-1">
-                    Upload a PDF from outside the app for audit
+                    Загрузите PDF извне приложения для аудита
                   </p>
                 </div>
               </button>
@@ -236,7 +234,7 @@ export function EERModal({
                 {compiledPackets.length === 0 ? (
                   <div className="rounded-lg border border-border bg-background-secondary p-4 text-center">
                     <p className="text-sm text-foreground-secondary">
-                      No compiled packets available. Compile your officer packet first.
+                      Собранных пакетов нет. Сначала соберите пакет для офицера.
                     </p>
                   </div>
                 ) : (
@@ -247,7 +245,7 @@ export function EERModal({
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <FileStack className="h-4 w-4 text-primary" />
-                            <span className="font-medium text-sm">Version {activePacket.version}</span>
+                            <span className="font-medium text-sm">Версия {activePacket.version}</span>
                             <span className="text-xs text-foreground-secondary">
                               {new Date(activePacket.createdAt).toLocaleDateString(undefined, {
                                 month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -255,11 +253,11 @@ export function EERModal({
                             </span>
                             {activePacket.reviewedAt ? (
                               <span className="flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-[10px] font-medium text-green-700">
-                                <ShieldCheck className="h-3 w-3" /> Reviewed
+                                <ShieldCheck className="h-3 w-3" /> Проверено
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">
-                                <ShieldX className="h-3 w-3" /> Not reviewed
+                                <ShieldX className="h-3 w-3" /> Не проверено
                               </span>
                             )}
                           </div>
@@ -269,7 +267,7 @@ export function EERModal({
                               onClick={() => setShowPacketPicker(!showPacketPicker)}
                               className="text-xs text-primary hover:underline"
                             >
-                              {showPacketPicker ? 'Hide' : 'Choose another'}
+                              {showPacketPicker ? 'Скрыть' : 'Выбрать другую'}
                             </button>
                           )}
                         </div>
@@ -296,7 +294,7 @@ export function EERModal({
                           >
                             <div className="flex items-center gap-2">
                               <FileStack className="h-3.5 w-3.5" />
-                              <span>Version {p.version}</span>
+                              <span>Версия {p.version}</span>
                               <span className="text-xs text-foreground-muted">
                                 {new Date(p.createdAt).toLocaleDateString(undefined, {
                                   month: 'short', day: 'numeric',
@@ -304,9 +302,9 @@ export function EERModal({
                               </span>
                             </div>
                             {p.reviewedAt ? (
-                              <span className="text-[10px] text-green-600">reviewed</span>
+                              <span className="text-[10px] text-green-600">проверено</span>
                             ) : (
-                              <span className="text-[10px] text-foreground-muted">not reviewed</span>
+                              <span className="text-[10px] text-foreground-muted">не проверено</span>
                             )}
                           </button>
                         ))}
@@ -323,7 +321,7 @@ export function EERModal({
                 <label className="flex cursor-pointer flex-col items-center gap-2 py-4">
                   <Upload className="h-8 w-8 text-foreground-muted" />
                   <span className="text-sm text-foreground-secondary">
-                    {uploadedFile ? uploadedFile.name : 'Click to select a PDF'}
+                    {uploadedFile ? uploadedFile.name : 'Нажмите, чтобы выбрать PDF'}
                   </span>
                   <input
                     type="file"
@@ -334,7 +332,7 @@ export function EERModal({
                 </label>
                 {uploadedFile && (
                   <p className="text-xs text-foreground-muted text-center mt-1">
-                    {(uploadedFile.size / 1024 / 1024).toFixed(1)} MB — This will be audited without linking to internal packet versions.
+                    {(uploadedFile.size / 1024 / 1024).toFixed(1)} МБ — Будет проверен без связи с внутренними версиями пакета.
                   </p>
                 )}
               </div>
@@ -350,13 +348,13 @@ export function EERModal({
           disabled={isRunDisabled}
         >
           <RefreshCw className="mr-2 h-4 w-4" />
-          {reviewScope === 'whole' ? 'Run Final Audit' : 'Run Document Review'}
+          {reviewScope === 'whole' ? 'Запустить финальный аудит' : 'Запустить проверку документов'}
         </Button>
 
         {/* Document Review Results */}
         {documentReviews.length > 0 && (
           <div>
-            <h3 className="font-medium mb-3">Document Review Results</h3>
+            <h3 className="font-medium mb-3">Результаты проверки документов</h3>
             <div className="space-y-3 max-h-72 overflow-y-auto">
               {documentReviews.map((item) => (
                 <div key={item.documentId} className="rounded-lg border border-violet-500/20 bg-violet-500/5 p-4">
@@ -375,21 +373,21 @@ export function EERModal({
                   </div>
                   <div className="mt-3 grid gap-3 md:grid-cols-3">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Strengths</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Сильные стороны</p>
                       <ul className="mt-1 space-y-1 text-sm text-foreground-secondary">
-                        {item.review.strengths.length ? item.review.strengths.map((entry) => <li key={entry}>• {entry}</li>) : <li>• None identified</li>}
+                        {item.review.strengths.length ? item.review.strengths.map((entry) => <li key={entry}>• {entry}</li>) : <li>• Не выявлено</li>}
                       </ul>
                     </div>
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Weaknesses</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Слабые стороны</p>
                       <ul className="mt-1 space-y-1 text-sm text-foreground-secondary">
-                        {item.review.weaknesses.length ? item.review.weaknesses.map((entry) => <li key={entry}>• {entry}</li>) : <li>• None identified</li>}
+                        {item.review.weaknesses.length ? item.review.weaknesses.map((entry) => <li key={entry}>• {entry}</li>) : <li>• Не выявлено</li>}
                       </ul>
                     </div>
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Missing context</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">Недостающий контекст</p>
                       <ul className="mt-1 space-y-1 text-sm text-foreground-secondary">
-                        {item.review.missingContext.length ? item.review.missingContext.map((entry) => <li key={entry}>• {entry}</li>) : <li>• None identified</li>}
+                        {item.review.missingContext.length ? item.review.missingContext.map((entry) => <li key={entry}>• {entry}</li>) : <li>• Не выявлено</li>}
                       </ul>
                     </div>
                   </div>
@@ -402,7 +400,7 @@ export function EERModal({
         {/* EER Report */}
         {eerReports.length > 0 && (
           <div>
-            <h3 className="font-medium mb-3">EER Report</h3>
+            <h3 className="font-medium mb-3">Отчёт EER</h3>
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {eerReports.map((item) => (
                 <div
@@ -428,7 +426,7 @@ export function EERModal({
                         {item.whyItMatters}
                       </p>
                       <p className="mt-1 text-sm">
-                        <strong>What to add/fix:</strong> {item.requestedFix}
+                        <strong>Что добавить/исправить:</strong> {item.requestedFix}
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {item.deepLink && (
@@ -437,7 +435,7 @@ export function EERModal({
                             onClick={() => onDeepLink(item)}
                             className="text-xs font-medium text-primary hover:underline"
                           >
-                            Go to checklist slot →
+                            Перейти к слоту чеклиста →
                           </button>
                         )}
                         {item.suggestedTemplate && (
@@ -446,7 +444,7 @@ export function EERModal({
                             onClick={() => onCreateDraft(item)}
                             className="text-xs font-medium text-primary hover:underline"
                           >
-                            Create draft
+                            Создать черновик
                           </button>
                         )}
                         {item.status === 'open' ? (
@@ -455,10 +453,10 @@ export function EERModal({
                             onClick={() => onMarkResolved(item.id)}
                             className="text-xs font-medium text-primary hover:underline"
                           >
-                            Mark resolved
+                            Отметить решённым
                           </button>
                         ) : (
-                          <span className="text-xs text-success">Resolved</span>
+                          <span className="text-xs text-success">Решено</span>
                         )}
                       </div>
                     </div>

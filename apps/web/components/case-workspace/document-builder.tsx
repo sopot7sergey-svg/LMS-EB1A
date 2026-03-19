@@ -33,13 +33,21 @@ interface DocumentBuilderModalProps {
 }
 
 const CREATE_STEPS = [
-  'Intro',
-  'Input Mode',
-  'Guided Questions',
-  'Generate Draft',
-  'Review & Edit',
-  'Save Output',
+  'Введение',
+  'Режим ввода',
+  'Вопросы',
+  'Создать черновик',
+  'Проверка и правка',
+  'Сохранить',
 ];
+
+const STATUS_LABELS: Record<DocumentBuilderStatus, string> = {
+  not_started: 'Не начат',
+  in_progress: 'В процессе',
+  added: 'Добавлено',
+  created: 'Создано',
+  completed: 'Завершено',
+};
 
 function isFilled(value: unknown): boolean {
   if (value == null) return false;
@@ -135,10 +143,10 @@ function deriveDraftText(
 }
 
 function formatAnswerPreview(value: unknown): string {
-  if (value == null) return 'Not answered yet';
-  if (typeof value === 'string') return value.trim() || 'Not answered yet';
+  if (value == null) return 'Не заполнено';
+  if (typeof value === 'string') return value.trim() || 'Не заполнено';
   if (Array.isArray(value)) {
-    if (!value.length) return 'Not answered yet';
+    if (!value.length) return 'Не заполнено';
     return value
       .map((item) => (typeof item === 'string' ? item : JSON.stringify(item)))
       .join(', ');
@@ -201,10 +209,10 @@ export function DocumentBuilderModal({
     if (!config || !isFillMode) return [];
     const questionsById = new Map(config.questions.map((question) => [question.id, question]));
     const groups = config.questionGroups?.length
-      ? config.questionGroups
+        ? config.questionGroups
       : [{
           id: 'all-fields',
-          title: 'Complete the form',
+          title: 'Заполните форму',
           questionIds: config.questions.map((question) => question.id),
         }];
 
@@ -218,23 +226,23 @@ export function DocumentBuilderModal({
 
   const steps = useMemo(() => {
     if (!isFillMode) return CREATE_STEPS;
-    return ['Intro', ...fillQuestionGroups.map((group) => group.title), 'Review & Save'];
+    return ['Введение', ...fillQuestionGroups.map((group) => group.title), 'Проверка и сохранение'];
   }, [fillQuestionGroups, isFillMode]);
 
   const availableCreateInputModes = useMemo(() => {
     if (!config || isFillMode) return [];
     const labels: Record<DocumentBuilderInputMode, { label: string; description: string }> = {
       manual: {
-        label: 'Fill manually',
-        description: 'Answer guided prompts directly in the app.',
+        label: 'Заполнить вручную',
+        description: 'Ответьте на вопросы прямо в приложении.',
       },
       source_upload: {
-        label: 'Upload source materials',
-        description: 'Link resumes, notes, or source documents to guide the draft.',
+        label: 'Загрузить исходные материалы',
+        description: 'Прикрепите резюме, заметки или документы для составления черновика.',
       },
       voice_transcript: {
-        label: 'Paste voice transcript',
-        description: 'Paste dictated notes or transcript text. Audio is not stored in v1.',
+        label: 'Вставить расшифровку',
+        description: 'Вставьте продиктованные заметки или текст. Аудио в v1 не сохраняется.',
       },
     };
 
@@ -257,7 +265,7 @@ export function DocumentBuilderModal({
   const createGenerateError = useMemo(() => {
     if (!config || isFillMode) return null;
     if (inputModes.length === 0) {
-      return 'Select at least one input mode before generating a draft.';
+      return 'Выберите хотя бы один режим ввода перед созданием черновика.';
     }
 
     const hasManualAnswers =
@@ -271,7 +279,7 @@ export function DocumentBuilderModal({
       sourceDocumentIds.length > 0;
 
     if (!hasManualAnswers && !hasVoiceTranscript && !hasSourceDocuments) {
-      return 'Add builder input before generating: answer a question, link a source document, or paste a voice transcript.';
+      return 'Добавьте данные перед генерацией: ответьте на вопрос, прикрепите документ или вставьте расшифровку.';
     }
 
     return null;
@@ -506,7 +514,7 @@ export function DocumentBuilderModal({
       onSaved();
     } catch (error) {
       console.error('Draft generation failed:', error);
-      alert(error instanceof Error ? error.message : 'Failed to generate draft');
+      alert(error instanceof Error ? error.message : 'Не удалось создать черновик');
     } finally {
       setIsGenerating(false);
     }
@@ -523,7 +531,7 @@ export function DocumentBuilderModal({
       setCurrentStep(5);
     } catch (error) {
       console.error('Publish failed:', error);
-      alert(error instanceof Error ? error.message : 'Failed to save output');
+      alert(error instanceof Error ? error.message : 'Не удалось сохранить результат');
     } finally {
       setIsPublishing(false);
     }
@@ -532,7 +540,7 @@ export function DocumentBuilderModal({
   const handleMarkCompleted = async () => {
     if (!token) return;
     if (isFillMode && missingRequiredQuestions.length > 0) {
-      alert(`Complete the required fields before finishing this form: ${missingRequiredQuestions.slice(0, 5).join(', ')}`);
+      alert(`Заполните обязательные поля перед завершением: ${missingRequiredQuestions.slice(0, 5).join(', ')}`);
       return;
     }
     try {
@@ -574,7 +582,7 @@ export function DocumentBuilderModal({
       onClose();
     } catch (error) {
       console.error('Failed to mark completed:', error);
-      alert(error instanceof Error ? error.message : 'Failed to mark document completed');
+      alert(error instanceof Error ? error.message : 'Не удалось отметить документ завершённым');
     }
   };
 
@@ -582,7 +590,7 @@ export function DocumentBuilderModal({
     <Dialog
       open={open}
       onClose={onClose}
-      title={`Document Assistant: ${config.shortLabel}`}
+      title={`Помощник по документам: ${config.shortLabel}`}
       className="max-w-6xl"
     >
       <div className="space-y-6 p-6">
@@ -598,29 +606,29 @@ export function DocumentBuilderModal({
             <p className="text-foreground-secondary">{config.description}</p>
           </div>
           <div className="text-right text-xs text-foreground-secondary">
-            <p>Progress: {progress}%</p>
-            <p>Status: {status.replace('_', ' ')}</p>
-            {!isFillMode && lastGeneratedAt ? <p>Last generated: {new Date(lastGeneratedAt).toLocaleString()}</p> : null}
-            {isSaving ? <p>Autosaving...</p> : <p>Autosave enabled</p>}
+            <p>Прогресс: {progress}%</p>
+            <p>Статус: {STATUS_LABELS[status] ?? status.replace('_', ' ')}</p>
+            {!isFillMode && lastGeneratedAt ? <p>Последняя генерация: {new Date(lastGeneratedAt).toLocaleString()}</p> : null}
+            {isSaving ? <p>Сохранение...</p> : <p>Автосохранение включено</p>}
           </div>
         </div>
 
         {isLoading ? (
-          <div className="py-16 text-center text-sm text-foreground-secondary">Loading builder state...</div>
+          <div className="py-16 text-center text-sm text-foreground-secondary">Загрузка...</div>
         ) : isFillMode ? (
           <>
             {currentStep === 0 ? (
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-lg border border-border bg-background-secondary p-5">
-                  <h3 className="mb-2 text-sm font-semibold text-white">What this does</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-white">Назначение</h3>
                   <p className="text-sm text-foreground-secondary">{config.purpose}</p>
                 </div>
                 <div className="rounded-lg border border-border bg-background-secondary p-5">
-                  <h3 className="mb-2 text-sm font-semibold text-white">How to use it</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-white">Как использовать</h3>
                   <p className="text-sm text-foreground-secondary">{config.usageInCase}</p>
                 </div>
                 <div className="rounded-lg border border-border bg-background-secondary p-5 md:col-span-2">
-                  <h3 className="mb-2 text-sm font-semibold text-white">What you get</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-white">Результат</h3>
                   <p className="text-sm text-foreground-secondary">{config.completionOutcome}</p>
                   {config.templateUrl ? (
                     <Button
@@ -629,7 +637,7 @@ export function DocumentBuilderModal({
                       className="mt-4"
                       onClick={() => window.open(config.templateUrl, '_blank', 'noopener,noreferrer')}
                     >
-                      Open official USCIS template
+                      Открыть шаблон USCIS
                     </Button>
                   ) : null}
                 </div>
@@ -664,9 +672,9 @@ export function DocumentBuilderModal({
             {currentStep === steps.length - 1 ? (
               <div className="space-y-4 rounded-lg border border-border bg-background-secondary p-5">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">Review and save</h3>
+                  <h3 className="text-sm font-semibold text-white">Проверка и сохранение</h3>
                   <p className="mt-1 text-sm text-foreground-secondary">
-                    Review the answers below. This MVP stores your guided form answers so you can transfer them into the official USCIS form manually.
+                    Проверьте ответы ниже. Ответы сохраняются для последующего переноса в официальную форму USCIS.
                   </p>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
@@ -688,12 +696,12 @@ export function DocumentBuilderModal({
                       variant="secondary"
                       onClick={() => window.open(config.templateUrl, '_blank', 'noopener,noreferrer')}
                     >
-                      Open official USCIS template
+                      Открыть шаблон USCIS
                     </Button>
                   ) : null}
                   {missingRequiredQuestions.length > 0 ? (
                     <p className="w-full text-sm text-amber-200">
-                      Complete required fields before finishing: {missingRequiredQuestions.slice(0, 5).join(', ')}
+                      Заполните обязательные поля: {missingRequiredQuestions.slice(0, 5).join(', ')}
                     </p>
                   ) : null}
                   <Button
@@ -701,7 +709,7 @@ export function DocumentBuilderModal({
                     onClick={handleMarkCompleted}
                     disabled={missingRequiredQuestions.length > 0}
                   >
-                    Mark form answers complete
+                    Отметить форму заполненной
                   </Button>
                 </div>
               </div>
@@ -712,15 +720,15 @@ export function DocumentBuilderModal({
             {currentStep === 0 ? (
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-lg border border-border bg-background-secondary p-5">
-                  <h3 className="mb-2 text-sm font-semibold text-white">Purpose</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-white">Назначение</h3>
                   <p className="text-sm text-foreground-secondary">{config.purpose}</p>
                 </div>
                 <div className="rounded-lg border border-border bg-background-secondary p-5">
-                  <h3 className="mb-2 text-sm font-semibold text-white">How it will be used</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-white">Как будет использоваться</h3>
                   <p className="text-sm text-foreground-secondary">{config.usageInCase}</p>
                 </div>
                 <div className="rounded-lg border border-border bg-background-secondary p-5 md:col-span-2">
-                  <h3 className="mb-2 text-sm font-semibold text-white">What you will get</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-white">Результат</h3>
                   <p className="text-sm text-foreground-secondary">{config.completionOutcome}</p>
                 </div>
               </div>
@@ -753,13 +761,13 @@ export function DocumentBuilderModal({
                   <div className="space-y-4 rounded-lg border border-border bg-background-secondary p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="text-sm font-semibold text-white">Source materials</h3>
+                        <h3 className="text-sm font-semibold text-white">Исходные материалы</h3>
                         <p className="text-xs text-foreground-secondary">
-                          Select existing files or upload new source materials for this draft.
+                          Выберите файлы или загрузите новые материалы для черновика.
                         </p>
                       </div>
                       <Button type="button" size="sm" variant="secondary" onClick={() => setUploadOpen((prev) => !prev)}>
-                        {uploadOpen ? 'Hide upload' : 'Upload source file'}
+                        {uploadOpen ? 'Скрыть загрузку' : 'Загрузить файл'}
                       </Button>
                     </div>
 
@@ -791,7 +799,7 @@ export function DocumentBuilderModal({
                         })}
                       </div>
                     ) : (
-                      <p className="text-sm text-foreground-muted">No source files available yet.</p>
+                      <p className="text-sm text-foreground-muted">Исходные файлы пока отсутствуют.</p>
                     )}
 
                     {uploadOpen ? (
@@ -820,15 +828,15 @@ export function DocumentBuilderModal({
                 {inputModes.includes('voice_transcript') ? (
                   <div className="space-y-3 rounded-lg border border-border bg-background-secondary p-4">
                     <div>
-                      <h3 className="text-sm font-semibold text-white">Voice transcript notes</h3>
+                      <h3 className="text-sm font-semibold text-white">Расшифровка / заметки</h3>
                       <p className="text-xs text-foreground-secondary">
-                        Paste transcript text, dictated bullet points, or rough spoken notes. Raw audio is not stored.
+                        Вставьте текст расшифровки, продиктованные пункты или заметки. Аудио не сохраняется.
                       </p>
                     </div>
                     <textarea
                       className="input min-h-[160px]"
                       value={voiceTranscript}
-                      placeholder="Paste transcript or dictated notes here..."
+                      placeholder="Вставьте расшифровку или заметки..."
                       onChange={(event) =>
                         setAnswers((prev) => ({
                           ...prev,
@@ -840,7 +848,7 @@ export function DocumentBuilderModal({
                 ) : null}
                 {!inputModes.length ? (
                   <p className="text-sm text-amber-200">
-                    Select one or more input modes to continue building this draft.
+                    Выберите один или несколько режимов ввода для продолжения.
                   </p>
                 ) : null}
               </div>
@@ -860,11 +868,11 @@ export function DocumentBuilderModal({
                           <h3 className="text-sm font-semibold text-white">{section.label}</h3>
                           <p className="mt-1 text-xs text-foreground-muted">{section.purpose}</p>
                           <details className="mt-2 text-xs text-foreground-secondary">
-                            <summary className="cursor-pointer text-foreground-muted">What this evaluates / evidence / strong answer</summary>
+                            <summary className="cursor-pointer text-foreground-muted">Что оценивается / доказательства / сильный ответ</summary>
                             <ul className="mt-2 space-y-1 list-disc list-inside">
-                              <li><strong>Evaluates:</strong> {section.whatThisEvaluates}</li>
-                              <li><strong>Evidence to upload:</strong> {section.evidenceToUpload}</li>
-                              <li><strong>Strong answer:</strong> {section.strongAnswerLooksLike}</li>
+                              <li><strong>Оценивается:</strong> {section.whatThisEvaluates}</li>
+                              <li><strong>Доказательства для загрузки:</strong> {section.evidenceToUpload}</li>
+                              <li><strong>Сильный ответ:</strong> {section.strongAnswerLooksLike}</li>
                             </ul>
                           </details>
                         </div>
@@ -898,7 +906,7 @@ export function DocumentBuilderModal({
                 {config.slotType === 'intake_questionnaire' && sourceDocumentIds.length > 0 ? (
                   <div className="rounded-lg border border-border bg-background-secondary p-4">
                     <div className="flex items-center justify-between gap-3 mb-2">
-                      <h3 className="text-sm font-semibold text-white">Suggest from your documents</h3>
+                      <h3 className="text-sm font-semibold text-white">Предложения из документов</h3>
                       <Button
                         type="button"
                         size="sm"
@@ -918,7 +926,7 @@ export function DocumentBuilderModal({
                         }}
                         disabled={prefillLoading}
                       >
-                        {prefillLoading ? 'Loading…' : 'Get suggestions'}
+                        {prefillLoading ? 'Загрузка…' : 'Получить предложения'}
                       </Button>
                     </div>
                     {prefillSuggestions.length > 0 ? (
@@ -929,7 +937,7 @@ export function DocumentBuilderModal({
                             <span className="text-foreground-secondary flex-1 min-w-0">
                               {typeof s.value === 'string' ? s.value : JSON.stringify(s.value)}
                             </span>
-                            <span className="text-xs text-foreground-muted">from {s.source}</span>
+                            <span className="text-xs text-foreground-muted">из {s.source}</span>
                             <Button
                               type="button"
                               size="sm"
@@ -939,7 +947,7 @@ export function DocumentBuilderModal({
                                 setPrefillSuggestions((prev) => prev.filter((_, j) => j !== i));
                               }}
                             >
-                              Apply
+                              Применить
                             </Button>
                           </li>
                         ))}
@@ -953,16 +961,16 @@ export function DocumentBuilderModal({
             {currentStep === 3 ? (
               <div className="space-y-4 rounded-lg border border-border bg-background-secondary p-5">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">AI-assisted draft generation</h3>
+                  <h3 className="text-sm font-semibold text-white">Генерация черновика с ИИ</h3>
                   <p className="mt-1 text-sm text-foreground-secondary">
-                    Generate a structured draft from your answers, linked source materials, and any reusable prior builder data.
+                    Создание структурированного черновика из ответов, прикреплённых материалов и сохранённых данных.
                   </p>
                 </div>
                 <ul className="space-y-2 text-sm text-foreground-secondary">
-                  <li>• Builder answers captured: {Object.keys(answers).filter((key) => isFilled(answers[key])).length}</li>
-                  <li>• Linked source materials: {sourceDocumentIds.length}</li>
-                  <li>• Voice transcript attached: {voiceTranscript ? 'Yes' : 'No'}</li>
-                  <li>• Prefill dependencies: {config.prefillFromSlots?.length ? config.prefillFromSlots.join(', ') : 'None'}</li>
+                  <li>• Ответов в конструкторе: {Object.keys(answers).filter((key) => isFilled(answers[key])).length}</li>
+                  <li>• Прикреплённых материалов: {sourceDocumentIds.length}</li>
+                  <li>• Расшифровка прикреплена: {voiceTranscript ? 'Да' : 'Нет'}</li>
+                  <li>• Зависимости предзаполнения: {config.prefillFromSlots?.length ? config.prefillFromSlots.join(', ') : 'Нет'}</li>
                 </ul>
                 {createGenerateError ? (
                   <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
@@ -975,7 +983,7 @@ export function DocumentBuilderModal({
                   isLoading={isGenerating}
                   disabled={Boolean(createGenerateError)}
                 >
-                  Generate draft
+                  Создать черновик
                 </Button>
               </div>
             ) : null}
@@ -984,13 +992,13 @@ export function DocumentBuilderModal({
               <div className="space-y-4">
                 {config.slotType === 'cover_letter_draft' && coverLetterBlocked ? (
                   <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-5 space-y-4">
-                    <h3 className="text-lg font-semibold text-amber-200">Cover Letter Generation Blocked</h3>
+                    <h3 className="text-lg font-semibold text-amber-200">Генерация сопроводительного письма заблокирована</h3>
                     <p className="text-sm text-foreground-secondary">
-                      <strong>Why generation is blocked:</strong> {coverLetterBlocked.whyBlocked}
+                      <strong>Причина блокировки:</strong> {coverLetterBlocked.whyBlocked}
                     </p>
                     {coverLetterBlocked.missingRequiredInputs.length > 0 ? (
                       <div>
-                        <p className="text-xs font-medium text-foreground-muted mb-1">Missing required inputs</p>
+                        <p className="text-xs font-medium text-foreground-muted mb-1">Отсутствующие обязательные данные</p>
                         <ul className="list-disc list-inside text-sm text-foreground-secondary">
                           {coverLetterBlocked.missingRequiredInputs.map((i, idx) => (
                             <li key={idx}>{i}</li>
@@ -1085,13 +1093,13 @@ export function DocumentBuilderModal({
                     className="input"
                     value={draftTitle}
                     onChange={(event) => setDraftTitle(event.target.value)}
-                    placeholder="Draft title"
+                    placeholder="Название черновика"
                   />
                   <input
                     className="input"
                     value={draftSummary}
                     onChange={(event) => setDraftSummary(event.target.value)}
-                    placeholder="Draft summary"
+                    placeholder="Краткое описание"
                   />
                 </div>
                 <DocumentDraftEditor
@@ -1150,18 +1158,18 @@ export function DocumentBuilderModal({
             {currentStep === 5 ? (
               <div className="space-y-4 rounded-lg border border-border bg-background-secondary p-5">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">Save output</h3>
+                  <h3 className="text-sm font-semibold text-white">Сохранить результат</h3>
                   <p className="mt-1 text-sm text-foreground-secondary">
-                    Save the structured draft in the app and publish a downloadable text document linked to this checklist item.
+                    Сохраните черновик в приложении и опубликуйте документ для скачивания.
                   </p>
                 </div>
                 <div className="rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground-secondary">
-                  <p>Current status: {status.replace('_', ' ')}</p>
-                  <p>Draft sections: {draftSections.length}</p>
+                  <p>Текущий статус: {STATUS_LABELS[status] ?? status.replace('_', ' ')}</p>
+                  <p>Разделов черновика: {draftSections.length}</p>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button type="button" onClick={handlePublish} isLoading={isPublishing}>
-                    Save as created document
+                    Сохранить как созданный документ
                   </Button>
                   <Button
                     type="button"
@@ -1169,7 +1177,7 @@ export function DocumentBuilderModal({
                     onClick={handleMarkCompleted}
                     disabled={status !== 'created' && status !== 'completed'}
                   >
-                    Mark completed
+                    Отметить завершённым
                   </Button>
                 </div>
               </div>
@@ -1184,18 +1192,18 @@ export function DocumentBuilderModal({
             onClick={() => setCurrentStep((step) => Math.max(0, step - 1))}
             disabled={currentStep === 0}
           >
-            Back
+            Назад
           </Button>
           <div className="flex items-center gap-3">
             <Button type="button" variant="ghost" onClick={onClose}>
-              Continue later
+              Продолжить позже
             </Button>
             <Button
               type="button"
               onClick={() => setCurrentStep((step) => Math.min(steps.length - 1, step + 1))}
               disabled={currentStep === steps.length - 1}
             >
-              Next
+              Далее
             </Button>
           </div>
         </div>
