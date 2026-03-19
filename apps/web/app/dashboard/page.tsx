@@ -81,7 +81,7 @@ export default function DashboardPage() {
             className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
             style={{ borderColor: '#635BFF', borderTopColor: 'transparent' }}
           />
-          <span className="ml-3">Loading...</span>
+          <span className="ml-3">Загрузка...</span>
         </div>
       </DashboardLayout>
     );
@@ -92,22 +92,22 @@ export default function DashboardPage() {
     return (
       <DashboardLayout>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">Welcome, {user?.name}</h1>
+          <h1 className="text-3xl font-bold">Добро пожаловать, {user?.name}</h1>
           <p className="mt-2 text-foreground-secondary">
-            Your account is ready. Upgrade to access the course and case tools.
+            Аккаунт готов. Обновите план для доступа к курсу и инструментам кейса.
           </p>
         </div>
         <Card className="max-w-xl">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Lock className="h-12 w-12 text-foreground-muted mb-4" />
             <p className="text-center text-foreground-secondary mb-6">
-              My Courses and My Case are locked. Use an access code at sign-up or upgrade your plan to unlock.
+              Курс и Мой кейс заблокированы. Используйте код доступа при регистрации или обновите план.
             </p>
             <Link href="/account/plans">
-              <Button>View Plans</Button>
+              <Button>Тарифы</Button>
             </Link>
             <Link href="/account" className="mt-4 text-sm text-primary hover:underline">
-              Account & Billing
+              Аккаунт и оплата
             </Link>
           </CardContent>
         </Card>
@@ -118,16 +118,16 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Welcome back, {user?.name}</h1>
+        <h1 className="text-3xl font-bold">С возвращением, {user?.name}</h1>
         <p className="mt-2 text-foreground-secondary">
-          Continue building your EB-1A petition package.
+          Продолжайте собирать пакет EB-1A петиции.
         </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Course Progress</CardTitle>
+            <CardTitle>Прогресс курса</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -139,7 +139,7 @@ export default function DashboardPage() {
                 >
                   <div className="mb-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                     <span className="font-medium">
-                      Module {module.moduleOrder}: {module.moduleTitle}
+                      Модуль {module.moduleOrder}: {module.moduleTitle}
                     </span>
                     <div className="flex items-center gap-2 text-sm">
                       <span className="text-foreground-secondary">
@@ -164,7 +164,7 @@ export default function DashboardPage() {
 
               {moduleProgress.length === 0 && (
                 <p className="text-center text-foreground-secondary">
-                  No modules available yet. Check back soon!
+                  Модули пока недоступны. Загляните позже!
                 </p>
               )}
             </div>
@@ -174,24 +174,24 @@ export default function DashboardPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Your Case</CardTitle>
+              <CardTitle>Ваш кейс</CardTitle>
             </CardHeader>
             <CardContent>
               {caseData ? (
                 <div className="space-y-4">
                   <div className="rounded-lg bg-background-secondary p-3">
-                    <p className="text-sm text-foreground-secondary">Status</p>
+                    <p className="text-sm text-foreground-secondary">Статус</p>
                     <p className="font-medium capitalize">{caseData.status.replace('_', ' ')}</p>
                   </div>
                   <div className="rounded-lg bg-background-secondary p-3">
-                    <p className="text-sm text-foreground-secondary">Criteria Selected</p>
+                    <p className="text-sm text-foreground-secondary">Выбранные критерии</p>
                     <p className="font-medium">
-                      {caseData.criteriaSelected?.length || 0} criteria
+                      {caseData.criteriaSelected?.length || 0} критериев
                     </p>
                   </div>
                   <Link href={`/case/${caseData.id}`}>
                     <Button className="w-full">
-                      View Case
+                      Открыть кейс
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
@@ -199,9 +199,9 @@ export default function DashboardPage() {
               ) : (
                 <div className="text-center">
                   <p className="mb-4 text-foreground-secondary">
-                    Start your EB-1A journey by creating a case.
+                    Начните создание EB-1A петиции — создайте кейс.
                   </p>
-                  <Button onClick={handleCreateCase}>Create Case</Button>
+                  <Button onClick={handleCreateCase}>Создать кейс</Button>
                 </div>
               )}
             </CardContent>
@@ -209,7 +209,7 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle>Быстрые действия</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -218,14 +218,14 @@ export default function DashboardPage() {
                   className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-background-secondary"
                 >
                   <BookOpen className="h-5 w-5 text-primary" />
-                  <span>Continue Course</span>
+                  <span>Продолжить курс</span>
                 </Link>
                 <Link
                   href="/chat"
                   className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-background-secondary"
                 >
                   <MessageSquare className="h-5 w-5 text-primary" />
-                  <span>Chat with Admin</span>
+                  <span>Чат с поддержкой</span>
                 </Link>
                 {caseData && (
                   <Link
@@ -233,7 +233,7 @@ export default function DashboardPage() {
                     className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-background-secondary"
                   >
                     <FileText className="h-5 w-5 text-primary" />
-                    <span>Upload Documents</span>
+                    <span>Загрузить документы</span>
                   </Link>
                 )}
               </div>

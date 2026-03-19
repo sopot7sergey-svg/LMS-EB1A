@@ -11,8 +11,8 @@ interface PageErrorProps {
 }
 
 export function PageError({
-  title = 'Something went wrong',
-  message = 'An unexpected error occurred. Please try again.',
+  title = 'Что-то пошло не так',
+  message = 'Произошла ошибка. Попробуйте ещё раз.',
   onRetry,
   backHref = '/dashboard',
 }: PageErrorProps) {
@@ -23,11 +23,11 @@ export function PageError({
       <div className="flex gap-3">
         {onRetry && (
           <Button variant="secondary" onClick={onRetry}>
-            Try again
+            Повторить
           </Button>
         )}
         <Link href={backHref}>
-          <Button variant="secondary">Go back</Button>
+          <Button variant="secondary">Назад</Button>
         </Link>
       </div>
     </div>

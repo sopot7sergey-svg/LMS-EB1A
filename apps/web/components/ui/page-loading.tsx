@@ -1,6 +1,6 @@
 'use client';
 
-export function PageLoading({ message = 'Loading...' }: { message?: string }) {
+export function PageLoading({ message = 'Загрузка...' }: { message?: string }) {
   return (
     <div
       className="flex min-h-[12rem] items-center justify-center gap-3"

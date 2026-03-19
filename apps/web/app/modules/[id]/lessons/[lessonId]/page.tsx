@@ -44,7 +44,7 @@ export default function LessonPage() {
         const data = await api.lessons.get(lessonId, token);
         setLesson(data);
       } catch (err: any) {
-        setError(err?.message ?? 'Lesson not found');
+        setError(err?.message ?? 'Урок не найден');
       } finally {
         setIsLoading(false);
       }
@@ -82,10 +82,10 @@ export default function LessonPage() {
     return (
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <h2 className="text-xl font-semibold">Lesson not found</h2>
+          <h2 className="text-xl font-semibold">Урок не найден</h2>
           <p className="mt-2 text-sm text-foreground-secondary">{error}</p>
           <Link href={`/modules/${moduleId}`} className="mt-6">
-            <Button variant="secondary">Back to module</Button>
+            <Button variant="secondary">К модулю</Button>
           </Link>
         </div>
       </DashboardLayout>
@@ -100,7 +100,7 @@ export default function LessonPage() {
           className="inline-flex items-center gap-2 text-sm text-foreground-secondary hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to {lesson.module.title}
+          К {lesson.module.title}
         </Link>
       </div>
 
@@ -113,7 +113,7 @@ export default function LessonPage() {
           {lesson.completed && (
             <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-success/15 px-3 py-1 text-sm font-medium text-success">
               <CheckCircle className="h-4 w-4" />
-              Completed
+              Завершён
             </span>
           )}
         </div>
@@ -137,7 +137,7 @@ export default function LessonPage() {
             }
             return (
               <div className="flex aspect-video items-center justify-center bg-background-tertiary text-foreground-muted">
-                No video available
+                Видео недоступно
               </div>
             );
           })()}
@@ -150,7 +150,7 @@ export default function LessonPage() {
             ) : (
               <CheckCircle className="mr-2 h-4 w-4" />
             )}
-            Mark as complete
+            Отметить пройденным
           </Button>
         )}
       </div>

@@ -87,7 +87,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         className="flex h-screen items-center justify-center bg-background"
         style={{ backgroundColor: '#0a0a0f', color: '#a1a1aa' }}
       >
-        Redirecting to login...
+        Перенаправление на вход...
       </div>
     );
   }
@@ -102,7 +102,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
           style={{ borderColor: '#635BFF', borderTopColor: 'transparent' }}
         />
-        <span className="ml-3 text-foreground-secondary" style={{ color: '#a1a1aa' }}>Loading...</span>
+        <span className="ml-3 text-foreground-secondary" style={{ color: '#a1a1aa' }}>Загрузка...</span>
       </div>
     );
   }
@@ -122,7 +122,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           type="button"
           onClick={() => setSidebarOpen(true)}
           className="-ml-2 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-foreground-secondary hover:bg-background-tertiary hover:text-foreground"
-          aria-label="Open menu"
+          aria-label="Открыть меню"
         >
           <Menu className="h-6 w-6" />
         </button>

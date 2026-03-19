@@ -366,7 +366,7 @@ function ModuleAccordion({ module }: { module: Module }) {
             <svg className="h-4 w-4 flex-shrink-0 text-foreground-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <span className="text-foreground-muted">Artifact:</span>
+            <span className="text-foreground-muted">Артефакт:</span>
             <span className="text-foreground-secondary">{module.artifact}</span>
           </div>
         </div>
@@ -394,7 +394,7 @@ export default function Home() {
   if (isAuthenticated()) {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center" style={{ backgroundColor: '#0a0a0f', color: '#a1a1aa' }}>
-        <div>Redirecting...</div>
+        <div>Перенаправление...</div>
       </main>
     );
   }
@@ -410,8 +410,8 @@ export default function Home() {
               <span className="text-xl font-semibold">Aipas</span>
             </Link>
             <div className="flex items-center gap-4">
-              <Link href="/login" className="btn-ghost">Sign In</Link>
-              <Link href="/register" className="btn-primary">Get Started</Link>
+              <Link href="/login" className="btn-ghost">Войти</Link>
+              <Link href="/register" className="btn-primary">Начать</Link>
             </div>
           </div>
         </div>
@@ -421,21 +421,20 @@ export default function Home() {
       <div className="mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
-            Build Your{' '}
+            Соберите свою{' '}
             <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-              EB-1A Petition
+              EB-1A петицию
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground-secondary">
-            AI-assisted course to build a submission-ready EB-1A I-140 petition package.
-            Learn the process, build your evidence, and get officer-style feedback.
+            AI-курс для подготовки submission-ready EB-1A I-140 пакета. Изучите процесс, соберите доказательства и получите feedback в стиле офицера.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <Link href="/register" className="btn-primary px-8 py-3 text-base">
-              Start Your Journey
+              Начать
             </Link>
             <Link href="/login" className="btn-secondary px-8 py-3 text-base">
-              Sign In
+              Войти
             </Link>
           </div>
 
@@ -443,15 +442,15 @@ export default function Home() {
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
               <span className="text-2xl font-bold text-foreground">7</span>
-              <span className="mt-1 text-sm text-foreground-muted">Modules</span>
+              <span className="mt-1 text-sm text-foreground-muted">Модулей</span>
             </div>
             <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
               <span className="text-2xl font-bold text-foreground">{totalLessons}</span>
-              <span className="mt-1 text-sm text-foreground-muted">Video Lessons</span>
+              <span className="mt-1 text-sm text-foreground-muted">Видеоуроков</span>
             </div>
             <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
               <span className="text-2xl font-bold text-foreground">12+</span>
-              <span className="mt-1 text-sm text-foreground-muted">AI Tools</span>
+              <span className="mt-1 text-sm text-foreground-muted">AI-инструментов</span>
             </div>
             <div className="flex flex-col items-center justify-center rounded-lg bg-background-card border border-border px-6 py-4">
               <span className="text-2xl font-bold text-foreground">1</span>
@@ -465,18 +464,18 @@ export default function Home() {
           {[
             {
               icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
-              title: 'Structured Course',
-              desc: '7 modules covering case strategy, evidence building, letters, assembly, and filing.',
+              title: 'Структурированный курс',
+              desc: '7 модулей: стратегия кейса, сбор доказательств, письма, сборка и подача.',
             },
             {
               icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-              title: 'AI-Powered Tools',
-              desc: '12+ AI tools replace homework — evidence packs, letter drafts, petition assembly.',
+              title: 'AI-инструменты',
+              desc: '12+ AI-инструментов вместо домашних заданий — пакеты доказательств, черновики писем, сборка петиции.',
             },
             {
               icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
               title: 'Officer-Style Review',
-              desc: 'EER with citations to 8 CFR, USCIS Policy Manual, and Kazarian precedent.',
+              desc: 'EER со ссылками на 8 CFR, USCIS Policy Manual и прецедент Kazarian.',
             },
           ].map((f) => (
             <div key={f.title} className="card">
@@ -517,7 +516,7 @@ export default function Home() {
               <span className="font-semibold">Aipas</span>
             </div>
             <p className="text-sm text-foreground-muted text-center">
-              This platform does not provide legal advice or predict immigration outcomes.
+              Платформа не предоставляет юридические консультации и не предсказывает исход иммиграционных дел.
             </p>
           </div>
         </div>

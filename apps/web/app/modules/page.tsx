@@ -83,19 +83,19 @@ export default function ModulesPage() {
     return (
       <DashboardLayout>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">Course Modules</h1>
+          <h1 className="text-3xl font-bold">Модули курса</h1>
           <p className="mt-2 text-foreground-secondary">
-            Course access is required to view lessons.
+            Для просмотра уроков нужен доступ к курсу.
           </p>
         </div>
         <Card className="max-w-xl">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Lock className="h-12 w-12 text-foreground-muted mb-4" />
             <p className="text-center text-foreground-secondary mb-6">
-              My Courses is locked. Use an access code at sign-up or upgrade your plan to unlock.
+              Курс заблокирован. Используйте код доступа при регистрации или обновите план.
             </p>
             <Link href="/account/plans">
-              <Button>View Plans</Button>
+              <Button>Тарифы</Button>
             </Link>
           </CardContent>
         </Card>
@@ -106,9 +106,9 @@ export default function ModulesPage() {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Course Modules</h1>
+        <h1 className="text-3xl font-bold">Модули курса</h1>
         <p className="mt-2 text-foreground-secondary">
-          Complete each module to build your EB-1A petition package.
+          Пройдите каждый модуль, чтобы собрать пакет EB-1A петиции.
         </p>
       </div>
 
@@ -145,21 +145,21 @@ export default function ModulesPage() {
                     <CardHeader className="mb-0 p-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-medium text-foreground-muted">
-                          Module {module.order}
+                          Модуль {module.order}
                         </span>
                         {status === 'completed' && (
                           <span className="rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
-                            Completed · 100%
+                            Завершён · 100%
                           </span>
                         )}
                         {status === 'in_progress' && (
                           <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                            In Progress · {pct}%
+                            В процессе · {pct}%
                           </span>
                         )}
                         {status === 'not_started' && (
                           <span className="rounded-full bg-background-tertiary px-2 py-0.5 text-xs font-medium text-foreground-muted">
-                            Not started · 0%
+                            Не начат · 0%
                           </span>
                         )}
                       </div>
@@ -169,15 +169,15 @@ export default function ModulesPage() {
 
                     <CardContent className="mt-4 p-0">
                       <div className="mb-2 flex items-center justify-between text-sm">
-                        <span className="text-foreground-secondary">{total} lessons</span>
+                        <span className="text-foreground-secondary">{total} уроков</span>
                         <span className="font-medium tabular-nums">
-                          {completed}/{total} completed
+                          {completed}/{total} пройдено
                         </span>
                       </div>
                       <ProgressBar value={pct} size="sm" />
 
                       <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                        {status === 'completed' ? 'Review Module' : 'Open Module'}
+                        {status === 'completed' ? 'Повторить модуль' : 'Открыть модуль'}
                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -194,7 +194,7 @@ export default function ModulesPage() {
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-foreground-secondary">
-                No modules available yet. Check back soon!
+                Модули пока недоступны. Загляните позже!
               </p>
             </CardContent>
           </Card>

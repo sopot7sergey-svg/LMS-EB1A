@@ -123,9 +123,9 @@ export default function ChatPage() {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Chat with Admin</h1>
+        <h1 className="text-3xl font-bold">Чат с поддержкой</h1>
         <p className="mt-2 text-foreground-secondary">
-          Get help and support from our team.
+          Получите помощь и поддержку от нашей команды.
         </p>
       </div>
 
@@ -134,7 +134,7 @@ export default function ChatPage() {
           <Card className="h-full flex flex-col">
             <CardHeader className="flex-shrink-0">
               <div className="flex items-center justify-between">
-                <CardTitle>Conversations</CardTitle>
+                <CardTitle>Диалоги</CardTitle>
                 <Button size="sm" onClick={() => setIsCreating(true)}>
                   <Plus className="h-4 w-4" />
                 </Button>
@@ -144,17 +144,17 @@ export default function ChatPage() {
               {isCreating && (
                 <div className="mb-4 p-3 rounded-lg border border-primary bg-primary/5">
                   <Input
-                    placeholder="Subject..."
+                    placeholder="Тема..."
                     value={newSubject}
                     onChange={(e) => setNewSubject(e.target.value)}
                     className="mb-2"
                   />
                   <div className="flex gap-2">
                     <Button size="sm" onClick={handleCreateThread}>
-                      Create
+                      Создать
                     </Button>
                     <Button size="sm" variant="secondary" onClick={() => setIsCreating(false)}>
-                      Cancel
+                      Отмена
                     </Button>
                   </div>
                 </div>
@@ -163,9 +163,9 @@ export default function ChatPage() {
               {threads.length === 0 ? (
                 <div className="text-center py-8">
                   <MessageSquare className="mx-auto mb-4 h-12 w-12 text-foreground-muted" />
-                  <p className="text-foreground-secondary">No conversations yet.</p>
+                  <p className="text-foreground-secondary">Диалогов пока нет.</p>
                   <Button className="mt-4" onClick={() => setIsCreating(true)}>
-                    Start a Conversation
+                    Начать диалог
                   </Button>
                 </div>
               ) : (
@@ -181,11 +181,11 @@ export default function ChatPage() {
                       }`}
                     >
                       <p className="font-medium truncate">
-                        {thread.subject || 'No subject'}
+                        {thread.subject || 'Без темы'}
                       </p>
                       <div className="flex items-center justify-between mt-1">
                         <span className="text-xs text-foreground-muted">
-                          {thread._count.messages} messages
+                          {thread._count.messages} сообщ.
                         </span>
                         <span
                           className={`text-xs ${
@@ -210,7 +210,7 @@ export default function ChatPage() {
             {selectedThread ? (
               <>
                 <CardHeader className="flex-shrink-0 border-b border-border">
-                  <CardTitle>{selectedThread.subject || 'Conversation'}</CardTitle>
+                  <CardTitle>{selectedThread.subject || 'Диалог'}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto py-4">
                   <div className="space-y-4">
@@ -248,7 +248,7 @@ export default function ChatPage() {
                 <div className="flex-shrink-0 border-t border-border p-4">
                   <div className="flex gap-2">
                     <Input
-                      placeholder="Type a message..."
+                      placeholder="Введите сообщение..."
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyDown={(e) => {
@@ -270,7 +270,7 @@ export default function ChatPage() {
                 <div className="text-center">
                   <MessageSquare className="mx-auto mb-4 h-12 w-12 text-foreground-muted" />
                   <p className="text-foreground-secondary">
-                    Select a conversation or start a new one.
+                    Выберите диалог или начните новый.
                   </p>
                 </div>
               </CardContent>

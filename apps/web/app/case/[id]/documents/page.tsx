@@ -134,11 +134,11 @@ export default function DocumentsPage() {
           className="mb-4 inline-flex items-center text-sm text-foreground-secondary hover:text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to case
+          К кейсу
         </Link>
-        <h1 className="text-3xl font-bold">Documents</h1>
+        <h1 className="text-3xl font-bold">Документы</h1>
         <p className="mt-2 text-foreground-secondary">
-          Upload and manage your evidence documents.
+          Загружайте и управляйте доказательствами.
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export default function DocumentsPage() {
           <Card className="mb-6">
             <CardContent className="pt-6">
               <div className="mb-4">
-                <label className="label mb-2 block">Document Category</label>
+                <label className="label mb-2 block">Категория документа</label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
@@ -172,11 +172,11 @@ export default function DocumentsPage() {
                 <input {...getInputProps()} />
                 <Upload className="mx-auto mb-4 h-12 w-12 text-foreground-muted" />
                 {isDragActive ? (
-                  <p className="text-foreground">Drop files here...</p>
+                  <p className="text-foreground">Отпустите файлы здесь...</p>
                 ) : (
                   <>
                     <p className="text-foreground">
-                      Drag & drop files here, or click to select
+                      Перетащите файлы сюда или нажмите для выбора
                     </p>
                     <p className="mt-2 text-sm text-foreground-muted">
                       PDF, DOC, DOCX, PNG, JPG up to 50MB
@@ -187,7 +187,7 @@ export default function DocumentsPage() {
                   <div className="mt-4">
                     <div className="h-8 w-8 mx-auto animate-spin rounded-full border-2 border-primary border-t-transparent" />
                     <p className="mt-2 text-sm text-foreground-secondary">
-                      Uploading...
+                      Загрузка...
                     </p>
                   </div>
                 )}
@@ -197,12 +197,12 @@ export default function DocumentsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Uploaded Documents ({documents.length})</CardTitle>
+              <CardTitle>Загруженные документы ({documents.length})</CardTitle>
             </CardHeader>
             <CardContent>
               {documents.length === 0 ? (
                 <p className="text-center text-foreground-secondary py-8">
-                  No documents uploaded yet.
+                  Документы ещё не загружены.
                 </p>
               ) : (
                 <div className="space-y-3">
@@ -248,7 +248,7 @@ export default function DocumentsPage() {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>By Category</CardTitle>
+              <CardTitle>По категориям</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">

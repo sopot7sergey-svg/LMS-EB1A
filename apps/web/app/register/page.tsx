@@ -25,12 +25,12 @@ export default function RegisterPage() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Пароли не совпадают');
       return;
     }
 
     if (!acceptedTerms) {
-      setError('Please accept the terms and compliance notice');
+      setError('Примите условия и уведомление о соответствии');
       return;
     }
 
@@ -41,7 +41,7 @@ export default function RegisterPage() {
       setAuth(user, token);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || 'Ошибка регистрации');
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +58,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="card">
-          <h1 className="mb-6 text-2xl font-bold">Create Account</h1>
+          <h1 className="mb-6 text-2xl font-bold">Регистрация</h1>
 
           {error && (
             <div className="mb-4 rounded-lg bg-error/10 p-3 text-sm text-error">
@@ -70,8 +70,8 @@ export default function RegisterPage() {
             <Input
               id="name"
               type="text"
-              label="Full Name"
-              placeholder="John Doe"
+              label="Имя"
+              placeholder="Иван Иванов"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -90,7 +90,7 @@ export default function RegisterPage() {
             <Input
               id="password"
               type="password"
-              label="Password"
+              label="Пароль"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -101,7 +101,7 @@ export default function RegisterPage() {
             <Input
               id="confirmPassword"
               type="password"
-              label="Confirm Password"
+              label="Подтвердите пароль"
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -111,8 +111,8 @@ export default function RegisterPage() {
             <Input
               id="accessCode"
               type="text"
-              label="Access Code (optional)"
-              placeholder="Enter code if you have one"
+              label="Код доступа (необязательно)"
+              placeholder="Введите код, если есть"
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value)}
             />
@@ -126,22 +126,22 @@ export default function RegisterPage() {
                   className="mt-1 h-4 w-4 rounded border-border bg-background-tertiary text-primary focus:ring-primary"
                 />
                 <span className="text-sm text-foreground-secondary">
-                  I understand that this platform does not provide legal advice,
-                  does not predict immigration outcomes, and that all AI-generated
-                  content should be reviewed by a qualified immigration attorney.
+                  Я понимаю, что платформа не предоставляет юридические консультации,
+                  не предсказывает исход иммиграционных дел, и что весь AI-контент
+                  должен быть проверен квалифицированным иммиграционным адвокатом.
                 </span>
               </label>
             </div>
 
             <Button type="submit" className="w-full" isLoading={isLoading}>
-              Create Account
+              Создать аккаунт
             </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-foreground-secondary">
-            Already have an account?{' '}
+            Уже есть аккаунт?{' '}
             <Link href="/login" className="text-primary hover:underline">
-              Sign in
+              Войти
             </Link>
           </p>
         </div>

@@ -29,11 +29,11 @@ export function Sidebar({ progress, open = true, onClose }: SidebarProps) {
   const { user, clearAuth, isAdmin } = useAuthStore();
 
   const studentLinks = [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/case', label: 'My Case', icon: FileText },
-    { href: '/modules', label: 'Course', icon: BookOpen },
-    { href: '/chat', label: 'Chat with Admin', icon: MessageSquare },
-    { href: '/account', label: 'Account', icon: Settings },
+    { href: '/dashboard', label: 'Панель', icon: Home },
+    { href: '/case', label: 'Мой кейс', icon: FileText },
+    { href: '/modules', label: 'Курс', icon: BookOpen },
+    { href: '/chat', label: 'Чат с поддержкой', icon: MessageSquare },
+    { href: '/account', label: 'Аккаунт', icon: Settings },
   ];
 
   const adminLinks = [
@@ -63,7 +63,7 @@ export function Sidebar({ progress, open = true, onClose }: SidebarProps) {
         {!isAdmin() && progress && (
           <div className="border-b border-border p-4">
             <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="text-foreground-secondary">Course Progress</span>
+              <span className="text-foreground-secondary">Прогресс курса</span>
               <span className="font-medium">
                 {progress.completed}/{progress.total}
               </span>
@@ -123,7 +123,7 @@ export function Sidebar({ progress, open = true, onClose }: SidebarProps) {
             className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-3 text-sm text-foreground-secondary transition-colors hover:bg-background-tertiary hover:text-foreground lg:py-2"
           >
             <LogOut className="h-5 w-5" />
-            Sign Out
+            Выйти
           </button>
         </div>
       </div>

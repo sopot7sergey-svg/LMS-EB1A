@@ -413,18 +413,18 @@ export default function CaseDetailPage() {
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-warning/10">
             <Lock className="h-8 w-8 text-warning" />
           </div>
-          <h2 className="text-xl font-semibold">App access expired</h2>
+          <h2 className="text-xl font-semibold">Доступ к приложению истёк</h2>
           <p className="mt-2 max-w-md text-foreground-secondary">
             {accessError}
           </p>
           <p className="mt-2 text-sm text-foreground-muted">
-            Your case data is preserved. Renew your plan to continue.
+            Данные кейса сохранены. Продлите план для продолжения.
           </p>
           <Link href="/account/plans" className="mt-6">
-            <Button variant="secondary">View Plans</Button>
+            <Button variant="secondary">Тарифы</Button>
           </Link>
           <Link href="/case" className="mt-4 inline-block text-sm text-primary hover:underline">
-            Back to My Case
+            К моим кейсам
           </Link>
         </div>
       </DashboardLayout>
@@ -435,9 +435,9 @@ export default function CaseDetailPage() {
     return (
       <DashboardLayout>
         <div className="text-center">
-          <p className="text-foreground-secondary">Case not found.</p>
+          <p className="text-foreground-secondary">Кейс не найден.</p>
           <Link href="/case" className="mt-4 inline-block text-primary hover:underline">
-            Back to cases
+            К кейсам
           </Link>
         </div>
       </DashboardLayout>
@@ -451,7 +451,7 @@ export default function CaseDetailPage() {
           href="/case"
           className="mb-4 inline-flex items-center text-sm text-foreground-secondary hover:text-foreground"
         >
-          ← Back to cases
+          ← К кейсам
         </Link>
 
         {/* Header */}
@@ -482,7 +482,7 @@ export default function CaseDetailPage() {
                 onClick={() => setIsEditingName(true)}
                 className="flex items-center gap-2 text-2xl font-bold hover:text-primary transition-colors group"
               >
-                {caseName || 'Untitled Case'}
+                {caseName || 'Без названия'}
                 <Pencil className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
             )}
@@ -502,14 +502,14 @@ export default function CaseDetailPage() {
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <div className="w-32 min-w-0">
-              <p className="text-xs text-foreground-muted mb-1">Checklist</p>
+              <p className="text-xs text-foreground-muted mb-1">Чеклист</p>
               <ProgressBar value={checklistCompletionPercent} size="sm" />
               <p className="text-xs text-foreground-secondary mt-0.5">
                 {checklistCompletionPercent}%
               </p>
             </div>
             <div className="w-32 min-w-0">
-              <p className="text-xs text-foreground-muted mb-1">Evidence Coverage</p>
+              <p className="text-xs text-foreground-muted mb-1">Покрытие доказательств</p>
               <p className="text-lg font-semibold">
                 {evidenceCoverageCount}/10
               </p>
@@ -518,7 +518,7 @@ export default function CaseDetailPage() {
 
           <Button variant="primary" onClick={() => setCompileModalOpen(true)} className="min-h-[44px] w-full sm:w-auto">
             <FileStack className="mr-2 h-4 w-4" />
-            Compile Officer Packet
+            Собрать пакет для офицера
           </Button>
         </div>
 
@@ -529,7 +529,7 @@ export default function CaseDetailPage() {
 
         {/* Full-width Submission Checklist */}
         <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-4">Submission Checklist</h2>
+          <h2 className="text-lg font-semibold mb-4">Чеклист подачи</h2>
           <ChecklistAccordion
             caseId={caseId}
             documents={caseData?.documents || []}

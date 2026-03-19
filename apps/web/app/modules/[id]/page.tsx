@@ -101,7 +101,7 @@ export default function ModuleDetailPage() {
         moduleData = await api.modules.get(moduleId, token);
       } catch (err: any) {
         if (!cancelled) {
-          setModuleError(err?.message ?? 'Module not found');
+          setModuleError(err?.message ?? 'Модуль не найден');
           setIsLoading(false);
         }
         return;
@@ -184,10 +184,10 @@ export default function ModuleDetailPage() {
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <BookOpen className="mb-4 h-12 w-12 text-foreground-muted" />
-          <h2 className="text-xl font-semibold">Module not found</h2>
+          <h2 className="text-xl font-semibold">Модуль не найден</h2>
           <p className="mt-2 text-sm text-foreground-secondary">{moduleError}</p>
           <Link href="/modules" className="mt-6">
-            <Button variant="secondary">Back to modules</Button>
+            <Button variant="secondary">К модулям</Button>
           </Link>
         </div>
       </DashboardLayout>
@@ -204,13 +204,13 @@ export default function ModuleDetailPage() {
           className="mb-5 inline-flex items-center gap-2 text-sm text-foreground-secondary hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to modules
+          К модулям
         </Link>
 
         <div className="flex flex-col gap-6 rounded-xl border border-border bg-background-card p-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-              Module {module.order}
+              Модуль {module.order}
             </p>
             <h1 className="mt-1 text-2xl font-bold">{module.title}</h1>
             {module.description && (
@@ -222,7 +222,7 @@ export default function ModuleDetailPage() {
           <div className="flex w-full flex-shrink-0 flex-col items-center gap-2 sm:w-auto sm:min-w-[180px] sm:items-end">
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold tabular-nums">{percentage}%</span>
-              <span className="text-sm text-foreground-secondary">complete</span>
+              <span className="text-sm text-foreground-secondary">пройдено</span>
             </div>
             <div className="h-2 w-full rounded-full bg-background-tertiary overflow-hidden">
               <div
@@ -231,7 +231,7 @@ export default function ModuleDetailPage() {
               />
             </div>
             <p className="text-xs text-foreground-muted">
-              {completedCount} / {totalCount} lessons
+              {completedCount} / {totalCount} уроков
             </p>
           </div>
         </div>
@@ -270,10 +270,10 @@ export default function ModuleDetailPage() {
               {/* Title + description */}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-mono text-foreground-muted">Lesson {lessonLabel}</span>
+                  <span className="text-xs font-mono text-foreground-muted">Урок {lessonLabel}</span>
                   {lesson.completed && (
                     <span className="rounded-full bg-success/15 px-2 py-0.5 text-xs font-medium text-success">
-                      Completed · 100%
+                      Завершён · 100%
                     </span>
                   )}
                   {!lesson.completed && (
@@ -296,7 +296,7 @@ export default function ModuleDetailPage() {
                   <Link href={`/modules/${moduleId}/lessons/${lesson.id}`}>
                     <Button variant="secondary" size="sm" className="min-h-[44px] gap-1.5">
                       <PlayCircle className="h-3.5 w-3.5" />
-                      Watch
+                      Смотреть
                     </Button>
                   </Link>
                 )}
@@ -313,7 +313,7 @@ export default function ModuleDetailPage() {
                     ) : (
                       <CheckCircle className="h-3.5 w-3.5" />
                     )}
-                    Mark Complete
+                    Отметить пройденным
                   </Button>
                 ) : (
                   <Button
@@ -328,7 +328,7 @@ export default function ModuleDetailPage() {
                     ) : (
                       <Circle className="h-3.5 w-3.5" />
                     )}
-                    Undo
+                    Отменить
                   </Button>
                 )}
               </div>
@@ -344,13 +344,13 @@ export default function ModuleDetailPage() {
             <CheckCircle className="h-7 w-7 text-success" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold">Module Completed!</h3>
+            <h3 className="text-xl font-semibold">Модуль завершён!</h3>
             <p className="mt-1 text-sm text-foreground-secondary">
-              You&apos;ve finished all {totalCount} lessons in Module {module.order}.
+              Вы прошли все {totalCount} уроков в модуле {module.order}.
             </p>
           </div>
           <Link href="/modules">
-            <Button>Continue to Next Module →</Button>
+            <Button>К следующему модулю →</Button>
           </Link>
         </div>
       )}

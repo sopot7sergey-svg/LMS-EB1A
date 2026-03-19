@@ -72,7 +72,7 @@ export function RightPanel({
         },
         (err) => {
           console.error(err);
-          alert(err instanceof Error ? err.message : 'Failed to open document');
+          alert(err instanceof Error ? err.message : 'Не удалось открыть документ');
         }
       );
     }
@@ -80,13 +80,13 @@ export function RightPanel({
 
   const handleDeleteDoc = async (docId: string, docName: string) => {
     if (!token) return;
-    if (!confirm(`Delete "${docName}"?`)) return;
+    if (!confirm(`Удалить «${docName}»?`)) return;
     try {
       await api.documents.delete(docId, token);
       onDocumentDeleted?.();
     } catch (err) {
       console.error(err);
-      alert('Failed to delete document');
+        alert('Не удалось удалить документ');
     }
   };
 
@@ -102,7 +102,7 @@ export function RightPanel({
               <CardTitle className="flex items-center gap-2">
                 {insightsExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 <Brain className="h-4 w-4 text-violet-400" />
-                AI Insights
+                AI-инсайты
                 <span className="rounded-full bg-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-300">
                   {aiInsights.length}
                 </span>
@@ -151,7 +151,7 @@ export function RightPanel({
               ) : (
                 <ChevronRight className="h-4 w-4" />
               )}
-              Uploaded Documents
+              Загруженные документы
               {userDocs.length > 0 && (
                 <span className="rounded-full bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary">
                   {userDocs.length}
@@ -163,7 +163,7 @@ export function RightPanel({
         {docsExpanded && (
           <CardContent>
             {userDocs.length === 0 ? (
-              <p className="text-sm text-foreground-muted">No documents uploaded yet. Use + Add in the checklist.</p>
+              <p className="text-sm text-foreground-muted">Документы ещё не загружены. Используйте + Добавить в чеклисте.</p>
             ) : (
               <ul className="space-y-1 max-h-48 overflow-y-auto">
                 {userDocs.map((doc) => (
@@ -195,12 +195,12 @@ export function RightPanel({
 
       <Card>
         <CardHeader>
-          <CardTitle>Guided Next Steps</CardTitle>
+          <CardTitle>Рекомендуемые шаги</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-foreground-secondary mb-2">
-              Current Stage
+              Текущий этап
             </label>
             <select
               value={stage}
@@ -216,7 +216,7 @@ export function RightPanel({
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Next 3 actions</h4>
+            <h4 className="text-sm font-medium mb-2">Следующие 3 действия</h4>
             <ul className="space-y-1 text-sm text-foreground-secondary">
               {nextActions.length > 0 ? (
                 nextActions.map((a, i) => (
@@ -236,13 +236,13 @@ export function RightPanel({
                   </li>
                 ))
               ) : (
-                <li className="text-foreground-muted">Complete checklist items</li>
+                <li className="text-foreground-muted">Выполните пункты чеклиста</li>
               )}
             </ul>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Open tasks</h4>
+            <h4 className="text-sm font-medium mb-2">Открытые задачи</h4>
             <ul className="space-y-1 text-sm text-foreground-secondary">
               {openTasks.length > 0 ? (
                 openTasks.map((t, i) => (
@@ -252,7 +252,7 @@ export function RightPanel({
                   </li>
                 ))
               ) : (
-                <li className="text-foreground-muted">No open tasks</li>
+                <li className="text-foreground-muted">Нет открытых задач</li>
               )}
             </ul>
           </div>
@@ -264,7 +264,7 @@ export function RightPanel({
               onClick={onGenerateNarrative}
             >
               <Sparkles className="mr-2 h-4 w-4" />
-              Generate narrative for selected criterion
+              Сгенерировать нарратив для выбранного критерия
             </Button>
             <Button
               variant="secondary"
@@ -272,14 +272,14 @@ export function RightPanel({
               onClick={onAskAdvisor}
             >
               <MessageCircle className="mr-2 h-4 w-4" />
-              Ask about this requirement
+              Спросить об этом требовании
             </Button>
             <Button
               className="w-full justify-start"
               onClick={onSubmitForReview}
             >
               <ClipboardCheck className="mr-2 h-4 w-4" />
-              Submit for review
+              Отправить на проверку
             </Button>
           </div>
         </CardContent>

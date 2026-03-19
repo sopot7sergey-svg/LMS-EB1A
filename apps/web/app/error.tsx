@@ -26,7 +26,7 @@ export default function Error({
     >
       <div className="w-full max-w-md">
         <PageError
-          title={isNetworkError ? 'Cannot reach server' : 'Something went wrong'}
+          title={isNetworkError ? 'Сервер недоступен' : 'Что-то пошло не так'}
           message={error.message}
           onRetry={reset}
           backHref="/"

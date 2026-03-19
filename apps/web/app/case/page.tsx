@@ -86,13 +86,13 @@ export default function CasesPage() {
       if (currentCaseId === caseToDelete.id) {
         setCurrentCase(null);
       }
-      setFeedback({ type: 'success', message: 'Case deleted successfully.' });
+      setFeedback({ type: 'success', message: 'Кейс удалён.' });
       setCaseToDelete(null);
     } catch (error) {
       console.error('Failed to delete case:', error);
       setFeedback({
         type: 'error',
-        message: error instanceof Error ? error.message : 'Failed to delete case.',
+        message: error instanceof Error ? error.message : 'Не удалось удалить кейс.',
       });
     } finally {
       setDeletingCaseId(null);
@@ -113,22 +113,22 @@ export default function CasesPage() {
     return (
       <DashboardLayout>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">My Cases</h1>
+          <h1 className="text-3xl font-bold">Мои кейсы</h1>
           <p className="mt-2 text-foreground-secondary">
-            Case access is required to manage your petition.
+            Для управления петицией нужен доступ к кейсам.
           </p>
         </div>
         <Card className="max-w-xl">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Lock className="h-12 w-12 text-foreground-muted mb-4" />
             <p className="text-center text-foreground-secondary mb-6">
-              My Case is locked. Use an access code at sign-up or upgrade your plan to unlock.
+              Мой кейс заблокирован. Используйте код доступа при регистрации или обновите план.
             </p>
             <Link href="/account/plans">
-              <Button>View Plans</Button>
+              <Button>Тарифы</Button>
             </Link>
             <Link href="/account" className="mt-4 text-sm text-primary hover:underline">
-              Account & Billing
+              Аккаунт и оплата
             </Link>
           </CardContent>
         </Card>
@@ -140,14 +140,14 @@ export default function CasesPage() {
     <DashboardLayout>
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">My Cases</h1>
+          <h1 className="text-3xl font-bold">Мои кейсы</h1>
           <p className="mt-2 text-foreground-secondary">
-            Manage your EB-1A petition cases.
+            Управление кейсами EB-1A петиции.
           </p>
         </div>
             <Button onClick={handleCreateCase} isLoading={isCreating} className="min-h-[44px]">
           <Plus className="mr-2 h-4 w-4" />
-          New Case
+          Новый кейс
         </Button>
       </div>
 
@@ -167,15 +167,15 @@ export default function CasesPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <FileText className="mx-auto mb-4 h-12 w-12 text-foreground-muted" />
-            <h3 className="text-lg font-semibold">No cases yet</h3>
+            <h3 className="text-lg font-semibold">Кейсов пока нет</h3>
             <p className="mt-2 text-foreground-secondary">
               {appAccessActive
-                ? 'Create your first case to start building your EB-1A petition.'
-                : 'Renew your plan to create new cases.'}
+                ? 'Создайте первый кейс, чтобы начать собирать EB-1A петицию.'
+                : 'Обновите план, чтобы создавать кейсы.'}
             </p>
             {appAccessActive && (
               <Button className="mt-4 min-h-[44px]" onClick={handleCreateCase} isLoading={isCreating}>
-                Create Case
+                Создать кейс
               </Button>
             )}
           </CardContent>
@@ -205,14 +205,14 @@ export default function CasesPage() {
                   <CardTitle className="min-w-0">
                     {caseItem.caseAxisStatement
                       ? caseItem.caseAxisStatement.slice(0, 50) + '...'
-                      : 'Untitled Case'}
+                      : 'Без названия'}
                   </CardTitle>
                   <button
                     type="button"
                     onClick={() => appAccessActive && setCaseToDelete(caseItem)}
                     className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-md text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Delete case"
-                    aria-label={`Delete ${caseItem.caseAxisStatement || 'Untitled Case'}`}
+                    title="Удалить кейс"
+                    aria-label={`Удалить ${caseItem.caseAxisStatement || 'Без названия'}`}
                     disabled={deletingCaseId === caseItem.id || !appAccessActive}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -222,8 +222,8 @@ export default function CasesPage() {
               <CardContent>
                 <div className="mb-4 space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-foreground-secondary">Criteria</span>
-                    <span>{caseItem.criteriaSelected?.length || 0} selected</span>
+                    <span className="text-foreground-secondary">Критерии</span>
+                    <span>{caseItem.criteriaSelected?.length || 0} выбрано</span>
                   </div>
                   {caseItem.proposedEndeavor && (
                     <p className="text-sm text-foreground-secondary line-clamp-2">
@@ -239,13 +239,13 @@ export default function CasesPage() {
                 >
                   {appAccessActive ? (
                     <>
-                      View Case
+                      Открыть кейс
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   ) : (
                     <>
                       <Lock className="mr-2 h-4 w-4" />
-                      Locked
+                      Заблокировано
                     </>
                   )}
                 </Button>
@@ -258,18 +258,18 @@ export default function CasesPage() {
       <Dialog
         open={!!caseToDelete}
         onClose={() => (deletingCaseId ? undefined : setCaseToDelete(null))}
-        title="Delete Case"
+        title="Удалить кейс"
         className="max-w-md"
       >
         <div className="space-y-5 p-6">
           <div className="space-y-2">
             <p className="text-sm text-foreground-secondary">
-              Are you sure you want to delete this case?
+              Вы уверены, что хотите удалить этот кейс?
             </p>
-            <p className="text-sm text-foreground-muted">This action cannot be undone.</p>
+            <p className="text-sm text-foreground-muted">Действие нельзя отменить.</p>
             {caseToDelete ? (
               <div className="rounded-lg border border-border bg-background-secondary px-3 py-2 text-sm text-foreground-secondary">
-                {caseToDelete.caseAxisStatement || 'Untitled Case'}
+                {caseToDelete.caseAxisStatement || 'Без названия'}
               </div>
             ) : null}
           </div>
@@ -279,14 +279,14 @@ export default function CasesPage() {
               onClick={() => setCaseToDelete(null)}
               disabled={!!deletingCaseId}
             >
-              Cancel
+              Отмена
             </Button>
             <Button
               variant="danger"
               onClick={handleDeleteCase}
               isLoading={!!deletingCaseId}
             >
-              Delete Case
+              Удалить кейс
             </Button>
           </div>
         </div>

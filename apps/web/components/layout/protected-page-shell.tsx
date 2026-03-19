@@ -22,8 +22,8 @@ export function ProtectedPageShell({
   isLoading = false,
   error = null,
   onRetry,
-  loadingMessage = 'Loading...',
-  errorTitle = 'Something went wrong',
+  loadingMessage = 'Загрузка...',
+  errorTitle = 'Что-то пошло не так',
 }: ProtectedPageShellProps) {
   if (isLoading && !error) {
     return (
@@ -58,8 +58,8 @@ export function ContentShell({
   isLoading = false,
   error = null,
   onRetry,
-  loadingMessage = 'Loading...',
-  errorTitle = 'Something went wrong',
+  loadingMessage = 'Загрузка...',
+  errorTitle = 'Что-то пошло не так',
 }: ProtectedPageShellProps) {
   if (isLoading && !error) {
     return <PageLoading message={loadingMessage} />;

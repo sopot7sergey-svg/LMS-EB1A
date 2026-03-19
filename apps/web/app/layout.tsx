@@ -3,8 +3,8 @@ import './globals.css';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'Aipas - Build Your Extraordinary Ability Petition',
-  description: 'AI-assisted course to build a submission-ready EB-1A I-140 petition package',
+  title: 'Aipas — Соберите петицию EB-1A',
+  description: 'AI-курс для подготовки submission-ready EB-1A I-140 пакета',
   icons: {
     icon: '/icon.svg',
     shortcut: '/icon.svg',
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" style={{ backgroundColor: '#0a0a0f', color: '#ffffff' }}>
+    <html lang="ru" className="dark" style={{ backgroundColor: '#0a0a0f', color: '#ffffff' }}>
       <body style={{ backgroundColor: '#0a0a0f', color: '#ffffff' }}>
         <Providers>{children}</Providers>
       </body>
