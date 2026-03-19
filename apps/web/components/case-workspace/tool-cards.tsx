@@ -44,7 +44,7 @@ function ToolCard({ title, description, icon, onClick }: ToolCardProps) {
     <button
       type="button"
       onClick={onClick}
-      aria-label={`Open ${title}`}
+      aria-label={`Открыть ${title}`}
       className="w-full text-left"
     >
       <Card className="cursor-pointer transition-all hover:border-primary/50 hover:bg-background-secondary/50">

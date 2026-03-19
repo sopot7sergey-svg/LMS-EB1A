@@ -17,7 +17,7 @@ export default function DashboardError({
   return (
     <div className="p-8">
       <PageError
-        title="Dashboard error"
+        title="Ошибка дашборда"
         message={error.message}
         onRetry={reset}
         backHref="/dashboard"

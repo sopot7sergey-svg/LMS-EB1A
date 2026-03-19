@@ -181,7 +181,7 @@ export default function DashboardPage() {
                 <div className="space-y-4">
                   <div className="rounded-lg bg-background-secondary p-3">
                     <p className="text-sm text-foreground-secondary">Статус</p>
-                    <p className="font-medium capitalize">{caseData.status.replace('_', ' ')}</p>
+                    <p className="font-medium">{caseData.status === 'draft' ? 'Черновик' : caseData.status === 'in_progress' ? 'В процессе' : caseData.status === 'completed' ? 'Завершён' : caseData.status.replace('_', ' ')}</p>
                   </div>
                   <div className="rounded-lg bg-background-secondary p-3">
                     <p className="text-sm text-foreground-secondary">Выбранные критерии</p>

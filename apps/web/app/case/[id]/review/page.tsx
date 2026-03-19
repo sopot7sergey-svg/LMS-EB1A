@@ -139,7 +139,7 @@ export default function ReviewPage() {
         </Link>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Officer-Style Review</h1>
+            <h1 className="text-3xl font-bold">Проверка в стиле офицера</h1>
             <p className="mt-2 text-foreground-secondary">
               Получите Evidence Enhancement Requests (EER) со ссылками на авторитетные источники.
             </p>
@@ -169,7 +169,7 @@ export default function ReviewPage() {
           <div className="lg:col-span-1">
             <Card>
               <CardHeader>
-                <CardTitle>EER Versions</CardTitle>
+                <CardTitle>Версии EER</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -199,7 +199,7 @@ export default function ReviewPage() {
               <>
                 <Card>
                   <CardHeader>
-                    <CardTitle>Executive Summary</CardTitle>
+                    <CardTitle>Итоговое заключение</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="whitespace-pre-wrap text-foreground-secondary">
@@ -211,7 +211,7 @@ export default function ReviewPage() {
                 {selectedEer.criterionItems.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Criterion-by-Criterion Items</CardTitle>
+                      <CardTitle>Пункты по критериям</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -229,8 +229,8 @@ export default function ReviewPage() {
                                       {item.criterionId}
                                     </span>
                                   )}
-                                  <span className="rounded bg-background-tertiary px-2 py-0.5 text-xs font-medium capitalize">
-                                    {item.priority}
+                                  <span className="rounded bg-background-tertiary px-2 py-0.5 text-xs font-medium">
+                                    {item.priority === 'critical' ? 'Критично' : item.priority === 'recommended' ? 'Рекомендуется' : item.priority === 'optional' ? 'Опционально' : item.priority}
                                   </span>
                                   {item.criterionStatus && (
                                     <span className={`rounded px-2 py-0.5 text-xs font-medium ${
@@ -240,14 +240,14 @@ export default function ReviewPage() {
                                         ? 'bg-warning/10 text-warning'
                                         : 'bg-error/10 text-error'
                                     }`}>
-                                      {item.criterionStatus.replace('_', ' ')}
+                                      {item.criterionStatus === 'met' ? 'Выполнено' : item.criterionStatus === 'partially_met' ? 'Частично' : item.criterionStatus.replace('_', ' ')}
                                     </span>
                                   )}
                                 </div>
                                 <p className="font-medium">{item.ask}</p>
                                 {item.citations.length > 0 && (
                                   <div className="mt-2 text-sm text-foreground-muted">
-                                    <span className="font-medium">Citations: </span>
+                                    <span className="font-medium">Источники: </span>
                                     {item.citations.map((c, i) => (
                                       <span key={i}>
                                         {c.source}
@@ -269,7 +269,7 @@ export default function ReviewPage() {
                 {selectedEer.finalMeritsItems.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Final Merits Items</CardTitle>
+                      <CardTitle>Пункты по существу</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -281,13 +281,13 @@ export default function ReviewPage() {
                             <div className="flex items-start gap-3">
                               {getPriorityIcon(item.priority)}
                               <div className="flex-1">
-                                <span className="rounded bg-background-tertiary px-2 py-0.5 text-xs font-medium capitalize">
-                                  {item.priority}
-                                </span>
+                                <span className="rounded bg-background-tertiary px-2 py-0.5 text-xs font-medium">
+                                    {item.priority === 'critical' ? 'Критично' : item.priority === 'recommended' ? 'Рекомендуется' : item.priority === 'optional' ? 'Опционально' : item.priority}
+                                  </span>
                                 <p className="mt-2 font-medium">{item.ask}</p>
                                 {item.citations.length > 0 && (
                                   <div className="mt-2 text-sm text-foreground-muted">
-                                    <span className="font-medium">Citations: </span>
+                                    <span className="font-medium">Источники: </span>
                                     {item.citations.map((c, i) => (
                                       <span key={i}>
                                         {c.source}
@@ -309,7 +309,7 @@ export default function ReviewPage() {
                 {selectedEer.optionalPackagingItems.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Optional Packaging Items</CardTitle>
+                      <CardTitle>Дополнительные рекомендации</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -336,9 +336,7 @@ export default function ReviewPage() {
 
       <div className="mt-8 rounded-lg border border-border bg-background-secondary p-4">
         <p className="text-sm text-foreground-muted">
-          <strong>Disclaimer:</strong> This review does not provide legal advice or predict
-          immigration outcomes. All AI-generated content should be reviewed by a qualified
-          immigration attorney.
+          <strong>Отказ от ответственности:</strong> Эта проверка не является юридической консультацией и не предсказывает исход иммиграционных дел. Весь AI-контент должен быть проверен квалифицированным иммиграционным адвокатом.
         </p>
       </div>
     </DashboardLayout>

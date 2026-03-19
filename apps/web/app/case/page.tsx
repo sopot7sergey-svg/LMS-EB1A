@@ -195,7 +195,7 @@ export default function CasesPage() {
                         : 'bg-background-tertiary text-foreground-secondary'
                     }`}
                   >
-                    {caseItem.status.replace('_', ' ')}
+                    {caseItem.status === 'draft' ? 'Черновик' : caseItem.status === 'in_progress' ? 'В процессе' : caseItem.status === 'completed' ? 'Завершён' : caseItem.status.replace('_', ' ')}
                   </span>
                   <span className="text-xs text-foreground-muted">
                     {new Date(caseItem.createdAt).toLocaleDateString()}

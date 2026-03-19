@@ -662,7 +662,7 @@ function ChecklistSectionContent({
                               Проверка
                             </span>
                           )}
-                          <ExternalLink className="h-3.5 w-3.5 shrink-0 text-foreground-muted opacity-70 group-hover:opacity-100" aria-label="Open" />
+                          <ExternalLink className="h-3.5 w-3.5 shrink-0 text-foreground-muted opacity-70 group-hover:opacity-100" aria-label="Открыть" />
                         </button>
                         <button
                           type="button"

@@ -9,7 +9,7 @@ export default function LoginLoading() {
           className="h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"
           style={{ borderColor: '#635BFF', borderTopColor: 'transparent' }}
         />
-        <span>Loading...</span>
+        <span>Загрузка...</span>
       </div>
     </div>
   );

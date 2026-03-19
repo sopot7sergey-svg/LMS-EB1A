@@ -17,7 +17,7 @@ export default function CaseError({
   return (
     <div className="p-8">
       <PageError
-        title="Case error"
+        title="Ошибка дела"
         message={error.message}
         onRetry={reset}
         backHref="/case"

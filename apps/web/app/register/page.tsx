@@ -80,8 +80,8 @@ export default function RegisterPage() {
             <Input
               id="email"
               type="email"
-              label="Email"
-              placeholder="you@example.com"
+              label="Эл. почта"
+              placeholder="example@mail.ru"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

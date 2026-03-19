@@ -22,13 +22,13 @@ export default function LoginError({
     >
       <div className="w-full max-w-md">
         <PageError
-          title="Login error"
+          title="Ошибка входа"
           message={error.message}
           onRetry={reset}
           backHref="/"
         />
         <p className="mt-4 text-center text-sm" style={{ color: '#a1a1aa' }}>
-          <Link href="/" className="underline hover:no-underline">Go to home</Link>
+          <Link href="/" className="underline hover:no-underline">На главную</Link>
         </p>
       </div>
     </div>

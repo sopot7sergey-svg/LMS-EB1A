@@ -46,7 +46,7 @@ export function DocumentDraftEditor({
       ))}
       {!sections.length ? (
         <div className="rounded-lg border border-dashed border-border p-6 text-sm text-foreground-muted">
-          Generate a draft to start editing.
+          Создайте черновик для редактирования.
         </div>
       ) : null}
     </div>

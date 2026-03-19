@@ -350,7 +350,7 @@ export default function ModuleDetailPage() {
             </p>
           </div>
           <Link href="/modules">
-            <Button>К следующему модулю →</Button>
+            <Button>К следующему модулю</Button>
           </Link>
         </div>
       )}

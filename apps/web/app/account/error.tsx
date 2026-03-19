@@ -17,7 +17,7 @@ export default function AccountError({
   return (
     <div className="p-8">
       <PageError
-        title="Account error"
+        title="Ошибка аккаунта"
         message={error.message}
         onRetry={reset}
         backHref="/account"

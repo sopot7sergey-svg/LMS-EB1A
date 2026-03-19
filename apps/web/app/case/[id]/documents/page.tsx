@@ -10,6 +10,19 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/lib/store';
 import { api } from '@/lib/api';
 import { DOCUMENT_CATEGORIES } from '@aipas/shared';
+
+const DOCUMENT_CATEGORY_LABELS: Record<string, string> = {
+  'Case Intake & Profile': 'Анкета и профиль дела',
+  'Forms & Fees': 'Формы и сборы',
+  'Identity & Status': 'Идентичность и статус',
+  'Cover Letter / Legal Brief': 'Сопроводительное письмо / Legal Brief',
+  'Evidence (Criteria)': 'Доказательства (критерии)',
+  'Comparable Evidence': 'Сопоставимые доказательства',
+  'Expert Letters': 'Экспертные письма',
+  'Translations': 'Переводы',
+  'Responses to USCIS (RFE/NOID)': 'Ответы USCIS (RFE/NOID)',
+  'Filing & Tracking': 'Подача и отслеживание',
+};
 import {
   Upload,
   FileText,
@@ -155,7 +168,7 @@ export default function DocumentsPage() {
                 >
                   {DOCUMENT_CATEGORIES.map((cat) => (
                     <option key={cat} value={cat}>
-                      {cat}
+                      {DOCUMENT_CATEGORY_LABELS[cat] ?? cat}
                     </option>
                   ))}
                 </select>
@@ -179,7 +192,7 @@ export default function DocumentsPage() {
                       Перетащите файлы сюда или нажмите для выбора
                     </p>
                     <p className="mt-2 text-sm text-foreground-muted">
-                      PDF, DOC, DOCX, PNG, JPG up to 50MB
+                      PDF, DOC, DOCX, PNG, JPG до 50 МБ
                     </p>
                   </>
                 )}
@@ -219,7 +232,7 @@ export default function DocumentsPage() {
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">{doc.originalName}</p>
                           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-foreground-muted">
-                            <span className="capitalize">{doc.category}</span>
+                            <span className="capitalize">{DOCUMENT_CATEGORY_LABELS[doc.category] ?? doc.category}</span>
                             <span>•</span>
                             <span>{formatFileSize(doc.size)}</span>
                             <span>•</span>
@@ -259,7 +272,7 @@ export default function DocumentsPage() {
                       key={cat}
                       className="flex items-center justify-between rounded-lg bg-background-secondary p-3"
                     >
-                      <span>{cat}</span>
+                      <span>{DOCUMENT_CATEGORY_LABELS[cat] ?? cat}</span>
                       <span className="font-medium">{count}</span>
                     </div>
                   );

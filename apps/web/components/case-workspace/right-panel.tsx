@@ -26,7 +26,7 @@ const STAGE_OPTIONS = [
   { value: 'M3', label: 'M3: Рекомендательные письма' },
   { value: 'M4', label: 'M4: Упаковка петиции и финальная сборка' },
   { value: 'M5', label: 'M5: Подача I-140 и процесс после (premium / AOS / consular)' },
-  { value: 'M6', label: 'M6: Officer-Style Review' },
+  { value: 'M6', label: 'M6: Проверка в стиле офицера' },
 ] as const;
 
 interface RightPanelProps {
@@ -121,13 +121,13 @@ export function RightPanel({
                       className="flex flex-1 items-center gap-2 min-w-0 text-left text-sm"
                     >
                       <span className="truncate text-violet-300 hover:underline">{doc.originalName}</span>
-                      <ExternalLink className="h-3.5 w-3.5 shrink-0 text-foreground-muted opacity-70 group-hover:opacity-100" aria-label="Open" />
+                      <ExternalLink className="h-3.5 w-3.5 shrink-0 text-foreground-muted opacity-70 group-hover:opacity-100" aria-label="Открыть" />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
                       className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
-                      title="Delete"
+                      title="Удалить"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -175,13 +175,13 @@ export function RightPanel({
                       className="flex flex-1 items-center gap-2 min-w-0 text-left text-sm"
                     >
                       <span className="truncate text-primary hover:underline">{doc.originalName}</span>
-                      <ExternalLink className="h-3.5 w-3.5 shrink-0 text-foreground-muted opacity-70 group-hover:opacity-100" aria-label="Open" />
+                      <ExternalLink className="h-3.5 w-3.5 shrink-0 text-foreground-muted opacity-70 group-hover:opacity-100" aria-label="Открыть" />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteDoc(doc.id, doc.originalName)}
                       className="shrink-0 flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground-muted hover:bg-destructive/10 hover:text-destructive transition-colors sm:min-h-0 sm:min-w-0 sm:p-1"
-                      title="Delete"
+                      title="Удалить"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

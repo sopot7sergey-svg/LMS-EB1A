@@ -194,7 +194,7 @@ export default function ChatPage() {
                               : 'text-foreground-muted'
                           }`}
                         >
-                          {thread.status}
+                          {thread.status === 'open' ? 'Открыт' : 'Закрыт'}
                         </span>
                       </div>
                     </button>

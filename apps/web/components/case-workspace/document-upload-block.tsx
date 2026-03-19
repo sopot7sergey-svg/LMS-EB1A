@@ -69,7 +69,7 @@ export function DocumentUploadBlock({
         }
         onUploadSuccess(uploadedDocuments);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Upload failed');
+        setError(err instanceof Error ? err.message : 'Ошибка загрузки');
       } finally {
         setIsUploading(false);
       }

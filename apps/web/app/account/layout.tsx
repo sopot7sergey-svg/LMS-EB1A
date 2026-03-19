@@ -7,9 +7,9 @@ import { cn } from '@/lib/utils';
 import { User, BookOpen, FileText, CreditCard, Layers } from 'lucide-react';
 
 const links = [
-  { href: '/account', label: 'Profile', icon: User },
-  { href: '/account/billing', label: 'Billing & Subscription', icon: CreditCard },
-  { href: '/account/plans', label: 'Plans', icon: Layers },
+  { href: '/account', label: 'Профиль', icon: User },
+  { href: '/account/billing', label: 'Оплата и подписка', icon: CreditCard },
+  { href: '/account/plans', label: 'Тарифы', icon: Layers },
 ];
 
 export default function AccountLayout({

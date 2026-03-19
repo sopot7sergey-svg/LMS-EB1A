@@ -119,7 +119,7 @@ export default function CaseDetailPage() {
       if (currentCaseId !== caseId) {
         setCurrentCase(caseId);
       }
-      setCaseName(data.caseAxisStatement || 'Untitled Case');
+      setCaseName(data.caseAxisStatement || 'Без названия');
       setLifecycleStatus(mapApiStatusToLifecycle(data.status));
       if (data.eers?.length > 0) {
         const latest = data.eers[0];
@@ -497,7 +497,7 @@ export default function CaseDetailPage() {
                 : 'bg-background-tertiary text-foreground-secondary'
             }`}
           >
-            {lifecycleStatus.replace('_', ' ')}
+            {lifecycleStatus === 'draft' ? 'Черновик' : lifecycleStatus === 'building' ? 'Сборка' : lifecycleStatus === 'review_ready' ? 'Готов к проверке' : lifecycleStatus === 'in_review' ? 'На проверке' : lifecycleStatus === 'iterating' ? 'Доработка' : lifecycleStatus === 'filing_ready' ? 'Готов к подаче' : lifecycleStatus === 'filed' ? 'Подано' : lifecycleStatus.replace('_', ' ')}
           </span>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">

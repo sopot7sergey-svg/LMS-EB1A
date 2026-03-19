@@ -1,5 +1,5 @@
 import { PageLoading } from '@/components/ui/page-loading';
 
 export default function DashboardLoading() {
-  return <PageLoading message="Loading dashboard..." />;
+  return <PageLoading message="Загрузка дашборда..." />;
 }

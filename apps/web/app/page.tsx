@@ -474,7 +474,7 @@ export default function Home() {
             },
             {
               icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-              title: 'Officer-Style Review',
+              title: 'Проверка в стиле офицера',
               desc: 'EER со ссылками на 8 CFR, USCIS Policy Manual и прецедент Kazarian.',
             },
           ].map((f) => (

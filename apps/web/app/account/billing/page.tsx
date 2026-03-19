@@ -166,12 +166,12 @@ export default function BillingPage() {
 
       <Card className="mt-6 max-w-xl">
         <CardHeader>
-          <CardTitle>AI Usage</CardTitle>
+          <CardTitle>Использование ИИ</CardTitle>
           <p className="text-sm text-foreground-secondary">
             {usage ? (
-              <>Period: {usage.periodStart ? new Date(usage.periodStart).toLocaleDateString() : '—'} to {usage.periodEnd ? new Date(usage.periodEnd).toLocaleDateString() : '—'}</>
+              <>Период: {usage.periodStart ? new Date(usage.periodStart).toLocaleDateString() : '—'} — {usage.periodEnd ? new Date(usage.periodEnd).toLocaleDateString() : '—'}</>
             ) : (
-              <>Unable to load usage. <button type="button" onClick={refresh} className="underline hover:no-underline">Refresh</button></>
+              <>Не удалось загрузить данные. <button type="button" onClick={refresh} className="underline hover:no-underline">Обновить</button></>
             )}
           </p>
         </CardHeader>
