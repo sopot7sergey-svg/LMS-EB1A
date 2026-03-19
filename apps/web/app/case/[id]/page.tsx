@@ -42,6 +42,16 @@ const LIFECYCLE_STATUSES: CaseLifecycleStatus[] = [
   'filed',
 ];
 
+const LIFECYCLE_STATUS_LABELS: Record<CaseLifecycleStatus, string> = {
+  draft: 'Черновик',
+  building: 'Сборка',
+  review_ready: 'Готов к проверке',
+  in_review: 'На проверке',
+  iterating: 'Доработка',
+  filing_ready: 'Готов к подаче',
+  filed: 'Подано',
+};
+
 interface CompileJobSummary {
   id: string;
   status: string;
@@ -497,7 +507,7 @@ export default function CaseDetailPage() {
                 : 'bg-background-tertiary text-foreground-secondary'
             }`}
           >
-            {lifecycleStatus === 'draft' ? 'Черновик' : lifecycleStatus === 'building' ? 'Сборка' : lifecycleStatus === 'review_ready' ? 'Готов к проверке' : lifecycleStatus === 'in_review' ? 'На проверке' : lifecycleStatus === 'iterating' ? 'Доработка' : lifecycleStatus === 'filing_ready' ? 'Готов к подаче' : lifecycleStatus === 'filed' ? 'Подано' : lifecycleStatus.replace('_', ' ')}
+            {LIFECYCLE_STATUS_LABELS[lifecycleStatus]}
           </span>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
