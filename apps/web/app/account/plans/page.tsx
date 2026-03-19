@@ -57,7 +57,7 @@ export default function PlansPage() {
       const res = await api.billing.checkout(plan as 'pro' | 'ultra', billingCycle, token);
       if (res.url) window.location.href = res.url;
     } catch (err: any) {
-      alert(err?.message ?? 'Checkout failed');
+      alert(err?.message ?? 'Ошибка оформления');
     } finally {
       setLoadingAction(null);
     }

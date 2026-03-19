@@ -66,7 +66,7 @@ export default function BillingPage() {
     setLoadingAction('portal');
     api.billing.portal(token)
       .then((r) => { if (r.url) window.location.href = r.url; })
-      .catch((e) => alert(e?.message ?? 'Failed'))
+      .catch((e) => alert(e?.message ?? 'Ошибка'))
       .finally(() => setLoadingAction(null));
   };
 

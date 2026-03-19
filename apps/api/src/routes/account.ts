@@ -18,7 +18,7 @@ router.post('/request-ultra', authenticate, async (req: AuthRequest, res: Respon
       orderBy: { requestedAt: 'desc' },
     });
     if (existing && existing.status === 'pending') {
-      return res.status(400).json({ error: 'You already have a pending Ultra request' });
+      return res.status(400).json({ error: 'У вас уже есть ожидающий запрос на Ultra' });
     }
     const request = await prisma.ultraEligibilityRequest.create({
       data: { userId, status: 'pending' },
@@ -26,7 +26,7 @@ router.post('/request-ultra', authenticate, async (req: AuthRequest, res: Respon
     res.status(201).json({ id: request.id, status: request.status });
   } catch (error) {
     console.error('Request Ultra error:', error);
-    res.status(500).json({ error: 'Failed to submit Ultra request' });
+    res.status(500).json({ error: 'Не удалось отправить запрос на Ultra' });
   }
 });
 
@@ -36,7 +36,7 @@ router.get('/access', authenticate, async (req: AuthRequest, res: Response) => {
     res.json(access);
   } catch (error) {
     console.error('Get access error:', error);
-    res.status(500).json({ error: 'Failed to get access' });
+    res.status(500).json({ error: 'Не удалось получить данные доступа' });
   }
 });
 
@@ -47,7 +47,7 @@ router.get('/usage', authenticate, async (req: AuthRequest, res: Response) => {
     res.json(usage);
   } catch (error) {
     console.error('Get usage error:', error);
-    res.status(500).json({ error: 'Failed to get usage' });
+    res.status(500).json({ error: 'Не удалось получить данные об использовании' });
   }
 });
 
@@ -63,12 +63,12 @@ router.post('/device', authenticate, [
     const { deviceId, label } = req.body;
     const result = await registerDevice(req.user!.id, deviceId, label);
     if (!result.allowed) {
-      return res.status(403).json({ error: result.message ?? 'Device limit reached' });
+      return res.status(403).json({ error: result.message ?? 'Достигнут лимит устройств' });
     }
-    res.json({ message: 'Device registered' });
+    res.json({ message: 'Устройство зарегистрировано' });
   } catch (error) {
     console.error('Register device error:', error);
-    res.status(500).json({ error: 'Failed to register device' });
+    res.status(500).json({ error: 'Не удалось зарегистрировать устройство' });
   }
 });
 
@@ -83,18 +83,18 @@ router.patch('/password', authenticate, [
     }
     const { currentPassword, newPassword } = req.body;
     const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
     const valid = await bcrypt.compare(currentPassword, user.password);
-    if (!valid) return res.status(401).json({ error: 'Current password is incorrect' });
+    if (!valid) return res.status(401).json({ error: 'Текущий пароль неверен' });
     const hashed = await bcrypt.hash(newPassword, 12);
     await prisma.user.update({
       where: { id: req.user!.id },
       data: { password: hashed },
     });
-    res.json({ message: 'Password updated' });
+    res.json({ message: 'Пароль обновлён' });
   } catch (error) {
     console.error('Change password error:', error);
-    res.status(500).json({ error: 'Failed to change password' });
+    res.status(500).json({ error: 'Не удалось изменить пароль' });
   }
 });
 

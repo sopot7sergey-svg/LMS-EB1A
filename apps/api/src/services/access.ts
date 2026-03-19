@@ -270,7 +270,7 @@ export async function registerDevice(
 ): Promise<{ allowed: boolean; message?: string }> {
   const access = await getAccess(userId);
   if (access.suspended) {
-    return { allowed: false, message: 'Account suspended' };
+    return { allowed: false, message: 'Аккаунт приостановлен' };
   }
 
   const existing = await prisma.deviceAccess.findUnique({
@@ -292,7 +292,7 @@ export async function registerDevice(
   if (activeCount >= access.deviceLimit) {
     return {
       allowed: false,
-      message: `Device limit reached (${access.deviceLimit}). Contact admin to reset devices.`,
+      message: `Достигнут лимит устройств (${access.deviceLimit}). Обратитесь к администратору для сброса.`,
     };
   }
 

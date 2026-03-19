@@ -28,7 +28,7 @@ router.post(
 
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser) {
-        return res.status(400).json({ error: 'Email already registered' });
+        return res.status(400).json({ error: 'Этот email уже зарегистрирован' });
       }
 
       let codeRecord: { grantCourseAccess: boolean; grantStartAccess: boolean; startDurationDays: number } | null = null;
@@ -39,10 +39,10 @@ router.post(
           where: { code: trimmed },
         });
         if (!found) {
-          return res.status(400).json({ error: 'Invalid access code. Please check the code and try again.' });
+          return res.status(400).json({ error: 'Неверный код доступа. Проверьте код и попробуйте снова.' });
         }
         if (found.status !== 'active') {
-          return res.status(400).json({ error: `This access code has already been used or is no longer valid (status: ${found.status}).` });
+          return res.status(400).json({ error: `Этот код доступа уже использован или недействителен (статус: ${found.status}).` });
         }
         codeRecord = {
           grantCourseAccess: found.grantCourseAccess,
@@ -69,7 +69,7 @@ router.post(
         });
         if (updated.count === 0) {
           await prisma.user.delete({ where: { id: user.id } });
-          return res.status(400).json({ error: 'This access code has already been used.' });
+          return res.status(400).json({ error: 'Этот код доступа уже использован.' });
         }
         await grantAccessFromCode(user.id, {
           courseAccess: codeRecord.grantCourseAccess,
@@ -100,7 +100,7 @@ router.post(
       });
     } catch (error) {
       console.error('Registration error:', error);
-      res.status(500).json({ error: 'Registration failed' });
+      res.status(500).json({ error: 'Ошибка регистрации' });
     }
   }
 );
@@ -122,23 +122,23 @@ router.post(
 
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ error: 'Неверный email или пароль' });
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ error: 'Неверный email или пароль' });
       }
 
       if (user.suspended) {
-        return res.status(403).json({ error: 'Account suspended. Contact admin.' });
+        return res.status(403).json({ error: 'Аккаунт приостановлен. Обратитесь к администратору.' });
       }
 
       const deviceId = req.body.deviceId as string | undefined;
       if (deviceId) {
         const deviceResult = await registerDevice(user.id, deviceId);
         if (!deviceResult.allowed) {
-          return res.status(403).json({ error: deviceResult.message ?? 'Device limit reached' });
+          return res.status(403).json({ error: deviceResult.message ?? 'Достигнут лимит устройств' });
         }
       }
 
@@ -170,7 +170,7 @@ router.post(
       });
     } catch (error) {
       console.error('Login error:', error);
-      res.status(500).json({ error: 'Login failed' });
+      res.status(500).json({ error: 'Ошибка входа' });
     }
   }
 );
@@ -193,7 +193,7 @@ router.get('/me', authenticate, async (req: AuthRequest, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Пользователь не найден' });
     }
 
     const access = await getAccess(req.user!.id);
@@ -211,12 +211,12 @@ router.get('/me', authenticate, async (req: AuthRequest, res) => {
     });
   } catch (error) {
     console.error('Get user error:', error);
-    res.status(500).json({ error: 'Failed to get user' });
+    res.status(500).json({ error: 'Не удалось получить данные пользователя' });
   }
 });
 
 router.post('/logout', authenticate, (req, res) => {
-  res.json({ message: 'Logged out successfully' });
+  res.json({ message: 'Выход выполнен' });
 });
 
 export default router;

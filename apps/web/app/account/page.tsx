@@ -40,22 +40,22 @@ export default function AccountProfilePage() {
     e.preventDefault();
     setMessage(null);
     if (newPassword !== confirmPassword) {
-      setMessage({ type: 'error', text: 'New passwords do not match' });
+      setMessage({ type: 'error', text: 'Новые пароли не совпадают' });
       return;
     }
     if (newPassword.length < 8) {
-      setMessage({ type: 'error', text: 'Password must be at least 8 characters' });
+      setMessage({ type: 'error', text: 'Пароль должен содержать минимум 8 символов' });
       return;
     }
     setIsLoading(true);
     try {
       await api.account.changePassword(currentPassword, newPassword, token!);
-      setMessage({ type: 'success', text: 'Password updated successfully' });
+      setMessage({ type: 'success', text: 'Пароль успешно обновлён' });
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err: any) {
-      setMessage({ type: 'error', text: err.message || 'Failed to change password' });
+      setMessage({ type: 'error', text: err.message || 'Не удалось изменить пароль' });
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +68,7 @@ export default function AccountProfilePage() {
           className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
           style={{ borderColor: '#635BFF', borderTopColor: 'transparent' }}
         />
-        Loading profile...
+        Загрузка профиля...
       </div>
     );
   }
@@ -76,9 +76,9 @@ export default function AccountProfilePage() {
   if (!user) {
     return (
       <div className="rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-warning">
-        <p className="font-medium">Unable to load profile</p>
+        <p className="font-medium">Не удалось загрузить профиль</p>
         <p className="mt-1 text-sm">
-          Your session may have expired. <Link href="/login" className="underline">Sign in again</Link>.
+          Сессия могла истечь. <Link href="/login" className="underline">Войдите снова</Link>.
         </p>
       </div>
     );
@@ -86,14 +86,14 @@ export default function AccountProfilePage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold">Account</h1>
+      <h1 className="text-3xl font-bold">Аккаунт</h1>
       <p className="mt-2 text-foreground-secondary">
-        Manage your profile and security.
+        Управление профилем и безопасностью.
       </p>
 
       <Card className="mt-8 max-w-xl">
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
+          <CardTitle>Профиль</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -101,7 +101,7 @@ export default function AccountProfilePage() {
             <p className="mt-1 text-foreground">{user.email}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground-secondary">Name</label>
+            <label className="text-sm font-medium text-foreground-secondary">Имя</label>
             <p className="mt-1 text-foreground">{user.name}</p>
           </div>
         </CardContent>
@@ -109,13 +109,13 @@ export default function AccountProfilePage() {
 
       <Card className="mt-6 max-w-xl">
         <CardHeader>
-          <CardTitle>Change Password</CardTitle>
+          <CardTitle>Смена пароля</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleChangePassword} className="space-y-4">
             <Input
               type="password"
-              label="Current password"
+              label="Текущий пароль"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
@@ -130,7 +130,7 @@ export default function AccountProfilePage() {
             />
             <Input
               type="password"
-              label="Confirm new password"
+              label="Подтвердите новый пароль"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -145,7 +145,7 @@ export default function AccountProfilePage() {
               </div>
             )}
             <Button type="submit" isLoading={isLoading} className="min-h-[44px]">
-              Update Password
+              Обновить пароль
             </Button>
           </form>
         </CardContent>
@@ -153,10 +153,10 @@ export default function AccountProfilePage() {
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link href="/account/billing">
-          <Button variant="secondary" className="min-h-[44px]">Billing & Subscription</Button>
+          <Button variant="secondary" className="min-h-[44px]">Оплата и подписка</Button>
         </Link>
         <Link href="/account/plans">
-          <Button variant="secondary" className="min-h-[44px]">View Plans</Button>
+          <Button variant="secondary" className="min-h-[44px]">Тарифы</Button>
         </Link>
       </div>
     </div>
