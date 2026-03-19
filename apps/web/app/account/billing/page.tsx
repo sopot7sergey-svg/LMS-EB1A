@@ -79,7 +79,7 @@ export default function BillingPage() {
       setCancelReason('');
       refresh();
     } catch (e: any) {
-      alert(e?.message ?? 'Cancel failed');
+      alert(e?.message ?? 'Не удалось отменить подписку');
     } finally {
       setLoadingAction(null);
     }
@@ -95,7 +95,7 @@ export default function BillingPage() {
           className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
           style={{ borderColor: '#635BFF', borderTopColor: 'transparent' }}
         />
-        <span>Loading billing...</span>
+        <span>Загрузка данных об оплате...</span>
       </div>
     );
   }
@@ -105,22 +105,22 @@ export default function BillingPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold">Billing & Subscription</h1>
+      <h1 className="text-3xl font-bold">Оплата и подписка</h1>
       <p className="mt-2 text-foreground-secondary">
-        Your app plan and access status.
+        Ваш план и статус доступа.
       </p>
 
       <Card className="mt-8 max-w-xl">
         <CardHeader>
-          <CardTitle>Current Plan</CardTitle>
+          <CardTitle>Текущий план</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-foreground-secondary">Plan</span>
+            <span className="text-foreground-secondary">План</span>
             <span className="font-medium capitalize">{status?.plan ?? 'none'}</span>
           </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-foreground-secondary">Status</span>
+            <span className="text-foreground-secondary">Статус</span>
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                 status?.planStatus === 'active'
@@ -128,13 +128,13 @@ export default function BillingPage() {
                   : 'bg-warning/10 text-warning'
               }`}
             >
-              {status?.planStatus ?? 'expired'}
+              {status?.planStatus === 'active' ? 'активен' : status?.planStatus === 'expired' ? 'истёк' : status?.planStatus === 'canceled' ? 'отменён' : (status?.planStatus ?? 'истёк')}
             </span>
           </div>
           {status?.expiresAt && (
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-foreground-secondary">
-                {status?.cancelAtPeriodEnd ? 'Access until' : 'Renews'}
+                {status?.cancelAtPeriodEnd ? 'Доступ до' : 'Продление'}
               </span>
               <span>{new Date(status.expiresAt).toLocaleDateString()}</span>
             </div>
@@ -142,24 +142,24 @@ export default function BillingPage() {
           {status?.cancelAtPeriodEnd && (
             <div className="flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
               <AlertCircle className="h-4 w-4 shrink-0" />
-              Subscription will cancel at period end.
+              Подписка будет отменена в конце периода.
             </div>
           )}
           {status?.billingCycle && (
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-foreground-secondary">Billing cycle</span>
-              <span className="capitalize">{status.billingCycle}</span>
+              <span className="text-foreground-secondary">Период оплаты</span>
+              <span>{status.billingCycle === 'monthly' ? 'месячная' : status.billingCycle === 'annual' ? 'годовая' : status.billingCycle}</span>
             </div>
           )}
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-foreground-secondary">Cases</span>
+            <span className="text-foreground-secondary">Дела</span>
             <span>
               {status?.caseCount ?? 0} / {status?.maxCases ?? 0}
             </span>
           </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-foreground-secondary">Document upload</span>
-            <span>{status?.uploadEnabled ? <Check className="h-5 w-5 text-success" /> : 'Disabled'}</span>
+            <span className="text-foreground-secondary">Загрузка документов</span>
+            <span>{status?.uploadEnabled ? <Check className="h-5 w-5 text-success" /> : 'Отключена'}</span>
           </div>
         </CardContent>
       </Card>
@@ -177,25 +177,25 @@ export default function BillingPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-foreground-secondary">Advisor Chat</span>
+            <span className="text-foreground-secondary">Чат с советником</span>
             <span className={usage?.blocked ? 'text-error font-medium' : ''}>
               {usage ? `${usage.advisorChatCalls ?? 0} / ${usage.limits?.advisorChatCallLimit ?? '—'}` : '—'}
             </span>
           </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-foreground-secondary">Document Review</span>
+            <span className="text-foreground-secondary">Проверка документов</span>
             <span className={usage?.blocked ? 'text-error font-medium' : ''}>
               {usage ? `${usage.documentReviewCalls ?? 0} / ${usage.limits?.documentReviewLimit ?? '—'}` : '—'}
             </span>
           </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-foreground-secondary">Final Audit</span>
+            <span className="text-foreground-secondary">Финальная проверка</span>
             <span className={usage?.blocked ? 'text-error font-medium' : ''}>
               {usage ? `${usage.finalAuditCalls ?? 0} / ${usage.limits?.finalAuditLimit ?? '—'}` : '—'}
             </span>
           </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-foreground-secondary">Cover Letter</span>
+            <span className="text-foreground-secondary">Сопроводительное письмо</span>
             <span className={usage?.blocked ? 'text-error font-medium' : ''}>
               {usage ? `${usage.coverLetterGenerates ?? 0} / ${usage.limits?.coverLetterGenerateLimit ?? '—'}` : '—'}
             </span>
@@ -204,8 +204,8 @@ export default function BillingPage() {
             <div className="mt-3 flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-600 dark:text-amber-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
               {usage.blocked
-                ? 'You have reached your AI usage limits. Limits reset at the start of next month.'
-                : 'You are approaching your AI usage limits.'}
+                ? 'Достигнут лимит использования ИИ. Лимиты обновляются в начале следующего месяца.'
+                : 'Приближаетесь к лимиту использования ИИ.'}
             </div>
           )}
         </CardContent>
@@ -215,9 +215,9 @@ export default function BillingPage() {
         <div className="mt-6 flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-warning">
           <AlertCircle className="h-5 w-5 shrink-0" />
           <div>
-            <p className="font-medium">App access expired</p>
+            <p className="font-medium">Доступ к приложению истёк</p>
             <p className="text-sm">
-              Your app plan has expired. Renew your plan to access My Case and continue building your petition.
+              Ваш план истёк. Продлите подписку для доступа к My Case и продолжения работы над петицией.
             </p>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function BillingPage() {
             onClick={handleManageBilling}
             disabled={!!loadingAction}
           >
-            {loadingAction === 'portal' ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Manage Billing'}
+            {loadingAction === 'portal' ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Управление оплатой'}
           </Button>
         )}
         {canManage && !status?.cancelAtPeriodEnd && (
@@ -241,12 +241,12 @@ export default function BillingPage() {
             disabled={!!loadingAction}
             className="min-h-[44px]"
           >
-            Cancel Subscription
+            Отменить подписку
           </Button>
         )}
         <Link href="/account/plans">
           <Button variant="secondary" className="min-h-[44px]">
-            {canManage ? 'Change Plan' : 'View Plans'}
+            {canManage ? 'Сменить план' : 'Тарифы'}
           </Button>
         </Link>
       </div>
@@ -254,11 +254,11 @@ export default function BillingPage() {
       <Dialog
         open={cancelDialogOpen}
         onClose={() => setCancelDialogOpen(false)}
-        title="Cancel Subscription"
+        title="Отмена подписки"
       >
         <div className="space-y-4 p-6">
           <p className="text-foreground-secondary">
-            Are you sure you want to cancel? You can cancel at period end (keep access until renewal) or cancel immediately.
+            Вы уверены, что хотите отменить? Можно отменить в конце периода (доступ сохранится до продления) или немедленно.
           </p>
           <div className="flex items-center gap-2">
             <input
@@ -267,7 +267,7 @@ export default function BillingPage() {
               checked={cancelAtPeriodEnd}
               onChange={() => setCancelAtPeriodEnd(true)}
             />
-            <label htmlFor="atPeriodEnd">Cancel at period end (recommended)</label>
+            <label htmlFor="atPeriodEnd">Отменить в конце периода (рекомендуется)</label>
           </div>
           <div className="flex items-center gap-2">
             <input
@@ -276,24 +276,24 @@ export default function BillingPage() {
               checked={!cancelAtPeriodEnd}
               onChange={() => setCancelAtPeriodEnd(false)}
             />
-            <label htmlFor="immediate">Cancel immediately</label>
+            <label htmlFor="immediate">Отменить немедленно</label>
           </div>
           <Input
-            label="Reason (optional)"
+            label="Причина (необязательно)"
             value={cancelReason}
             onChange={(e) => setCancelReason(e.target.value)}
-            placeholder="Help us improve"
+            placeholder="Помогите нам стать лучше"
           />
           <div className="flex justify-end gap-2">
             <Button variant="secondary" onClick={() => setCancelDialogOpen(false)}>
-              Keep Subscription
+              Оставить подписку
             </Button>
             <Button
               variant="danger"
               onClick={handleCancelConfirm}
               disabled={!!loadingAction}
             >
-              {loadingAction === 'cancel' ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Confirm Cancel'}
+              {loadingAction === 'cancel' ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Подтвердить отмену'}
             </Button>
           </div>
         </div>

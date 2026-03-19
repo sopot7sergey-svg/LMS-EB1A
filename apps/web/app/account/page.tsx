@@ -122,7 +122,7 @@ export default function AccountProfilePage() {
             />
             <Input
               type="password"
-              label="New password"
+              label="Новый пароль"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
