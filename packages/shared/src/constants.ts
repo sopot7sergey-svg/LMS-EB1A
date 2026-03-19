@@ -9,12 +9,12 @@ export const MODULE_IDS = {
 } as const;
 
 export const MODULE_TITLES = {
-  [MODULE_IDS.M0]: '"Case Axis" and Strategy',
-  [MODULE_IDS.M1]: 'Diagnosis Across the 10 Criteria',
-  [MODULE_IDS.M2]: 'Building Evidence for the 10 Criteria',
-  [MODULE_IDS.M3]: 'Recommendation Letters',
-  [MODULE_IDS.M4]: 'Petition Packaging and Final Assembly',
-  [MODULE_IDS.M5]: 'Filing the I-140 and What Comes After',
+  [MODULE_IDS.M0]: '"Ось дела" и стратегия',
+  [MODULE_IDS.M1]: 'Диагностика по 10 критериям',
+  [MODULE_IDS.M2]: 'Построение доказательств под 10 критериев',
+  [MODULE_IDS.M3]: 'Рекомендательные письма',
+  [MODULE_IDS.M4]: 'Упаковка петиции и финальная сборка',
+  [MODULE_IDS.M5]: 'Подача I-140 и процесс после (premium / AOS / consular)',
   [MODULE_IDS.M6]: 'Officer-Style Review',
 } as const;
 

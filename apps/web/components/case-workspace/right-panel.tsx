@@ -20,12 +20,12 @@ interface NextActionItem {
 }
 
 const STAGE_OPTIONS = [
-  { value: 'M0', label: 'M0: "Case Axis" and Strategy' },
-  { value: 'M1', label: 'M1: Diagnosis Across the 10 Criteria' },
-  { value: 'M2', label: 'M2: Building Evidence for the 10 Criteria' },
-  { value: 'M3', label: 'M3: Recommendation Letters' },
-  { value: 'M4', label: 'M4: Petition Packaging and Final Assembly' },
-  { value: 'M5', label: 'M5: Filing the I-140 and What Comes After' },
+  { value: 'M0', label: 'M0: "Ось дела" и стратегия' },
+  { value: 'M1', label: 'M1: Диагностика по 10 критериям' },
+  { value: 'M2', label: 'M2: Построение доказательств под 10 критериев' },
+  { value: 'M3', label: 'M3: Рекомендательные письма' },
+  { value: 'M4', label: 'M4: Упаковка петиции и финальная сборка' },
+  { value: 'M5', label: 'M5: Подача I-140 и процесс после (premium / AOS / consular)' },
   { value: 'M6', label: 'M6: Officer-Style Review' },
 ] as const;
 
