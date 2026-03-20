@@ -1,4 +1,5 @@
 import { AIGateway } from './gateway';
+import { MULTILINGUAL_RESPONSE_INSTRUCTION } from './prompts';
 import { RAGService } from '../rag/retrieve';
 import { CRITERIA } from '@aipas/shared';
 
@@ -45,7 +46,8 @@ Each item must have:
 - priority: "critical" | "recommended" | "optional"
 - category: category of the issue
 - ask: specific enhancement request
-- citations: array of {source, excerptId, section}`;
+- citations: array of {source, excerptId, section}
+${MULTILINGUAL_RESPONSE_INSTRUCTION}`;
 
 export class EEROrchestrator {
   private aiGateway: AIGateway;

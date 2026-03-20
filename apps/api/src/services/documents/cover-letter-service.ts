@@ -16,6 +16,7 @@ import { CRITERIA } from '@aipas/shared';
 import { buildPacketPlan } from '../compile/packet-structure';
 import type { CompileCaseContext, CompileOptions, CompileSourceDocument } from '../compile/types';
 import { AIGateway } from '../ai/gateway';
+import { MULTILINGUAL_RESPONSE_INSTRUCTION } from '../ai/prompts';
 
 /** Documents with status usable count as viable evidence; weak/needs_context/irrelevant do not. */
 const USABLE_STATUS: DocumentReviewFinalStatus[] = ['usable'];
@@ -496,6 +497,7 @@ export async function generateCoverLetterDraft(
           'Return JSON with sections array. Each section must have id, label, and content.',
           'Section ids: header, intro, exec, statutory, background, endeavor, final_merits, conclusion, exhibit_note.',
           'Include one section per claimed criterion with id like c1, c2, etc. and label like C1, C2.',
+          MULTILINGUAL_RESPONSE_INSTRUCTION,
         ].join(' '),
         messages: [
           {

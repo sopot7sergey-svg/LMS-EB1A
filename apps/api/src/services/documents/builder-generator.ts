@@ -9,6 +9,7 @@ import {
   type IntakeStrategySummary,
 } from '@aipas/shared';
 import { AIGateway } from '../ai/gateway';
+import { MULTILINGUAL_RESPONSE_INSTRUCTION } from '../ai/prompts';
 import type { CoverLetterCaseContext } from './cover-letter-service';
 import { generateCoverLetterDraft } from './cover-letter-service';
 
@@ -803,6 +804,7 @@ async function generateIntakeDraftAndStrategy(
           'riskFactors (array of strings: case weaknesses, gaps, red flags)',
           'strategyNotes (array of strings: high-level positioning and next steps).',
           'Do not provide legal advice or outcome predictions. Be concise.',
+          MULTILINGUAL_RESPONSE_INSTRUCTION,
         ].join(' '),
         messages: [
           {
@@ -871,6 +873,7 @@ async function generateDocumentDraftInternal(
         'Use prior builder context, especially any reusableDataset or strategySummary, when it helps keep facts consistent.',
         'Do not provide legal advice or outcome predictions.',
         getSlotSpecificPrompt(config.slotType),
+        MULTILINGUAL_RESPONSE_INSTRUCTION,
       ].join(' '),
       messages: [
         {

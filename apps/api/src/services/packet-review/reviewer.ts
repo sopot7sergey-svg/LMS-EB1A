@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { AIGateway } from '../ai/gateway';
+import { MULTILINGUAL_RESPONSE_INSTRUCTION } from '../ai/prompts';
 import type { PacketItem } from '../compile/types';
 import { runDeterministicChecks } from './deterministic-checks';
 import { retrieveForPacketReview } from './legal-reference';
@@ -52,6 +53,7 @@ function buildAIPrompt(ctx: PacketReviewContext): string {
   return `You are the Packet Review Engine for an EB-1A extraordinary ability immigration petition.
 
 Your role is to produce a structured Final Audit Report evaluating the compiled officer packet.
+${MULTILINGUAL_RESPONSE_INSTRUCTION}
 
 CRITICAL RULES:
 - Do NOT use "submission-ready" or language implying a legal determination.

@@ -1,5 +1,6 @@
 import { getDocumentBuilderConfig } from '@aipas/shared';
 import { AIGateway } from '../ai/gateway';
+import { MULTILINGUAL_RESPONSE_INSTRUCTION } from '../ai/prompts';
 import { extractDocumentTextDetailed, type ExtractableDocumentRef } from './text-extraction';
 
 export interface DocumentRef {
@@ -57,6 +58,7 @@ export async function suggestIntakePrefill(
         'Only suggest for questionIds that match the intake schema (e.g. legal_name, date_of_birth, field_definition, career_timeline_entries, signature_contributions, awards_entries, memberships_entries, published_material_entries, judging_entries, original_contributions_entries, scholarly_entries, leading_role_entries, us_endeavor, evidence_inventory_entries, etc.).',
         'For repeatable questions use array of objects with the expected field ids. For short_text/long_text use string. For date use YYYY-MM-DD string.',
         'Do not suggest for questionId voice_notes. Skip sections where you have no evidence. Be concise; prefer high-confidence suggestions.',
+        MULTILINGUAL_RESPONSE_INSTRUCTION,
       ].join(' '),
       messages: [
         {

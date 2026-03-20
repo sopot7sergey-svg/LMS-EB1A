@@ -1,5 +1,6 @@
 import type { DocumentMetadata, DocumentReviewResult, DocumentReviewFinalStatus } from '@aipas/shared';
 import { AIGateway } from '../ai/gateway';
+import { MULTILINGUAL_RESPONSE_INSTRUCTION } from '../ai/prompts';
 import type { DocumentExtractionResult } from './text-extraction';
 
 interface ReviewableDocument {
@@ -191,6 +192,7 @@ export async function reviewDocuments(
             'Classify the document, infer what criterion or section it relates to, identify strengths, weaknesses, and missing context, and give one finalStatus.',
             'Allowed finalStatus values: usable, weak, irrelevant, needs_context.',
             'Do not provide legal advice and do not claim approval.',
+            MULTILINGUAL_RESPONSE_INSTRUCTION,
           ].join(' '),
           messages: [
             {

@@ -14,6 +14,7 @@ import {
   type ExtractableDocumentRef,
 } from '../services/documents/text-extraction';
 import { retrieveForPacketReview } from '../services/packet-review/legal-reference';
+import { MULTILINGUAL_RESPONSE_INSTRUCTION } from '../services/ai/prompts';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -67,7 +68,8 @@ GROUNDING:
 FORMATTING:
 - Use markdown headers (##) for major sections.
 - Use bullet points for lists.
-- Be clear and practical.`;
+- Be clear and practical.
+${MULTILINGUAL_RESPONSE_INSTRUCTION}`;
 
 const INTAKE_FACT_EXTRACTION_PROMPT = `You are extracting facts from an EB-1A intake questionnaire and related case materials.
 
@@ -161,7 +163,8 @@ Critical behavior rules:
 - Do not turn this into a generic EB-1A explainer.
 - Do not list every possible case axis unless explicitly asked.
 - Prefer decisive analysis over brainstorming.
-- Use the provided LEGAL REFERENCE MATERIALS when explaining criteria or procedure.`;
+- Use the provided LEGAL REFERENCE MATERIALS when explaining criteria or procedure.
+${MULTILINGUAL_RESPONSE_INSTRUCTION}`;
 
 interface IntakeFactExtraction {
   facts: string[];
